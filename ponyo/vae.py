@@ -2,8 +2,7 @@
 Author: Alexandra Lee
 Updated October 2018
 
-Encode gene expression data into low dimensional latent space using
-Tybalt with 2-hidden layers
+Scripts to train 2-layer variational autoencoder
 '''
 import os
 import argparse

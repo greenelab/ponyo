@@ -2,8 +2,11 @@
 Author: Alexandra Lee
 Date Created: 11 March 2020
 
-Scripts to run entire pipeline from processing data, training VAE, running simulation experiments and
-generating output figures
+Scripts called by analysis notebooks to run entire the entire analysis pipeline:
+1. setup directories
+2. Process data
+3. Train VAE
+4. Run simulation experiment, described in `simulations.py`
 '''
 
 import os

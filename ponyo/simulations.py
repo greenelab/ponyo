@@ -2,7 +2,8 @@
 Author: Alexandra Lee
 Date Created: 11 November 2019
 
-Scripts to run simulation multiple times in parallel
+Scripts to run simulation different types of simulations (sample-level or experiment-level) 
+using functions in `generate_data_parallel.py`
 '''
 import os
 import sys

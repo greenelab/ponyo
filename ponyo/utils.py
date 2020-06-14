@@ -2,7 +2,7 @@ def read_config(filename):
     """
     Read and parse configuration file containing stored user variables
 
-    These variables are then passed to the analysis notebooks
+    These variables are then passed to the analysis notebooks and input to pipeline functions
     """
     f = open(filename)
     config_dict = {}

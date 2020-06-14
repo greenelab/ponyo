@@ -2,8 +2,9 @@
 Author: Alexandra Lee
 Date Created: 30 August 2019
 
-Scripts that are the components that comprise the pipelines found in pipeline.py.
-These scripts generate simulated data, simulate data with different numbers of experiments, permute simulated data
+These scripts are the components used to run each simulation experiment, found in `simulations.py`
+These scripts generate simulated compendia, add noise to simulated data, apply noise correction to simulated
+data, permute simulated data 
 '''
 
 import os

@@ -2,7 +2,8 @@
 Author: Alexandra Lee
 Date Created: 30 August 2019
 
-Scripts to generate gene expression compendia using experiment-preserving approach with added labels for visualizations
+Scripts to generate gene expression compendia using experiment-preserving approach with added experiment id labels for visualizations.
+These scripts are used to generate visualizations that validate this experiment-preserving simulation approach.
 '''
 
 import os

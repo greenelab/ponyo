@@ -2,7 +2,7 @@
 Author: Alexandra Lee
 Date Created: 30 August 2019
 
-Helper functions for running autoencoder
+Helper functions for running variational autoencoder `vae.py`
 '''
 
 import os
