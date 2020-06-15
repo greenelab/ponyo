@@ -1,10 +1,12 @@
-'''
+"""
 Author: Alexandra Lee
 Date Created: 30 August 2019
 
-Scripts to generate gene expression compendia using experiment-preserving approach with added experiment id labels for visualizations.
-These scripts are used to generate visualizations that validate this experiment-preserving simulation approach.
-'''
+Scripts to generate gene expression compendia using experiment-preserving
+approach with added experiment id labels for visualizations.
+These scripts are used to generate visualizations that validate this 
+experiment-preserving simulation approach.
+"""
 
 import os
 import ast
@@ -24,10 +26,10 @@ randomState = 123
 
 
 def get_sample_ids(experiment_id, dataset_name):
-    '''
+    """
     Return sample ids for a given experiment id
 
-    '''
+    """
     base_dir = os.path.abspath(os.path.join(os.getcwd(), "../"))
 
     # metadata file
@@ -59,7 +61,7 @@ def simulate_compendium_labeled(
     local_dir,
     base_dir
 ):
-    '''
+    """
     Generate simulated data using a list of experiment_ids found in 
     experiment_ids_file as templates. The compendia will contain the
     shifted experiments using the experiment_ids as templates and following
@@ -102,7 +104,7 @@ def simulate_compendium_labeled(
     simulated_data_file: str
         File containing simulated gene expression data
 
-    '''
+    """
     seed(randomState)
 
     # Files

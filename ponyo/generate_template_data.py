@@ -1,10 +1,12 @@
-'''
+"""
 Author: Alexandra Lee
 Date Created: 15 June 2020
 
-Script to generate gene expression compendia using experiment-preserving approach using a specific template experiment.
-This script is used to generate a null set of gene expression data with some context, defined by the template experiment
-'''
+Script to generate gene expression compendia using experiment-preserving 
+approach using a specific template experiment.
+This script is used to generate a null set of gene expression data with
+some context, defined by the template experiment.
+"""
 
 import os
 import ast
@@ -33,7 +35,7 @@ def shift_template_experiment(
     local_dir,
     base_dir,
     run):
-    '''
+    """
     Generate simulated data using the selected_experiment_id as a template
     experiment using the same workflow as simulate_compendia in generate_data_parallel.py
 
@@ -78,7 +80,7 @@ def shift_template_experiment(
     simulated_data_file: str
         File containing simulated gene expression data
 
-    '''
+    """
 
     # Files
     NN_dir = os.path.join(base_dir, dataset_name, "models", NN_architecture)
@@ -113,9 +115,6 @@ def shift_template_experiment(
         header=0,
         sep='\t',
         index_col=0).T
-
-    #print("Normalized gene expression data contains {} samples and {} genes".format(
-    #    normalized_data.shape[0], normalized_data.shape[1]))
 
     # Get corresponding sample ids
     sample_ids = generate_labeled_data.get_sample_ids(
@@ -164,8 +163,8 @@ def shift_template_experiment(
         simulated_data_encoded_df)
 
     simulated_data_decoded_df = pd.DataFrame(simulated_data_decoded,
-                                                index=simulated_data_encoded_df.index,
-                                                columns=selected_data_df.columns)
+                                             index=simulated_data_encoded_df.index,
+                                             columns=selected_data_df.columns)
     
     simulated_data_scaled = scaler.inverse_transform(simulated_data_decoded_df)
 
@@ -173,8 +172,6 @@ def shift_template_experiment(
                                             columns=simulated_data_decoded_df.columns,
                                             index=simulated_data_decoded_df.index)
 
-    #print("Return: simulated gene expression data containing {} samples and {} genes".format(
-    #    simulated_data_scaled_df.shape[0], simulated_data_scaled_df.shape[1]))
 
     # Save
     out_file = os.path.join(local_dir,
@@ -183,3 +180,4 @@ def shift_template_experiment(
 
     simulated_data_scaled_df.to_csv(
         out_file, float_format='%.3f', sep='\t')
+        

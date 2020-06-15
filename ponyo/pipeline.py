@@ -1,4 +1,4 @@
-'''
+"""
 Author: Alexandra Lee
 Date Created: 11 March 2020
 
@@ -7,7 +7,7 @@ Scripts called by analysis notebooks to run entire the entire analysis pipeline:
 2. Process data
 3. Train VAE
 4. Run simulation experiment, described in `simulations.py`
-'''
+"""
 
 import os
 import sys
@@ -33,7 +33,7 @@ seed(randomState)
 
 
 def setup_dir(config_file):
-    '''
+    """
     Create directories to store files created by VAE training and
     simulation analysis
 
@@ -41,7 +41,7 @@ def setup_dir(config_file):
     ----------
     config_file: str
         File containing user defined parameters
-    '''
+    """
 
     base_dir = os.path.abspath(os.path.join(os.getcwd(), "../"))
 
@@ -101,7 +101,7 @@ def setup_dir(config_file):
 def normalize_expression_data(base_dir,
                               config_file,
                               raw_input_data_file):
-    '''
+    """
     Normalize the expression data
 
     Arguments
@@ -114,7 +114,7 @@ def normalize_expression_data(base_dir,
 
     raw_input_data_file: str
         File containing raw expression data
-    '''
+    """
 
     # Read in config variables
     params = utils.read_config(config_file)
@@ -156,7 +156,7 @@ def create_experiment_id_file(metadata_file,
                               input_data_file,
                               output_file,
                               config_file):
-    '''
+    """
     Create file with experiment ids that are associated with expression data
 
     Arguments
@@ -173,7 +173,7 @@ def create_experiment_id_file(metadata_file,
     config_file: str
         File containing user defined parameters
 
-    '''
+    """
     # Read in metadata
     metadata = pd.read_table(
         metadata_file,
@@ -243,7 +243,7 @@ def create_experiment_id_file(metadata_file,
 
 def train_vae(config_file,
               input_data_file):
-    '''
+    """
     Trains VAE model using parameters set in config file
 
     Arguments
@@ -254,7 +254,7 @@ def train_vae(config_file,
     input_data_file: str
         File path corresponding to input dataset to use
 
-    '''
+    """
 
     # Read in config variables
     params = utils.read_config(config_file)
@@ -294,14 +294,14 @@ def train_vae(config_file,
                             train_architecture)
 
     del normalized_data, params
-    gc. collect()
+    gc.collect()
 
 
 def run_simulation(config_file,
                    input_data_file,
                    corrected,
                    experiment_ids_file=None):
-    '''
+    """
     Runs simulation experiment without applying correction method
 
     Arguments
@@ -318,7 +318,7 @@ def run_simulation(config_file,
     experiment_ids_file: str
         File containing experiment ids with expression data associated generated from ```create_experiment_id_file```
 
-    '''
+    """
 
     # Read in config variables
     params = utils.read_config(config_file)

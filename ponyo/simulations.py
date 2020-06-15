@@ -1,10 +1,11 @@
-'''
+"""
 Author: Alexandra Lee
 Date Created: 11 November 2019
 
-Scripts to run simulation different types of simulations (sample-level or experiment-level) 
+Scripts to run simulation different types of simulations 
+(sample-level or experiment-level) 
 using functions in `generate_data_parallel.py`
-'''
+"""
 import os
 import sys
 import glob
@@ -34,7 +35,7 @@ def sample_level_simulation(run,
                             input_file,
                             local_dir,
                             base_dir):
-  '''
+  """
     This function performs runs series of scripts that performs the following steps:
     1. Simulate gene expression data, ignorning the sample-experiment relationship
     2. Add varying numbers of technical variation
@@ -100,7 +101,7 @@ def sample_level_simulation(run,
     permuted_scre: df
         Similarity score comparing the permuted data to the simulated data per run
 
-    '''
+    """
 
   # Generate simulated data
   simulated_data = generate_data_parallel.simulate_data(input_file,
@@ -173,7 +174,7 @@ def experiment_level_simulation(run,
                                 sample_id_colname,
                                 local_dir,
                                 base_dir):
-  '''
+  """
     This function performs runs series of scripts that performs the following steps:
     1. Simulate gene expression data, keeping track of which sample is associated
         with a given experiment
@@ -245,7 +246,7 @@ def experiment_level_simulation(run,
 
     permuted_scre: df
         Similarity score comparing the permuted data to the simulated data per run
-    '''
+    """
 
   # Generate simulated data
   simulated_data = generate_data_parallel.simulate_compendium(num_simulated_experiments,
@@ -298,7 +299,6 @@ def experiment_level_simulation(run,
                                      columns=['score'])
 
   similarity_score_df.index.name = 'number of partitions'
-  similarity_score_df
 
   # Return similarity scores and permuted score
   return permuted_score, similarity_score_df

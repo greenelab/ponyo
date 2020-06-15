@@ -1,9 +1,9 @@
-'''
+"""
 Author: Alexandra Lee
 Date Created: 30 August 2019
 
-Scripts to compare simulated compendium with simulated compendia with noise added
-'''
+Scripts to compare simulated compendium with simulated compendia with noise added.
+"""
 
 import os
 import sys
@@ -15,7 +15,6 @@ import glob
 import warnings
 warnings.filterwarnings(action='ignore')
 
-sys.path.append("../")
 from ponyo import cca_core
 
 from sklearn.decomposition import PCA
@@ -105,7 +104,7 @@ def sim_svcca_io(simulated_data,
                  local_dir,
                  dataset_name,
                  analysis_name):
-    '''
+    """
     We want to determine if adding multiple simulated experiments is able to capture the
     biological signal that is present in the original data:
     How much of the simulated data with a single experiment is captured in the simulated data with multiple experiments?
@@ -178,7 +177,7 @@ def sim_svcca_io(simulated_data,
     permuted_svcca: float
         Similarity score comparing the permuted data to the simulated data
 
-    '''
+    """
 
     [simulated_data, compendium_dir, compendium_1] = read_data(simulated_data,
                                                                file_prefix,

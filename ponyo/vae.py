@@ -1,9 +1,9 @@
-'''
+"""
 Author: Alexandra Lee
 Updated October 2018
 
-Scripts to train 2-layer variational autoencoder
-'''
+Scripts to train 2-layer variational autoencoder.
+"""
 import os
 import argparse
 import pandas as pd

@@ -1,11 +1,12 @@
-'''
+"""
 Author: Alexandra Lee
 Date Created: 30 August 2019
 
-These scripts are the components used to run each simulation experiment, found in `simulations.py`
-These scripts generate simulated compendia, add noise to simulated data, apply noise correction to simulated
-data, permute simulated data 
-'''
+These scripts are the components used to run each simulation experiment,
+found in `simulations.py`.
+These scripts generate simulated compendia, add noise to simulated data, 
+apply noise correction to simulated data, permute simulated data. 
+"""
 
 import os
 import ast
@@ -31,7 +32,7 @@ warnings.filterwarnings(action='ignore')
 def get_sample_ids(experiment_id,
                    dataset_name,
                    sample_id_colname):
-    '''
+    """
     Returns sample ids (found in gene expression df) associated with
     a given list of experiment ids (found in the metadata)
 
@@ -46,7 +47,7 @@ def get_sample_ids(experiment_id,
     sample_id_colname: str
         Column header that contains sample id that maps expression data and metadata
 
-    '''
+    """
     base_dir = os.path.abspath(os.path.join(os.getcwd(), "../"))
 
     if "Pseudomonas" in dataset_name:
@@ -101,7 +102,7 @@ def simulate_compendium(
     local_dir,
     base_dir
 ):
-    '''
+    """
     Generate simulated data by randomly sampling some number of experiments
     and linearly shifting the gene expression in the VAE latent space, preserving
     the relationship between samples within an experiment.
@@ -161,7 +162,7 @@ def simulate_compendium(
     --------
     simulated dataframe
 
-    '''
+    """
 
     # Files
     NN_dir = os.path.join(base_dir, dataset_name, "models", NN_architecture)
@@ -313,7 +314,7 @@ def simulate_data(
         local_dir,
         base_dir
 ):
-    '''
+    """
     Generate simulated data by randomly sampling from VAE latent space.
 
     Workflow:
@@ -363,7 +364,7 @@ def simulate_data(
     --------
     simulated dataframe
 
-    '''
+    """
 
     # Files
     NN_dir = os.path.join(base_dir, dataset_name, "models", NN_architecture)
@@ -436,7 +437,7 @@ def simulate_data(
 
 
 def permute_data(simulated_data):
-    '''
+    """
     Permute the simulated data
 
     Arguments
@@ -448,7 +449,7 @@ def permute_data(simulated_data):
     --------
     permuted simulated dataframe. This data will be used as a 
     negative control in similarity analysis.
-    '''
+    """
 
     if "experiment_id" in list(simulated_data.columns):
         simulated_data_tmp = simulated_data.drop(
@@ -481,7 +482,7 @@ def add_experiments_io(
         local_dir,
         dataset_name,
         analysis_name):
-    '''
+    """
     Say we are interested in identifying genes that differentiate between
     disease vs normal states. However our dataset includes samples from
     different labs or protocols and there are variations
@@ -525,7 +526,7 @@ def add_experiments_io(
     --------
     Files of simulated data with different numbers of experiments added.
     Each file named as "Experiment_<number of experiments added>"
-    '''
+    """
     analysis_dir = os.path.join(
         local_dir, "experiment_simulated", dataset_name + "_" + analysis_name)
 
@@ -614,7 +615,7 @@ def add_experiments_grped_io(
         local_dir,
         dataset_name,
         analysis_name):
-    '''
+    """
     Similar to `add_experiments_io` we will model technical variation in our
     simulated data. In this case, we will keep track of which samples
     are associated with an experiment.
@@ -662,7 +663,7 @@ def add_experiments_grped_io(
     --------
     Files of simulated data with different numbers of experiments added.
     Each file named as "Experiment_<number of experiments added>"
-    '''
+    """
 
     analysis_dir = os.path.join(
         local_dir, "partition_simulated", dataset_name + "_" + analysis_name)
@@ -766,7 +767,7 @@ def apply_correction_io(local_dir,
                         analysis_name,
                         num_experiments,
                         correction_method):
-    '''
+    """
     This function uses the limma or sva R package to correct for the technical variation
     we added using <add_experiments_io> or <add_experiments_grped_io>
 
@@ -799,7 +800,7 @@ def apply_correction_io(local_dir,
     --------
     Files of simulated data with different numbers of experiments added.
     Each file named as "Experiment_<number of experiments added>"
-    '''
+    """
 
     for i in range(len(num_experiments)):
 

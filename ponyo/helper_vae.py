@@ -1,24 +1,22 @@
-'''
+"""
 Author: Alexandra Lee
 Date Created: 30 August 2019
 
-Helper functions for running variational autoencoder `vae.py`
-'''
+Helper functions for running variational autoencoder `vae.py`.
+"""
 
 import os
 import argparse
 import pandas as pd
 import matplotlib.pyplot as plt
 import tensorflow as tf
-
-# To ensure reproducibility using Keras during development
-# https://keras.io/getting-started/faq/#how-can-i-obtain-reproducible-results-using-keras-during-development
 import numpy as np
 import random as rn
 
 # The below is necessary in Python 3.2.3 onwards to
 # have reproducible behavior for certain hash-based operations.
 # See these references for further details:
+# https://keras.io/getting-started/faq/#how-can-i-obtain-reproducible-results-using-keras-during-development
 # https://docs.python.org/3.4/using/cmdline.html#envvar-PYTHONHASHSEED
 # https://github.com/keras-team/keras/issues/2280#issuecomment-306959926
 randomState = 123
