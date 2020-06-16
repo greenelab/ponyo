@@ -8,6 +8,6 @@ def read_config(filename):
     f = open(filename)
     config_dict = {}
     for lines in f:
-        items = lines.split('\t', 1)
+        items = lines.split("\t", 1)
         config_dict[items[0]] = eval(items[1])
     return config_dict

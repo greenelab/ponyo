@@ -21,7 +21,8 @@ import random as rn
 # https://github.com/keras-team/keras/issues/2280#issuecomment-306959926
 randomState = 123
 import os
-os.environ['PYTHONHASHSEED'] = '0'
+
+os.environ["PYTHONHASHSEED"] = "0"
 
 # The below is necessary for starting Numpy generated random numbers
 # in a well-defined initial state.
@@ -39,7 +40,8 @@ rn.seed(12345)
 # For further details, see: https://stackoverflow.com/questions/42022950/which-seeds-have-to-be-set-where-to-realize-100-reproducibility-of-training-res
 
 session_conf = tf.ConfigProto(
-    intra_op_parallelism_threads=1, inter_op_parallelism_threads=1)
+    intra_op_parallelism_threads=1, inter_op_parallelism_threads=1
+)
 
 from keras import backend as K
 
@@ -73,13 +75,13 @@ def sampling_maker(epsilon_std):
         z_mean, z_log_var = args
 
         # Draw epsilon of the same shape from a standard normal distribution
-        epsilon = K.random_normal(shape=tf.shape(z_mean), mean=0.,
-                                  stddev=epsilon_std)
+        epsilon = K.random_normal(shape=tf.shape(z_mean), mean=0.0, stddev=epsilon_std)
 
         # The latent vector is non-deterministic and differentiable
         # in respect to z_mean and z_log_var
         z = z_mean + K.exp(z_log_var / 2) * epsilon
         return z
+
     return sampling
 
 
@@ -88,8 +90,7 @@ class CustomVariationalLayer(Layer):
     Define a custom layer that learns and performs the training
     """
 
-    def __init__(self, original_dim, z_log_var_encoded,
-                 z_mean_encoded, beta, **kwargs):
+    def __init__(self, original_dim, z_log_var_encoded, z_mean_encoded, beta, **kwargs):
         # https://keras.io/layers/writing-your-own-keras-layers/
         self.is_placeholder = True
         self.original_dim = original_dim
@@ -100,13 +101,18 @@ class CustomVariationalLayer(Layer):
         super(CustomVariationalLayer, self).__init__(**kwargs)
 
     def vae_loss(self, x_input, x_decoded):
-        reconstruction_loss = self.original_dim * \
-            metrics.binary_crossentropy(x_input, x_decoded)
-        
-        kl_loss = - 0.5 * K.sum(1 + self.z_log_var_encoded 
-                                - K.square(self.z_mean_encoded) 
-                                - K.exp(self.z_log_var_encoded), axis=-1)
-        
+        reconstruction_loss = self.original_dim * metrics.binary_crossentropy(
+            x_input, x_decoded
+        )
+
+        kl_loss = -0.5 * K.sum(
+            1
+            + self.z_log_var_encoded
+            - K.square(self.z_mean_encoded)
+            - K.exp(self.z_log_var_encoded),
+            axis=-1,
+        )
+
         return K.mean(reconstruction_loss + (K.get_value(self.beta) * kl_loss))
 
     def call(self, inputs):

@@ -15,27 +15,30 @@ import numpy as np
 import gc
 
 import warnings
-warnings.filterwarnings(action='ignore')
+
+warnings.filterwarnings(action="ignore")
 
 from ponyo import generate_data_parallel
 from ponyo import similarity_metric_parallel
 
 
-def sample_level_simulation(run,
-                            NN_architecture,
-                            dataset_name,
-                            analysis_name,
-                            num_simulated_samples,
-                            lst_num_experiments,
-                            corrected,
-                            correction_method,
-                            use_pca,
-                            num_PCs,
-                            file_prefix,
-                            input_file,
-                            local_dir,
-                            base_dir):
-  """
+def sample_level_simulation(
+    run,
+    NN_architecture,
+    dataset_name,
+    analysis_name,
+    num_simulated_samples,
+    lst_num_experiments,
+    corrected,
+    correction_method,
+    use_pca,
+    num_PCs,
+    file_prefix,
+    input_file,
+    local_dir,
+    base_dir,
+):
+    """
     This function performs runs series of scripts that performs the following steps:
     1. Simulate gene expression data, ignorning the sample-experiment relationship
     2. Add varying numbers of technical variation
@@ -103,78 +106,88 @@ def sample_level_simulation(run,
 
     """
 
-  # Generate simulated data
-  simulated_data = generate_data_parallel.simulate_data(input_file,
-                                                        NN_architecture,
-                                                        dataset_name,
-                                                        analysis_name,
-                                                        num_simulated_samples,
-                                                        local_dir,
-                                                        base_dir)
+    # Generate simulated data
+    simulated_data = generate_data_parallel.simulate_data(
+        input_file,
+        NN_architecture,
+        dataset_name,
+        analysis_name,
+        num_simulated_samples,
+        local_dir,
+        base_dir,
+    )
 
-  # Permute simulated data to be used as a negative control
-  permuted_data = generate_data_parallel.permute_data(simulated_data)
+    # Permute simulated data to be used as a negative control
+    permuted_data = generate_data_parallel.permute_data(simulated_data)
 
-  if not corrected:
-    # Add technical variation
-    generate_data_parallel.add_experiments_io(simulated_data,
-                                              lst_num_experiments,
-                                              run,
-                                              local_dir,
-                                              dataset_name,
-                                              analysis_name)
+    if not corrected:
+        # Add technical variation
+        generate_data_parallel.add_experiments_io(
+            simulated_data,
+            lst_num_experiments,
+            run,
+            local_dir,
+            dataset_name,
+            analysis_name,
+        )
 
-  if corrected:
-    # Remove technical variation
-    generate_data_parallel.apply_correction_io(local_dir,
-                                               run,
-                                               dataset_name,
-                                               analysis_name,
-                                               lst_num_experiments,
-                                               correction_method)
+    if corrected:
+        # Remove technical variation
+        generate_data_parallel.apply_correction_io(
+            local_dir,
+            run,
+            dataset_name,
+            analysis_name,
+            lst_num_experiments,
+            correction_method,
+        )
 
-  # Calculate similarity between compendium and compendium + noise
-  batch_scores, permuted_score = similarity_metric_parallel.sim_svcca_io(simulated_data,
-                                                                         permuted_data,
-                                                                         corrected,
-                                                                         file_prefix,
-                                                                         run,
-                                                                         lst_num_experiments,
-                                                                         use_pca,
-                                                                         num_PCs,
-                                                                         local_dir,
-                                                                         dataset_name,
-                                                                         analysis_name)
+    # Calculate similarity between compendium and compendium + noise
+    batch_scores, permuted_score = similarity_metric_parallel.sim_svcca_io(
+        simulated_data,
+        permuted_data,
+        corrected,
+        file_prefix,
+        run,
+        lst_num_experiments,
+        use_pca,
+        num_PCs,
+        local_dir,
+        dataset_name,
+        analysis_name,
+    )
 
-  # Convert similarity scores to pandas dataframe
-  similarity_score_df = pd.DataFrame(data={'score': batch_scores},
-                                     index=lst_num_experiments,
-                                     columns=['score'])
+    # Convert similarity scores to pandas dataframe
+    similarity_score_df = pd.DataFrame(
+        data={"score": batch_scores}, index=lst_num_experiments, columns=["score"]
+    )
 
-  similarity_score_df.index.name = 'number of experiments'
-  similarity_score_df
+    similarity_score_df.index.name = "number of experiments"
+    similarity_score_df
 
-  # Return similarity scores and permuted score
-  return permuted_score, similarity_score_df
+    # Return similarity scores and permuted score
+    return permuted_score, similarity_score_df
 
 
-def experiment_level_simulation(run,
-                                NN_architecture,
-                                dataset_name,
-                                analysis_name,
-                                num_simulated_experiments,
-                                lst_num_partitions,
-                                corrected,
-                                correction_method,
-                                use_pca,
-                                num_PCs,
-                                file_prefix,
-                                input_file,
-                                experiment_ids_file,
-                                sample_id_colname,
-                                local_dir,
-                                base_dir):
-  """
+def experiment_level_simulation(
+    run,
+    NN_architecture,
+    dataset_name,
+    analysis_name,
+    num_simulated_experiments,
+    lst_num_partitions,
+    corrected,
+    correction_method,
+    use_pca,
+    num_PCs,
+    file_prefix,
+    input_file,
+    experiment_ids_file,
+    sample_id_colname,
+    local_dir,
+    base_dir,
+):
+    """
     This function performs runs series of scripts that performs the following steps:
     1. Simulate gene expression data, keeping track of which sample is associated
         with a given experiment
@@ -248,57 +261,66 @@ def experiment_level_simulation(run,
         Similarity score comparing the permuted data to the simulated data per run
     """
 
-  # Generate simulated data
-  simulated_data = generate_data_parallel.simulate_compendium(num_simulated_experiments,
-                                                              input_file,
-                                                              NN_architecture,
-                                                              dataset_name,
-                                                              analysis_name,
-                                                              experiment_ids_file,
-                                                              sample_id_colname,
-                                                              local_dir,
-                                                              base_dir)
+    # Generate simulated data
+    simulated_data = generate_data_parallel.simulate_compendium(
+        num_simulated_experiments,
+        input_file,
+        NN_architecture,
+        dataset_name,
+        analysis_name,
+        experiment_ids_file,
+        sample_id_colname,
+        local_dir,
+        base_dir,
+    )
 
-  # Permute simulated data to be used as a negative control
-  permuted_data = generate_data_parallel.permute_data(simulated_data)
+    # Permute simulated data to be used as a negative control
+    permuted_data = generate_data_parallel.permute_data(simulated_data)
 
-  if not corrected:
-    # Add technical variation
-    generate_data_parallel.add_experiments_grped_io(simulated_data,
-                                                    lst_num_partitions,
-                                                    run,
-                                                    local_dir,
-                                                    dataset_name,
-                                                    analysis_name)
+    if not corrected:
+        # Add technical variation
+        generate_data_parallel.add_experiments_grped_io(
+            simulated_data,
+            lst_num_partitions,
+            run,
+            local_dir,
+            dataset_name,
+            analysis_name,
+        )
 
-  if corrected:
-    # Remove technical variation
-    generate_data_parallel.apply_correction_io(local_dir,
-                                               run,
-                                               dataset_name,
-                                               analysis_name,
-                                               lst_num_partitions,
-                                               correction_method)
+    if corrected:
+        # Remove technical variation
+        generate_data_parallel.apply_correction_io(
+            local_dir,
+            run,
+            dataset_name,
+            analysis_name,
+            lst_num_partitions,
+            correction_method,
+        )
 
- # Calculate similarity between compendium and compendium + noise
-  batch_scores, permuted_score = similarity_metric_parallel.sim_svcca_io(simulated_data,
-                                                                         permuted_data,
-                                                                         corrected,
-                                                                         file_prefix,
-                                                                         run,
-                                                                         lst_num_partitions,
-                                                                         use_pca,
-                                                                         num_PCs,
-                                                                         local_dir,
-                                                                         dataset_name,
-                                                                         analysis_name)
+    # Calculate similarity between compendium and compendium + noise
+    batch_scores, permuted_score = similarity_metric_parallel.sim_svcca_io(
+        simulated_data,
+        permuted_data,
+        corrected,
+        file_prefix,
+        run,
+        lst_num_partitions,
+        use_pca,
+        num_PCs,
+        local_dir,
+        dataset_name,
+        analysis_name,
+    )
 
-  # Convert similarity scores to pandas dataframe
-  similarity_score_df = pd.DataFrame(data={'score': batch_scores},
-                                     index=lst_num_partitions,
-                                     columns=['score'])
+    # Convert similarity scores to pandas dataframe
+    similarity_score_df = pd.DataFrame(
+        data={"score": batch_scores}, index=lst_num_partitions, columns=["score"]
+    )
 
-  similarity_score_df.index.name = 'number of partitions'
+    similarity_score_df.index.name = "number of partitions"
 
-  # Return similarity scores and permuted score
-  return permuted_score, similarity_score_df
+    # Return similarity scores and permuted score
+    return permuted_score, similarity_score_df
+

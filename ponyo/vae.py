@@ -24,17 +24,18 @@ from ponyo.helper_vae import sampling_maker, CustomVariationalLayer, WarmUpCallb
 
 
 def tybalt_2layer_model(
-        learning_rate,
-        batch_size,
-        epochs,
-        kappa,
-        intermediate_dim,
-        latent_dim,
-        epsilon_std,
-        rnaseq,
-        base_dir,
-        dataset_name,
-        NN_name):
+    learning_rate,
+    batch_size,
+    epochs,
+    kappa,
+    intermediate_dim,
+    latent_dim,
+    epsilon_std,
+    rnaseq,
+    base_dir,
+    dataset_name,
+    NN_name,
+):
     """
     Train 2-layer Tybalt model using input dataset
 
@@ -90,7 +91,8 @@ def tybalt_2layer_model(
     # https://github.com/keras-team/keras/issues/2280#issuecomment-306959926
     randomState = 123
     import os
-    os.environ['PYTHONHASHSEED'] = '0'
+
+    os.environ["PYTHONHASHSEED"] = "0"
 
     # The below is necessary for starting Numpy generated random numbers
     # in a well-defined initial state.
@@ -108,7 +110,8 @@ def tybalt_2layer_model(
     # For further details, see: https://stackoverflow.com/questions/42022950/which-seeds-have-to-be-set-where-to-realize-100-reproducibility-of-training-res
 
     session_conf = tf.ConfigProto(
-        intra_op_parallelism_threads=1, inter_op_parallelism_threads=1)
+        intra_op_parallelism_threads=1, inter_op_parallelism_threads=1
+    )
 
     from keras import backend as K
 
@@ -134,53 +137,58 @@ def tybalt_2layer_model(
         dataset_name,
         "logs",
         NN_name,
-        "tybalt_2layer_{}latent_stats.tsv".format(latent_dim))
+        "tybalt_2layer_{}latent_stats.tsv".format(latent_dim),
+    )
 
     hist_plot_file = os.path.join(
         base_dir,
         dataset_name,
         "logs",
         NN_name,
-        "tybalt_2layer_{}latent_hist.svg".format(latent_dim))
+        "tybalt_2layer_{}latent_hist.svg".format(latent_dim),
+    )
 
     model_encoder_file = os.path.join(
         base_dir,
         dataset_name,
         "models",
         NN_name,
-        "tybalt_2layer_{}latent_encoder_model.h5".format(latent_dim))
+        "tybalt_2layer_{}latent_encoder_model.h5".format(latent_dim),
+    )
 
     weights_encoder_file = os.path.join(
         base_dir,
         dataset_name,
         "models",
         NN_name,
-        "tybalt_2layer_{}latent_encoder_weights.h5".format(latent_dim))
+        "tybalt_2layer_{}latent_encoder_weights.h5".format(latent_dim),
+    )
 
     model_decoder_file = os.path.join(
         base_dir,
         dataset_name,
         "models",
         NN_name,
-        "tybalt_2layer_{}latent_decoder_model.h5".format(latent_dim))
+        "tybalt_2layer_{}latent_decoder_model.h5".format(latent_dim),
+    )
 
     weights_decoder_file = os.path.join(
         base_dir,
         dataset_name,
         "models",
         NN_name,
-        "tybalt_2layer_{}latent_decoder_weights.h5".format(latent_dim))
+        "tybalt_2layer_{}latent_decoder_weights.h5".format(latent_dim),
+    )
 
     # Data initalizations
 
     # Split 10% test set randomly
     test_set_percent = 0.1
-    rnaseq_test_df = rnaseq.sample(
-        frac=test_set_percent, random_state=randomState)
+    rnaseq_test_df = rnaseq.sample(frac=test_set_percent, random_state=randomState)
     rnaseq_train_df = rnaseq.drop(rnaseq_test_df.index)
 
     # Create a placeholder for an encoded (original-dimensional)
-    rnaseq_input = Input(shape=(original_dim, ))
+    rnaseq_input = Input(shape=(original_dim,))
 
     # Architecture of VAE
 
@@ -202,24 +210,27 @@ def tybalt_2layer_model(
     #   ReLU function filters noise
 
     # X is encoded using Q(z|X) to yield mu(X), sigma(X) that describes latent space distribution
-    hidden_dense_linear = Dense(
-        intermediate_dim, kernel_initializer='glorot_uniform')(rnaseq_input)
+    hidden_dense_linear = Dense(intermediate_dim, kernel_initializer="glorot_uniform")(
+        rnaseq_input
+    )
     hidden_dense_batchnorm = BatchNormalization()(hidden_dense_linear)
-    hidden_encoded = Activation('relu')(hidden_dense_batchnorm)
+    hidden_encoded = Activation("relu")(hidden_dense_batchnorm)
 
     # Note:
     # Normalize and relu filter at each layer adds non-linear component (relu is non-linear function)
     # If architecture is layer-layer-normalization-relu then the computation is still linear
     # Add additional layers in triplicate
-    z_mean_dense_linear = Dense(
-        latent_dim, kernel_initializer='glorot_uniform')(hidden_encoded)
+    z_mean_dense_linear = Dense(latent_dim, kernel_initializer="glorot_uniform")(
+        hidden_encoded
+    )
     z_mean_dense_batchnorm = BatchNormalization()(z_mean_dense_linear)
-    z_mean_encoded = Activation('relu')(z_mean_dense_batchnorm)
+    z_mean_encoded = Activation("relu")(z_mean_dense_batchnorm)
 
-    z_log_var_dense_linear = Dense(
-        latent_dim, kernel_initializer='glorot_uniform')(rnaseq_input)
+    z_log_var_dense_linear = Dense(latent_dim, kernel_initializer="glorot_uniform")(
+        rnaseq_input
+    )
     z_log_var_dense_batchnorm = BatchNormalization()(z_log_var_dense_linear)
-    z_log_var_encoded = Activation('relu')(z_log_var_dense_batchnorm)
+    z_log_var_encoded = Activation("relu")(z_log_var_dense_batchnorm)
 
     # Customized layer
     # Returns the encoded and randomly sampled z vector
@@ -236,8 +247,9 @@ def tybalt_2layer_model(
     # Returns the encoded and randomly sampled z vector
     # Takes two keras layers as input to the custom sampling function layer with a
     # latent_dim` output
-    z = Lambda(sampling_maker(epsilon_std),
-               output_shape=(latent_dim, ))([z_mean_encoded, z_log_var_encoded])
+    z = Lambda(sampling_maker(epsilon_std), output_shape=(latent_dim,))(
+        [z_mean_encoded, z_log_var_encoded]
+    )
 
     # DECODER
 
@@ -245,16 +257,16 @@ def tybalt_2layer_model(
     # initialized and sigmoid activation
     # Reconstruct P(X|z)
     decoder_model = Sequential()
-    decoder_model.add(
-        Dense(intermediate_dim, activation='relu', input_dim=latent_dim))
-    decoder_model.add(Dense(original_dim, activation='sigmoid'))
+    decoder_model.add(Dense(intermediate_dim, activation="relu", input_dim=latent_dim))
+    decoder_model.add(Dense(original_dim, activation="sigmoid"))
     rnaseq_reconstruct = decoder_model(z)
 
     # CONNECTIONS
     # fully-connected network
     adam = optimizers.Adam(lr=learning_rate)
-    vae_layer = CustomVariationalLayer(original_dim, z_log_var_encoded, z_mean_encoded, beta)([
-        rnaseq_input, rnaseq_reconstruct])
+    vae_layer = CustomVariationalLayer(
+        original_dim, z_log_var_encoded, z_mean_encoded, beta
+    )([rnaseq_input, rnaseq_reconstruct])
     vae = Model(rnaseq_input, vae_layer)
     vae.compile(optimizer=adam, loss=None, loss_weights=[beta])
 
@@ -268,7 +280,8 @@ def tybalt_2layer_model(
         epochs=epochs,
         batch_size=batch_size,
         validation_data=(np.array(rnaseq_test_df), None),
-        callbacks=[WarmUpCallback(beta, kappa)])
+        callbacks=[WarmUpCallback(beta, kappa)],
+    )
 
     # Use trained model to make predictions
     encoder = Model(rnaseq_input, z_mean_encoded)
@@ -276,15 +289,17 @@ def tybalt_2layer_model(
     encoded_rnaseq_df = encoder.predict_on_batch(rnaseq)
     encoded_rnaseq_df = pd.DataFrame(encoded_rnaseq_df, index=rnaseq.index)
 
-    encoded_rnaseq_df.columns.name = 'sample_id'
+    encoded_rnaseq_df.columns.name = "sample_id"
     encoded_rnaseq_df.columns = encoded_rnaseq_df.columns + 1
 
     # Visualize training performance
     history_df = pd.DataFrame(hist.history)
     ax = history_df.plot()
-    ax.set_xlabel('Epochs', fontsize='xx-large', family='sans-serif')
-    ax.set_ylabel('Loss', fontsize='xx-large', family='sans-serif')
-    ax.legend(['Training Loss', 'Validation Loss'], prop={'family':'sans-serif', 'size':12})
+    ax.set_xlabel("Epochs", fontsize="xx-large", family="sans-serif")
+    ax.set_ylabel("Loss", fontsize="xx-large", family="sans-serif")
+    ax.legend(
+        ["Training Loss", "Validation Loss"], prop={"family": "sans-serif", "size": 12}
+    )
     fig = ax.get_figure()
     fig.savefig(hist_plot_file, dpi=300)
 
@@ -298,7 +313,7 @@ def tybalt_2layer_model(
     history_df = history_df.assign(batch_size=batch_size)
     history_df = history_df.assign(epochs=epochs)
     history_df = history_df.assign(kappa=kappa)
-    history_df.to_csv(stat_file, sep='\t', index=False)
+    history_df.to_csv(stat_file, sep="\t", index=False)
 
     # Save models
     # (source) https://machinelearningmastery.com/save-load-keras-deep-learning-models/
@@ -311,7 +326,7 @@ def tybalt_2layer_model(
     # Save decoder model
     # (source) https://github.com/greenelab/tybalt/blob/master/scripts/nbconverted/tybalt_vae.py
     # can generate from any sampled z vector
-    decoder_input = Input(shape=(latent_dim, ))
+    decoder_input = Input(shape=(latent_dim,))
     _x_decoded_mean = decoder_model(decoder_input)
     decoder = Model(decoder_input, _x_decoded_mean)
 
@@ -323,7 +338,7 @@ def tybalt_2layer_model(
     # Save weight matrix:  how each gene contribute to each feature
     # build a generator that can sample from the learned distribution
     # can generate from any sampled z vector
-    decoder_input = Input(shape=(latent_dim, ))
+    decoder_input = Input(shape=(latent_dim,))
     x_decoded_mean = decoder_model(decoder_input)
     decoder = Model(decoder_input, x_decoded_mean)
     weights = []
