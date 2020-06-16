@@ -32,6 +32,8 @@ def get_sample_ids(experiment_id, dataset_name):
     Return sample ids for a given experiment id
 
     """
+    base_dir = os.path.abspath(os.path.join(os.getcwd(), "../"))
+
     if "pseudomonas" in dataset_name.lower():
         # metadata file
         mapping_file = os.path.join(
