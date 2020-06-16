@@ -1,0 +1,6 @@
+# ignore all ipynb checkpoints
+.ipynb_checkpoints/
+*.pyc
+*.~lock*
+*.Rhistory
+*.egg-info/
