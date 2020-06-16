@@ -266,7 +266,14 @@ def train_vae(config_file, input_data_file):
     train_architecture = params["NN_architecture"]
 
     # Read data
-    normalized_data = pd.read_table(input_data_file, header=0, sep="\t", index_col=0).T
+    if "pseudomonas" in dataset_name.lower():
+        normalized_data = pd.read_table(
+            input_data_file, header=0, sep="\t", index_col=0
+        ).T
+    else:
+        normalized_data = pd.read_table(
+            input_data_file, header=0, sep="\t", index_col=0
+        )
 
     print(
         "input dataset contains {} samples and {} genes".format(
