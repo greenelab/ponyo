@@ -50,7 +50,7 @@ def get_sample_ids(experiment_id, dataset_name, sample_id_colname):
     """
     base_dir = os.path.abspath(os.path.join(os.getcwd(), "../"))
 
-    if "Pseudomonas" in dataset_name:
+    if "pseudomonas" in dataset_name.lower():
         # metadata file
         mapping_file = os.path.join(
             base_dir, dataset_name, "data", "metadata", "sample_annotations.tsv"
@@ -62,7 +62,7 @@ def get_sample_ids(experiment_id, dataset_name, sample_id_colname):
         selected_metadata = metadata.loc[experiment_id]
         sample_ids = list(selected_metadata[sample_id_colname])
 
-    elif "Human" in dataset_name:
+    else:
         # metadata file
         mapping_file = os.path.join(
             base_dir, dataset_name, "data", "metadata", "recount2_metadata.tsv"
@@ -174,7 +174,7 @@ def simulate_compendium(
 
     normalized_data = pd.read_table(
         normalized_data_file, header=0, sep="\t", index_col=0
-    ).T
+    )
 
     print(
         "Normalized gene expression data contains {} samples and {} genes".format(
@@ -373,7 +373,7 @@ def simulate_data(
     # Read data
     normalized_data = pd.read_table(
         normalized_data_file, header=0, sep="\t", index_col=0
-    ).T
+    )
 
     print(
         "Normalized gene expression data contains {} samples and {} genes".format(

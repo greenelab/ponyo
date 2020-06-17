@@ -108,7 +108,7 @@ def shift_template_experiment(
     # Read data
     normalized_data = pd.read_table(
         normalized_data_file, header=0, sep="\t", index_col=0
-    ).T
+    )
 
     # Get corresponding sample ids
     sample_ids = generate_labeled_data.get_sample_ids(

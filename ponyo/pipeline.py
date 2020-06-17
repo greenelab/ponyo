@@ -104,6 +104,24 @@ def setup_dir(config_file):
             os.makedirs(each_dir, exist_ok=True)
 
 
+def transpose_data(data_file, out_file):
+    """
+    Transpose and save expression data so that it is of the form sample x gene
+
+    Arguments
+    ----------
+    data_file: str
+        File containing gene expression
+
+    out_file: str
+        File containing transposed gene expression
+    """
+    # Read data
+    data = pd.read_csv(data_file, header=0, sep="\t", index_col=0)
+
+    data.T.to_csv(out_file, sep="\t", compression="xz")
+
+
 def normalize_expression_data(base_dir, config_file, raw_input_data_file):
     """
     Normalize the expression data
@@ -175,7 +193,7 @@ def create_experiment_id_file(metadata_file, input_data_file, output_file, confi
     metadata = pd.read_table(metadata_file, header=0, sep="\t", index_col=0)
 
     # Read in expression data
-    normalized_data = pd.read_table(input_data_file, header=0, sep="\t", index_col=0).T
+    normalized_data = pd.read_table(input_data_file, header=0, sep="\t", index_col=0)
 
     # Read in config variables
     params = utils.read_config(config_file)
@@ -199,7 +217,7 @@ def create_experiment_id_file(metadata_file, input_data_file, output_file, confi
 
     for experiment_id in experiment_ids:
 
-        if "Human" in dataset_name:
+        if "human" in dataset_name.lower():
             # Some project id values are descriptions
             # We will skip these
             if len(experiment_id) == 9:
@@ -266,14 +284,7 @@ def train_vae(config_file, input_data_file):
     train_architecture = params["NN_architecture"]
 
     # Read data
-    if "pseudomonas" in dataset_name.lower():
-        normalized_data = pd.read_table(
-            input_data_file, header=0, sep="\t", index_col=0
-        ).T
-    else:
-        normalized_data = pd.read_table(
-            input_data_file, header=0, sep="\t", index_col=0
-        )
+    normalized_data = pd.read_table(input_data_file, header=0, sep="\t", index_col=0)
 
     print(
         "input dataset contains {} samples and {} genes".format(
