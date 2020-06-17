@@ -26,3 +26,6 @@ jobs:
           # Enable linters
           black: true
           flake8: true
+          auto_fix: true
+          git_name: "Greene Lab Linter"
+          git_email: "csgreene@upenn.edu"
