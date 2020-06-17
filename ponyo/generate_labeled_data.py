@@ -140,7 +140,7 @@ def simulate_compendium_labeled(
 
     normalized_data = pd.read_table(
         normalized_data_file, header=0, sep="\t", index_col=0
-    ).T
+    )
 
     print(
         "Normalized gene expression data contains {} samples and {} genes".format(
