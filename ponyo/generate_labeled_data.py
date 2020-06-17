@@ -4,7 +4,7 @@ Date Created: 30 August 2019
 
 Scripts to generate gene expression compendia using experiment-preserving
 approach with added experiment id labels for visualizations.
-These scripts are used to generate visualizations that validate this
+These scripts are used to generate visualizations that validate this 
 experiment-preserving simulation approach.
 """
 
@@ -57,7 +57,7 @@ def simulate_compendium_labeled(
     base_dir,
 ):
     """
-    Generate simulated data using a list of experiment_ids found in
+    Generate simulated data using a list of experiment_ids found in 
     experiment_ids_file as templates. The compendia will contain the
     shifted experiments using the experiment_ids as templates and following
     the same workflow as simulate_compendia in generate_data_parallel.py
@@ -90,7 +90,7 @@ def simulate_compendium_labeled(
 
     local_dir: str
         Parent directory on local machine to store intermediate results
-
+        
     base_dir: str
         Root directory containing analysis subdirectories
 

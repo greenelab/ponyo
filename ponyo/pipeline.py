@@ -306,7 +306,7 @@ def run_simulation(config_file, input_data_file, corrected, experiment_ids_file=
         File path corresponding to input dataset to use
 
     corrected: bool
-        True if simulation is applying noise correction
+        True if simulation is applying noise correction 
 
     experiment_ids_file: str
         File containing experiment ids with expression data associated generated from ```create_experiment_id_file```
