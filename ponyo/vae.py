@@ -51,7 +51,7 @@ def tybalt_2layer_model(
         The number of times to train over the entire input dataset.
 
     kappa: float
-        How fast to linearly ramp up KL loss 
+        How fast to linearly ramp up KL loss
 
     intermediate_dim: int
         Size of the hidden layer
@@ -62,7 +62,7 @@ def tybalt_2layer_model(
     epsilon_std: float
         Standard deviation of Normal distribution to sample latent space
 
-    rnaseq: pandas.dataframe 
+    rnaseq: pandas.dataframe
         Gene expression data
 
     base_dir: str

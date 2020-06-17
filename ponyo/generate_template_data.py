@@ -2,7 +2,7 @@
 Author: Alexandra Lee
 Date Created: 15 June 2020
 
-Script to generate gene expression compendia using experiment-preserving 
+Script to generate gene expression compendia using experiment-preserving
 approach using a specific template experiment.
 This script is used to generate a null set of gene expression data with
 some context, defined by the template experiment.
@@ -44,7 +44,7 @@ def shift_template_experiment(
     experiment using the same workflow as simulate_compendia in generate_data_parallel.py
 
     This will return a file with a single simulated experiment following the workflow mentioned.
-    This function can be run multiple times to generate multiple simulated experiments from a 
+    This function can be run multiple times to generate multiple simulated experiments from a
     single selected_experiment_id.
 
     Arguments
@@ -58,7 +58,7 @@ def shift_template_experiment(
         ...                           | ...    | ...    |...
 
     selected_experiment_id: str
-        Experiment id selected as template 
+        Experiment id selected as template
 
     NN_architecture: str
         Name of neural network architecture to use.
