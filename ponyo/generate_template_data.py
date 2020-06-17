@@ -9,22 +9,18 @@ some context, defined by the template experiment.
 """
 
 import os
-import ast
 import pandas as pd
 import numpy as np
-import random
 import glob
-import pickle
+import warnings
+
 from keras.models import load_model
-from sklearn import preprocessing
 
 from ponyo import generate_labeled_data
 
-import warnings
 
 warnings.filterwarnings(action="ignore")
 
-from numpy.random import seed
 
 randomState = 123
 
