@@ -6,16 +6,12 @@ Helper functions for running variational autoencoder `vae.py`.
 """
 
 import os
+import argparse
+import pandas as pd
+import matplotlib.pyplot as plt
 import tensorflow as tf
 import numpy as np
 import random as rn
-
-from keras.layers import Input, Dense, Lambda, Layer, Activation
-from keras.layers.normalization import BatchNormalization
-from keras.models import Model, Sequential
-from keras import metrics, optimizers
-from keras.callbacks import Callback
-from keras import backend as K
 
 # The below is necessary in Python 3.2.3 onwards to
 # have reproducible behavior for certain hash-based operations.
@@ -24,6 +20,7 @@ from keras import backend as K
 # https://docs.python.org/3.4/using/cmdline.html#envvar-PYTHONHASHSEED
 # https://github.com/keras-team/keras/issues/2280#issuecomment-306959926
 randomState = 123
+import os
 
 os.environ["PYTHONHASHSEED"] = "0"
 
@@ -46,6 +43,7 @@ session_conf = tf.ConfigProto(
     intra_op_parallelism_threads=1, inter_op_parallelism_threads=1
 )
 
+from keras import backend as K
 
 # The below tf.set_random_seed() will make random number generation
 # in the TensorFlow backend have a well-defined initial state.
@@ -55,6 +53,12 @@ tf.set_random_seed(1234)
 
 sess = tf.Session(graph=tf.get_default_graph(), config=session_conf)
 K.set_session(sess)
+
+from keras.layers import Input, Dense, Lambda, Layer, Activation
+from keras.layers.normalization import BatchNormalization
+from keras.models import Model, Sequential
+from keras import metrics, optimizers
+from keras.callbacks import Callback
 
 # Functions
 #

@@ -9,21 +9,24 @@ apply noise correction to simulated data, permute simulated data.
 """
 
 import os
+import ast
 import pandas as pd
 import numpy as np
 import random
 import glob
-import warnings
-
+import pickle
 from keras.models import load_model
 from sklearn import preprocessing
 
+import rpy2.robjects
 from rpy2.robjects.packages import importr
 from rpy2.robjects import pandas2ri
 
 limma = importr("limma")
 sva = importr("sva")
 pandas2ri.activate()
+
+import warnings
 
 warnings.filterwarnings(action="ignore")
 
@@ -509,7 +512,7 @@ def add_experiments_io(
         local_dir, "experiment_simulated", dataset_name + "_" + analysis_name
     )
 
-    if not os.path.exists(analysis_dir):
+    if os.path.exists(analysis_dir) == False:
         print("Creating new directory: \n {}".format(analysis_dir))
         os.makedirs(analysis_dir, exist_ok=True)
 
@@ -649,7 +652,7 @@ def add_experiments_grped_io(
         local_dir, "partition_simulated", dataset_name + "_" + analysis_name
     )
 
-    if not os.path.exists(analysis_dir):
+    if os.path.exists(analysis_dir) == False:
         print("Creating new directory: \n {}".format(analysis_dir))
         os.makedirs(analysis_dir, exist_ok=True)
 
