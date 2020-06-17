@@ -41,7 +41,7 @@ def get_sample_ids(experiment_id, dataset_name):
         )
 
         # Read in metadata
-        metadata = pd.read_table(mapping_file, header=0, sep="\t", index_col=0)
+        metadata = pd.read_csv(mapping_file, header=0, sep="\t", index_col=0)
 
         selected_metadata = metadata.loc[experiment_id]
         sample_ids = list(selected_metadata["ml_data_source"])
@@ -53,7 +53,7 @@ def get_sample_ids(experiment_id, dataset_name):
         )
 
         # Read in metadata
-        metadata = pd.read_table(mapping_file, header=0, sep="\t", index_col=0)
+        metadata = pd.read_csv(mapping_file, header=0, sep="\t", index_col=0)
 
         selected_metadata = metadata.loc[experiment_id]
         sample_ids = list(selected_metadata["run"])
@@ -136,11 +136,9 @@ def simulate_compendium_labeled(
     loaded_decode_model.load_weights(weights_decoder_file)
 
     # Read data
-    experiment_ids = pd.read_table(experiment_ids_file, header=0, sep="\t", index_col=0)
+    experiment_ids = pd.read_csv(experiment_ids_file, header=0, sep="\t", index_col=0)
 
-    normalized_data = pd.read_table(
-        normalized_data_file, header=0, sep="\t", index_col=0
-    )
+    normalized_data = pd.read_csv(normalized_data_file, header=0, sep="\t", index_col=0)
 
     print(
         "Normalized gene expression data contains {} samples and {} genes".format(

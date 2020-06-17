@@ -150,7 +150,7 @@ def normalize_expression_data(
     dataset_name = params["dataset_name"]
 
     # Read data
-    data = pd.read_table(raw_input_data_file, header=0, sep="\t", index_col=0)
+    data = pd.read_csv(raw_input_data_file, header=0, sep="\t", index_col=0)
 
     print(
         "input: dataset contains {} samples and {} genes".format(
@@ -197,10 +197,10 @@ def create_experiment_id_file(metadata_file, input_data_file, output_file, confi
 
     """
     # Read in metadata
-    metadata = pd.read_table(metadata_file, header=0, sep="\t", index_col=0)
+    metadata = pd.read_csv(metadata_file, header=0, sep="\t", index_col=0)
 
     # Read in expression data
-    normalized_data = pd.read_table(input_data_file, header=0, sep="\t", index_col=0)
+    normalized_data = pd.read_csv(input_data_file, header=0, sep="\t", index_col=0)
 
     # Read in config variables
     params = utils.read_config(config_file)
@@ -291,7 +291,7 @@ def train_vae(config_file, input_data_file):
     train_architecture = params["NN_architecture"]
 
     # Read data
-    normalized_data = pd.read_table(input_data_file, header=0, sep="\t", index_col=0)
+    normalized_data = pd.read_csv(input_data_file, header=0, sep="\t", index_col=0)
 
     print(
         "input dataset contains {} samples and {} genes".format(

@@ -106,9 +106,7 @@ def shift_template_experiment(
     loaded_decode_model.load_weights(weights_decoder_file)
 
     # Read data
-    normalized_data = pd.read_table(
-        normalized_data_file, header=0, sep="\t", index_col=0
-    )
+    normalized_data = pd.read_csv(normalized_data_file, header=0, sep="\t", index_col=0)
 
     # Get corresponding sample ids
     sample_ids = generate_labeled_data.get_sample_ids(

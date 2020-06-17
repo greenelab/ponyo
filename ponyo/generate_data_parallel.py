@@ -57,7 +57,7 @@ def get_sample_ids(experiment_id, dataset_name, sample_id_colname):
         )
 
         # Read in metadata
-        metadata = pd.read_table(mapping_file, header=0, sep="\t", index_col=0)
+        metadata = pd.read_csv(mapping_file, header=0, sep="\t", index_col=0)
 
         selected_metadata = metadata.loc[experiment_id]
         sample_ids = list(selected_metadata[sample_id_colname])
@@ -69,7 +69,7 @@ def get_sample_ids(experiment_id, dataset_name, sample_id_colname):
         )
 
         # Read in metadata
-        metadata = pd.read_table(mapping_file, header=0, sep="\t", index_col=0)
+        metadata = pd.read_csv(mapping_file, header=0, sep="\t", index_col=0)
 
         selected_metadata = metadata.loc[experiment_id]
         sample_ids = list(selected_metadata[sample_id_colname])
@@ -170,11 +170,9 @@ def simulate_compendium(
     loaded_decode_model.load_weights(weights_decoder_file)
 
     # Read data
-    experiment_ids = pd.read_table(experiment_ids_file, header=0, sep="\t", index_col=0)
+    experiment_ids = pd.read_csv(experiment_ids_file, header=0, sep="\t", index_col=0)
 
-    normalized_data = pd.read_table(
-        normalized_data_file, header=0, sep="\t", index_col=0
-    )
+    normalized_data = pd.read_csv(normalized_data_file, header=0, sep="\t", index_col=0)
 
     print(
         "Normalized gene expression data contains {} samples and {} genes".format(
@@ -371,9 +369,7 @@ def simulate_data(
     loaded_decode_model.load_weights(weights_decoder_file)
 
     # Read data
-    normalized_data = pd.read_table(
-        normalized_data_file, header=0, sep="\t", index_col=0
-    )
+    normalized_data = pd.read_csv(normalized_data_file, header=0, sep="\t", index_col=0)
 
     print(
         "Normalized gene expression data contains {} samples and {} genes".format(
@@ -812,11 +808,11 @@ def apply_correction_io(
 
             # Read in data
             # data transposed to form gene x sample for R package
-            experiment_data = pd.read_table(
+            experiment_data = pd.read_csv(
                 experiment_file, header=0, index_col=0, sep="\t"
             ).T
 
-            experiment_map = pd.read_table(
+            experiment_map = pd.read_csv(
                 experiment_map_file, header=0, index_col=0, sep="\t"
             )["experiment"]
         else:
@@ -838,11 +834,11 @@ def apply_correction_io(
 
             # Read in data
             # data transposed to form gene x sample for R package
-            experiment_data = pd.read_table(
+            experiment_data = pd.read_csv(
                 experiment_file, header=0, index_col=0, sep="\t"
             ).T
 
-            experiment_map = pd.read_table(
+            experiment_map = pd.read_csv(
                 experiment_map_file, header=0, index_col=0, sep="\t"
             )["partition"]
 
