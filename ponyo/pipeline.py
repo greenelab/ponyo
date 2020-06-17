@@ -10,25 +10,21 @@ Scripts called by analysis notebooks to run entire the entire analysis pipeline:
 """
 
 import os
-import sys
-import ast
-import pandas as pd
-import numpy as np
-import random
 import math
 import gc
+import warnings
+
+import pandas as pd
+import numpy as np
 from sklearn import preprocessing
+from numpy.random import seed
 
 from joblib import Parallel, delayed
-import multiprocessing
+from ponyo import vae, utils, simulations
 
-import warnings
 
 warnings.filterwarnings(action="ignore")
 
-from ponyo import vae, utils, simulations
-
-from numpy.random import seed
 
 randomState = 123
 seed(randomState)
@@ -63,14 +59,14 @@ def setup_dir(config_file):
 
     # Check if analysis output directory exist otherwise create
     for each_dir in output_dirs:
-        if os.path.exists(each_dir) == False:
+        if not os.path.exists(each_dir):
             print("creating new directory: {}".format(each_dir))
             os.makedirs(each_dir, exist_ok=True)
 
         # Check if NN architecture directory exist otherwise create
     for each_dir in output_dirs:
         new_dir = os.path.join(each_dir, train_architecture)
-        if os.path.exists(new_dir) == False:
+        if not os.path.exists(new_dir):
             print("creating new directory: {}".format(new_dir))
             os.makedirs(new_dir, exist_ok=True)
 
@@ -79,7 +75,7 @@ def setup_dir(config_file):
 
     # Check if analysis output directory exist otherwise create
     for each_dir in output_dirs:
-        if os.path.exists(each_dir) == False:
+        if not os.path.exists(each_dir):
             print("creating new directory: {}".format(each_dir))
             os.makedirs(each_dir, exist_ok=True)
 
@@ -87,7 +83,7 @@ def setup_dir(config_file):
     for each_dir in output_dirs:
         new_dir = os.path.join(each_dir, "saved_variables")
 
-        if os.path.exists(new_dir) == False:
+        if not os.path.exists(new_dir):
             print("creating new directory: {}".format(new_dir))
             os.makedirs(new_dir, exist_ok=True)
 
@@ -99,7 +95,7 @@ def setup_dir(config_file):
 
     # Check if analysis output directory exist otherwise create
     for each_dir in output_dirs:
-        if os.path.exists(each_dir) == False:
+        if not os.path.exists(each_dir):
             print("creating new directory: {}".format(each_dir))
             os.makedirs(each_dir, exist_ok=True)
 

@@ -10,10 +10,8 @@ import tensorflow as tf
 import numpy as np
 import random as rn
 
-from keras.layers import Input, Dense, Lambda, Layer, Activation
-from keras.layers.normalization import BatchNormalization
-from keras.models import Model, Sequential
-from keras import metrics, optimizers
+from keras.layers import Layer
+from keras import metrics
 from keras.callbacks import Callback
 from keras import backend as K
 

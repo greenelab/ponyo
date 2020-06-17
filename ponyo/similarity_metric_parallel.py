@@ -6,19 +6,15 @@ Scripts to compare simulated compendium with simulated compendia with noise adde
 """
 
 import os
-import sys
-import ast
-import pandas as pd
-import numpy as np
-import random
-import glob
 import warnings
 
-warnings.filterwarnings(action="ignore")
+import pandas as pd
+import numpy as np
+from sklearn.decomposition import PCA
 
 from ponyo import cca_core
 
-from sklearn.decomposition import PCA
+warnings.filterwarnings(action="ignore")
 
 
 def read_data(simulated_data, file_prefix, run, local_dir, dataset_name, analysis_name):
