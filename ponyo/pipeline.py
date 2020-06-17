@@ -122,9 +122,11 @@ def transpose_data(data_file, out_file):
     data.T.to_csv(out_file, sep="\t", compression="xz")
 
 
-def normalize_expression_data(base_dir, config_file, raw_input_data_file):
+def normalize_expression_data(
+    base_dir, config_file, raw_input_data_file, normalized_data_file
+):
     """
-    Normalize the expression data
+    0-1 normalize the expression data.
 
     Arguments
     ----------
@@ -136,6 +138,9 @@ def normalize_expression_data(base_dir, config_file, raw_input_data_file):
 
     raw_input_data_file: str
         File containing raw expression data
+
+    normalize_data_file:
+        Output file containing normalized expression data 
     """
 
     # Read in config variables
@@ -145,28 +150,30 @@ def normalize_expression_data(base_dir, config_file, raw_input_data_file):
     dataset_name = params["dataset_name"]
 
     # Read data
-    rpkm_data = pd.read_table(raw_input_data_file, header=0, sep="\t", index_col=0)
+    data = pd.read_table(raw_input_data_file, header=0, sep="\t", index_col=0)
 
     print(
-        "raw input dataset contains {} samples and {} genes".format(
-            rpkm_data.shape[0], rpkm_data.shape[1]
+        "input: dataset contains {} samples and {} genes".format(
+            data.shape[0], data.shape[1]
         )
     )
 
     # 0-1 normalize per gene
-    rnaseq_scaled_df = preprocessing.MinMaxScaler().fit_transform(rpkm_data)
-    rnaseq_scaled_df = pd.DataFrame(
-        rnaseq_scaled_df, columns=rpkm_data.columns, index=rpkm_data.index
-    ).T
-
-    # Save scaled data
-    normalized_data_file = os.path.join(
-        base_dir, dataset_name, "data", "input", "recount2_gene_normalized_data.tsv.xz"
+    data_scaled_df = preprocessing.MinMaxScaler().fit_transform(data)
+    data_scaled_df = pd.DataFrame(
+        data_scaled_df, columns=data.columns, index=data.index
     )
 
-    rnaseq_scaled_df.to_csv(normalized_data_file, sep="\t", compression="xz")
+    print(
+        "Output: normalized dataset contains {} samples and {} genes".format(
+            data_scaled_df.shape[0], data_scaled_df.shape[1]
+        )
+    )
 
-    del rnaseq_scaled_df
+    # Save scaled data
+    data_scaled_df.to_csv(normalized_data_file, sep="\t", compression="xz")
+
+    del data_scaled_df
     gc.collect()
 
 

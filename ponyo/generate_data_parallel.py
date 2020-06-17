@@ -782,8 +782,9 @@ def apply_correction_io(
 
     Returns
     --------
-    Files of simulated data with different numbers of experiments added.
-    Each file named as "Experiment_<number of experiments added>"
+    Files of simulated data with different numbers of experiments added and corrected for.
+    Each file named as "Experiment_<number of experiments added>".
+    After the data is corrected, the dimensions are now gene x sample
     """
 
     for i in range(len(num_experiments)):
