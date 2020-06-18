@@ -16,7 +16,6 @@ import pandas as pd
 import numpy as np
 import random
 import math
-import gc
 from sklearn import preprocessing
 
 from joblib import Parallel, delayed
@@ -24,7 +23,10 @@ import multiprocessing
 
 import warnings
 
-warnings.filterwarnings(action="ignore")
+def fxn(): 
+    warnings.warn("deprecated", DeprecationWarning)
+
+with warnings.catch_warnings():
 
 from ponyo import vae, utils, simulations
 
@@ -173,9 +175,6 @@ def normalize_expression_data(
     # Save scaled data
     data_scaled_df.to_csv(normalized_data_file, sep="\t", compression="xz")
 
-    del data_scaled_df
-    gc.collect()
-
 
 def create_experiment_id_file(metadata_file, input_data_file, output_file, config_file):
     """
@@ -257,9 +256,6 @@ def create_experiment_id_file(metadata_file, input_data_file, output_file, confi
         )
     )
 
-    del map_experiment_sample, selected_metadata
-    gc.collect()
-
 
 def train_vae(config_file, input_data_file):
     """
@@ -313,9 +309,6 @@ def train_vae(config_file, input_data_file):
         dataset_name,
         train_architecture,
     )
-
-    del normalized_data, params
-    gc.collect()
 
 
 def run_simulation(config_file, input_data_file, corrected, experiment_ids_file=None):
@@ -514,5 +507,3 @@ def run_simulation(config_file, input_data_file, corrected, experiment_ids_file=
     ci.to_pickle(ci_uncorrected_file)
     np.save(similarity_permuted_file, permuted_score)
 
-    del results
-    gc.collect()

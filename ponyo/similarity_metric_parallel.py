@@ -14,7 +14,10 @@ import random
 import glob
 import warnings
 
-warnings.filterwarnings(action="ignore")
+def fxn(): 
+    warnings.warn("deprecated", DeprecationWarning)
+
+with warnings.catch_warnings():
 
 from ponyo import cca_core
 

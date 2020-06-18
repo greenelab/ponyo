@@ -4,21 +4,19 @@ Date Created: 30 August 2019
 
 These scripts are the components used to run each simulation experiment,
 found in `simulations.py`.
-These scripts generate simulated compendia, add noise to simulated data, 
-apply noise correction to simulated data, permute simulated data. 
+These scripts generate simulated compendia, add noise to simulated data,
+apply noise correction to simulated data, permute simulated data.
 """
 
 import os
-import ast
 import pandas as pd
 import numpy as np
 import random
 import glob
-import pickle
+import warnings
 from keras.models import load_model
 from sklearn import preprocessing
 
-import rpy2.robjects
 from rpy2.robjects.packages import importr
 from rpy2.robjects import pandas2ri
 
@@ -26,9 +24,10 @@ limma = importr("limma")
 sva = importr("sva")
 pandas2ri.activate()
 
-import warnings
+def fxn(): 
+    warnings.warn("deprecated", DeprecationWarning)
 
-warnings.filterwarnings(action="ignore")
+with warnings.catch_warnings():
 
 
 def get_sample_ids(experiment_id, dataset_name, sample_id_colname):
@@ -286,7 +285,6 @@ def simulate_compendium(
         )
     )
 
-    # Save
     return simulated_data_scaled_df
 
 
@@ -412,7 +410,6 @@ def simulate_data(
         )
     )
 
-    # Output
     return simulated_data
 
 
@@ -452,7 +449,6 @@ def permute_data(simulated_data):
         columns=simulated_data_tmp.columns,
     )
 
-    # Output
     return shuffled_simulated_data
 
 
@@ -499,10 +495,10 @@ def add_experiments_io(
         Parent directory where simulated data with experiments/partitionings are be stored.
         Format of the directory name is <dataset>_<sample/experiment>_lvl_sim 
 
-    Returns
+    Output
     --------
-    Files of simulated data with different numbers of experiments added.
-    Each file named as "Experiment_<number of experiments added>"
+    Files of simulated data with different numbers of experiments added are save to file.
+    Each file is named as "Experiment_<number of experiments added>"
     """
     analysis_dir = os.path.join(
         local_dir, "experiment_simulated", dataset_name + "_" + analysis_name
@@ -638,10 +634,10 @@ def add_experiments_grped_io(
         Format of the directory name is <dataset>_<sample/experiment>_lvl_sim 
 
 
-    Returns
+    Output
     --------
-    Files of simulated data with different numbers of experiments added.
-    Each file named as "Experiment_<number of experiments added>"
+    Files of simulated data with different numbers of experiments added are saved to file.
+    Each file is named as "Experiment_<number of experiments added>"
     """
 
     analysis_dir = os.path.join(
@@ -778,9 +774,9 @@ def apply_correction_io(
 
     Returns
     --------
-    Files of simulated data with different numbers of experiments added and corrected for.
-    Each file named as "Experiment_<number of experiments added>".
-    After the data is corrected, the dimensions are now gene x sample
+    Files of simulated data with different numbers of experiments added and corrected are saved to file.
+    Each file is named as "Experiment_<number of experiments added>".
+    Note: After the data is corrected, the dimensions are now gene x sample
     """
 
     for i in range(len(num_experiments)):

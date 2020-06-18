@@ -17,10 +17,12 @@ import glob
 import pickle
 from keras.models import load_model
 from sklearn import preprocessing
-
 import warnings
 
-warnings.filterwarnings(action="ignore")
+def fxn(): 
+    warnings.warn("deprecated", DeprecationWarning)
+
+with warnings.catch_warnings():
 
 from numpy.random import seed
 
