@@ -17,11 +17,15 @@ import glob
 import pickle
 from keras.models import load_model
 from sklearn import preprocessing
-
 import warnings
-warnings.filterwarnings(action='ignore')
+
+def fxn(): 
+    warnings.warn("deprecated", DeprecationWarning)
+
+with warnings.catch_warnings():
 
 from numpy.random import seed
+
 randomState = 123
 
 
@@ -32,23 +36,30 @@ def get_sample_ids(experiment_id, dataset_name):
     """
     base_dir = os.path.abspath(os.path.join(os.getcwd(), "../"))
 
-    # metadata file
-    mapping_file = os.path.join(
-        base_dir,
-        dataset_name,
-        "data",
-        "metadata",
-        "sample_annotations.tsv")
+    if "pseudomonas" in dataset_name.lower():
+        # metadata file
+        mapping_file = os.path.join(
+            base_dir, dataset_name, "data", "metadata", "sample_annotations.tsv"
+        )
 
-    # Read in metadata
-    metadata = pd.read_table(
-        mapping_file,
-        header=0,
-        sep='\t',
-        index_col=0)
+        # Read in metadata
+        metadata = pd.read_csv(mapping_file, header=0, sep="\t", index_col=0)
 
-    selected_metadata = metadata.loc[experiment_id]
-    sample_ids = list(selected_metadata['ml_data_source'])
+        selected_metadata = metadata.loc[experiment_id]
+        sample_ids = list(selected_metadata["ml_data_source"])
+
+    else:
+        # metadata file
+        mapping_file = os.path.join(
+            base_dir, dataset_name, "data", "metadata", "recount2_metadata.tsv"
+        )
+
+        # Read in metadata
+        metadata = pd.read_csv(mapping_file, header=0, sep="\t", index_col=0)
+
+        selected_metadata = metadata.loc[experiment_id]
+        sample_ids = list(selected_metadata["run"])
+
     return sample_ids
 
 
@@ -59,7 +70,7 @@ def simulate_compendium_labeled(
     NN_architecture,
     dataset_name,
     local_dir,
-    base_dir
+    base_dir,
 ):
     """
     Generate simulated data using a list of experiment_ids found in 
@@ -109,23 +120,15 @@ def simulate_compendium_labeled(
 
     # Files
     NN_dir = os.path.join(base_dir, dataset_name, "models", NN_architecture)
-    latent_dim = NN_architecture.split('_')[-1]
+    latent_dim = NN_architecture.split("_")[-1]
 
-    model_encoder_file = glob.glob(os.path.join(
-        NN_dir,
-        "*_encoder_model.h5"))[0]
+    model_encoder_file = glob.glob(os.path.join(NN_dir, "*_encoder_model.h5"))[0]
 
-    weights_encoder_file = glob.glob(os.path.join(
-        NN_dir,
-        "*_encoder_weights.h5"))[0]
+    weights_encoder_file = glob.glob(os.path.join(NN_dir, "*_encoder_weights.h5"))[0]
 
-    model_decoder_file = glob.glob(os.path.join(
-        NN_dir,
-        "*_decoder_model.h5"))[0]
+    model_decoder_file = glob.glob(os.path.join(NN_dir, "*_decoder_model.h5"))[0]
 
-    weights_decoder_file = glob.glob(os.path.join(
-        NN_dir,
-        "*_decoder_weights.h5"))[0]
+    weights_decoder_file = glob.glob(os.path.join(NN_dir, "*_decoder_weights.h5"))[0]
 
     # Load saved models
     loaded_model = load_model(model_encoder_file)
@@ -135,20 +138,15 @@ def simulate_compendium_labeled(
     loaded_decode_model.load_weights(weights_decoder_file)
 
     # Read data
-    experiment_ids = pd.read_table(
-        experiment_ids_file,
-        header=0,
-        sep='\t',
-        index_col=0)
+    experiment_ids = pd.read_csv(experiment_ids_file, header=0, sep="\t", index_col=0)
 
-    normalized_data = pd.read_table(
-        normalized_data_file,
-        header=0,
-        sep='\t',
-        index_col=0).T
+    normalized_data = pd.read_csv(normalized_data_file, header=0, sep="\t", index_col=0)
 
-    print("Normalized gene expression data contains {} samples and {} genes".format(
-        normalized_data.shape[0], normalized_data.shape[1]))
+    print(
+        "Normalized gene expression data contains {} samples and {} genes".format(
+            normalized_data.shape[0], normalized_data.shape[1]
+        )
+    )
 
     # Simulate data
 
@@ -157,7 +155,8 @@ def simulate_compendium_labeled(
     for i in range(num_simulated_experiments):
 
         selected_experiment_id = np.random.choice(
-            experiment_ids['experiment_id'], size=1)[0]
+            experiment_ids["experiment_id"], size=1
+        )[0]
 
         # Get corresponding sample ids
         sample_ids = get_sample_ids(selected_experiment_id, dataset_name)
@@ -168,15 +167,15 @@ def simulate_compendium_labeled(
         # Remove any sample_ids that are not found in gene expression data
         # There are some experiments where most samples have gene expression but a few do not
         sample_ids = [
-            sample for sample in sample_ids if sample in normalized_data.index]
+            sample for sample in sample_ids if sample in normalized_data.index
+        ]
 
         # Gene expression data for selected samples
         selected_data_df = normalized_data.loc[sample_ids]
 
         # Encode selected experiment into latent space
         data_encoded = loaded_model.predict_on_batch(selected_data_df)
-        data_encoded_df = pd.DataFrame(
-            data_encoded, index=selected_data_df.index)
+        data_encoded_df = pd.DataFrame(data_encoded, index=selected_data_df.index)
 
         # Get centroid of original data
         centroid = data_encoded_df.mean(axis=0)
@@ -184,10 +183,10 @@ def simulate_compendium_labeled(
         # Add individual vectors(centroid, sample point) to new_centroid
 
         # Encode original gene expression data into latent space
-        data_encoded_all = loaded_model.predict_on_batch(
-            normalized_data)
+        data_encoded_all = loaded_model.predict_on_batch(normalized_data)
         data_encoded_all_df = pd.DataFrame(
-            data_encoded_all, index=normalized_data.index)
+            data_encoded_all, index=normalized_data.index
+        )
 
         data_encoded_all_df.head()
 
@@ -199,42 +198,49 @@ def simulate_compendium_labeled(
         new_centroid = np.zeros(latent_dim)
 
         for j in range(latent_dim):
-            new_centroid[j] = np.random.normal(
-                encoded_means[j], encoded_stds[j])
+            new_centroid[j] = np.random.normal(encoded_means[j], encoded_stds[j])
 
         shift_vec_df = new_centroid - centroid
 
         simulated_data_encoded_df = data_encoded_df.apply(
-            lambda x: x + shift_vec_df, axis=1)
+            lambda x: x + shift_vec_df, axis=1
+        )
 
         # Decode simulated data into raw gene space
         simulated_data_decoded = loaded_decode_model.predict_on_batch(
-            simulated_data_encoded_df)
+            simulated_data_encoded_df
+        )
 
-        simulated_data_decoded_df = pd.DataFrame(simulated_data_decoded,
-                                                 index=simulated_data_encoded_df.index,
-                                                 columns=selected_data_df.columns)
+        simulated_data_decoded_df = pd.DataFrame(
+            simulated_data_decoded,
+            index=simulated_data_encoded_df.index,
+            columns=selected_data_df.columns,
+        )
 
         # Add experiment label
-        simulated_data_decoded_df["experiment_id"] = selected_experiment_id + \
-            "_" + str(i)
+        simulated_data_decoded_df["experiment_id"] = (
+            selected_experiment_id + "_" + str(i)
+        )
 
         # Concatenate dataframe per experiment together
-        simulated_data_df = pd.concat(
-            [simulated_data_df, simulated_data_decoded_df])
+        simulated_data_df = pd.concat([simulated_data_df, simulated_data_decoded_df])
 
     # re-normalize per gene 0-1
     simulated_data_numeric_df = simulated_data_df.drop(
-        columns=['experiment_id'], inplace=False)
+        columns=["experiment_id"], inplace=False
+    )
 
-    simulated_data_scaled = preprocessing.MinMaxScaler(
-    ).fit_transform(simulated_data_numeric_df)
+    simulated_data_scaled = preprocessing.MinMaxScaler().fit_transform(
+        simulated_data_numeric_df
+    )
 
-    simulated_data_scaled_df = pd.DataFrame(simulated_data_scaled,
-                                            columns=simulated_data_numeric_df.columns,
-                                            index=simulated_data_numeric_df.index)
+    simulated_data_scaled_df = pd.DataFrame(
+        simulated_data_scaled,
+        columns=simulated_data_numeric_df.columns,
+        index=simulated_data_numeric_df.index,
+    )
 
-    simulated_data_scaled_df['experiment_id'] = simulated_data_df['experiment_id']
+    simulated_data_scaled_df["experiment_id"] = simulated_data_df["experiment_id"]
 
     # If sampling with replacement, then there will be multiple sample ids that are the same
     # therefore we want to reset the index.
@@ -247,16 +253,17 @@ def simulate_compendium_labeled(
     # simulated_data_scaled_df = simulated_data_scaled_df.loc[~simulated_data_scaled_df.index.duplicated(
     #    keep=False)]
 
-    print("Return: simulated gene expression data containing {} samples and {} genes".format(
-        simulated_data_scaled_df.shape[0], simulated_data_scaled_df.shape[1]))
+    print(
+        "Return: simulated gene expression data containing {} samples and {} genes".format(
+            simulated_data_scaled_df.shape[0], simulated_data_scaled_df.shape[1]
+        )
+    )
 
     # Save
     simulated_data_file = os.path.join(
-        local_dir,
-        "pseudo_experiment",
-        "simulated_data_labeled.txt.xz")
+        local_dir, "pseudo_experiment", "simulated_data_labeled.txt.xz"
+    )
 
     simulated_data_scaled_df.to_csv(
-        simulated_data_file, float_format='%.3f', sep='\t', compression='xz')
-
-
+        simulated_data_file, float_format="%.3f", sep="\t", compression="xz"
+    )

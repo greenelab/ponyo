@@ -4,21 +4,19 @@ Date Created: 30 August 2019
 
 These scripts are the components used to run each simulation experiment,
 found in `simulations.py`.
-These scripts generate simulated compendia, add noise to simulated data, 
-apply noise correction to simulated data, permute simulated data. 
+These scripts generate simulated compendia, add noise to simulated data,
+apply noise correction to simulated data, permute simulated data.
 """
 
 import os
-import ast
 import pandas as pd
 import numpy as np
 import random
 import glob
-import pickle
+import warnings
 from keras.models import load_model
 from sklearn import preprocessing
 
-import rpy2.robjects
 from rpy2.robjects.packages import importr
 from rpy2.robjects import pandas2ri
 
@@ -26,9 +24,10 @@ limma = importr("limma")
 sva = importr("sva")
 pandas2ri.activate()
 
-import warnings
+def fxn(): 
+    warnings.warn("deprecated", DeprecationWarning)
 
-warnings.filterwarnings(action="ignore")
+with warnings.catch_warnings():
 
 
 def get_sample_ids(experiment_id, dataset_name, sample_id_colname):
@@ -50,26 +49,26 @@ def get_sample_ids(experiment_id, dataset_name, sample_id_colname):
     """
     base_dir = os.path.abspath(os.path.join(os.getcwd(), "../"))
 
-    if "Pseudomonas" in dataset_name:
+    if "pseudomonas" in dataset_name.lower():
         # metadata file
         mapping_file = os.path.join(
             base_dir, dataset_name, "data", "metadata", "sample_annotations.tsv"
         )
 
         # Read in metadata
-        metadata = pd.read_table(mapping_file, header=0, sep="\t", index_col=0)
+        metadata = pd.read_csv(mapping_file, header=0, sep="\t", index_col=0)
 
         selected_metadata = metadata.loc[experiment_id]
         sample_ids = list(selected_metadata[sample_id_colname])
 
-    elif "Human" in dataset_name:
+    else:
         # metadata file
         mapping_file = os.path.join(
             base_dir, dataset_name, "data", "metadata", "recount2_metadata.tsv"
         )
 
         # Read in metadata
-        metadata = pd.read_table(mapping_file, header=0, sep="\t", index_col=0)
+        metadata = pd.read_csv(mapping_file, header=0, sep="\t", index_col=0)
 
         selected_metadata = metadata.loc[experiment_id]
         sample_ids = list(selected_metadata[sample_id_colname])
@@ -170,11 +169,9 @@ def simulate_compendium(
     loaded_decode_model.load_weights(weights_decoder_file)
 
     # Read data
-    experiment_ids = pd.read_table(experiment_ids_file, header=0, sep="\t", index_col=0)
+    experiment_ids = pd.read_csv(experiment_ids_file, header=0, sep="\t", index_col=0)
 
-    normalized_data = pd.read_table(
-        normalized_data_file, header=0, sep="\t", index_col=0
-    ).T
+    normalized_data = pd.read_csv(normalized_data_file, header=0, sep="\t", index_col=0)
 
     print(
         "Normalized gene expression data contains {} samples and {} genes".format(
@@ -288,7 +285,6 @@ def simulate_compendium(
         )
     )
 
-    # Save
     return simulated_data_scaled_df
 
 
@@ -371,9 +367,7 @@ def simulate_data(
     loaded_decode_model.load_weights(weights_decoder_file)
 
     # Read data
-    normalized_data = pd.read_table(
-        normalized_data_file, header=0, sep="\t", index_col=0
-    ).T
+    normalized_data = pd.read_csv(normalized_data_file, header=0, sep="\t", index_col=0)
 
     print(
         "Normalized gene expression data contains {} samples and {} genes".format(
@@ -416,7 +410,6 @@ def simulate_data(
         )
     )
 
-    # Output
     return simulated_data
 
 
@@ -456,7 +449,6 @@ def permute_data(simulated_data):
         columns=simulated_data_tmp.columns,
     )
 
-    # Output
     return shuffled_simulated_data
 
 
@@ -503,10 +495,10 @@ def add_experiments_io(
         Parent directory where simulated data with experiments/partitionings are be stored.
         Format of the directory name is <dataset>_<sample/experiment>_lvl_sim 
 
-    Returns
+    Output
     --------
-    Files of simulated data with different numbers of experiments added.
-    Each file named as "Experiment_<number of experiments added>"
+    Files of simulated data with different numbers of experiments added are save to file.
+    Each file is named as "Experiment_<number of experiments added>"
     """
     analysis_dir = os.path.join(
         local_dir, "experiment_simulated", dataset_name + "_" + analysis_name
@@ -642,10 +634,10 @@ def add_experiments_grped_io(
         Format of the directory name is <dataset>_<sample/experiment>_lvl_sim 
 
 
-    Returns
+    Output
     --------
-    Files of simulated data with different numbers of experiments added.
-    Each file named as "Experiment_<number of experiments added>"
+    Files of simulated data with different numbers of experiments added are saved to file.
+    Each file is named as "Experiment_<number of experiments added>"
     """
 
     analysis_dir = os.path.join(
@@ -782,8 +774,9 @@ def apply_correction_io(
 
     Returns
     --------
-    Files of simulated data with different numbers of experiments added.
-    Each file named as "Experiment_<number of experiments added>"
+    Files of simulated data with different numbers of experiments added and corrected are saved to file.
+    Each file is named as "Experiment_<number of experiments added>".
+    Note: After the data is corrected, the dimensions are now gene x sample
     """
 
     for i in range(len(num_experiments)):
@@ -811,11 +804,11 @@ def apply_correction_io(
 
             # Read in data
             # data transposed to form gene x sample for R package
-            experiment_data = pd.read_table(
+            experiment_data = pd.read_csv(
                 experiment_file, header=0, index_col=0, sep="\t"
             ).T
 
-            experiment_map = pd.read_table(
+            experiment_map = pd.read_csv(
                 experiment_map_file, header=0, index_col=0, sep="\t"
             )["experiment"]
         else:
@@ -837,11 +830,11 @@ def apply_correction_io(
 
             # Read in data
             # data transposed to form gene x sample for R package
-            experiment_data = pd.read_table(
+            experiment_data = pd.read_csv(
                 experiment_file, header=0, index_col=0, sep="\t"
             ).T
 
-            experiment_map = pd.read_table(
+            experiment_map = pd.read_csv(
                 experiment_map_file, header=0, index_col=0, sep="\t"
             )["partition"]
 

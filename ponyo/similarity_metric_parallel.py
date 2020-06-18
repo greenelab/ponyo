@@ -14,7 +14,10 @@ import random
 import glob
 import warnings
 
-warnings.filterwarnings(action="ignore")
+def fxn(): 
+    warnings.warn("deprecated", DeprecationWarning)
+
+with warnings.catch_warnings():
 
 from ponyo import cca_core
 
@@ -71,7 +74,7 @@ def read_data(simulated_data, file_prefix, run, local_dir, dataset_name, analysi
         compendium_dir, file_prefix + "_1" + "_" + str(run) + ".txt.xz"
     )
 
-    compendium_1 = pd.read_table(compendium_1_file, header=0, index_col=0, sep="\t")
+    compendium_1 = pd.read_csv(compendium_1_file, header=0, index_col=0, sep="\t")
 
     # Transpose compendium df because output format
     # for correction method is swapped
@@ -195,7 +198,7 @@ def sim_svcca_io(
             file_prefix + "_" + str(num_experiments[i]) + "_" + str(run) + ".txt.xz",
         )
 
-        compendium_other = pd.read_table(
+        compendium_other = pd.read_csv(
             compendium_other_file, header=0, index_col=0, sep="\t"
         )
 

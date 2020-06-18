@@ -16,7 +16,6 @@ import pandas as pd
 import numpy as np
 import random
 import math
-import gc
 from sklearn import preprocessing
 
 from joblib import Parallel, delayed
@@ -24,7 +23,10 @@ import multiprocessing
 
 import warnings
 
-warnings.filterwarnings(action="ignore")
+def fxn(): 
+    warnings.warn("deprecated", DeprecationWarning)
+
+with warnings.catch_warnings():
 
 from ponyo import vae, utils, simulations
 
@@ -104,9 +106,29 @@ def setup_dir(config_file):
             os.makedirs(each_dir, exist_ok=True)
 
 
-def normalize_expression_data(base_dir, config_file, raw_input_data_file):
+def transpose_data(data_file, out_file):
     """
-    Normalize the expression data
+    Transpose and save expression data so that it is of the form sample x gene
+
+    Arguments
+    ----------
+    data_file: str
+        File containing gene expression
+
+    out_file: str
+        File containing transposed gene expression
+    """
+    # Read data
+    data = pd.read_csv(data_file, header=0, sep="\t", index_col=0)
+
+    data.T.to_csv(out_file, sep="\t", compression="xz")
+
+
+def normalize_expression_data(
+    base_dir, config_file, raw_input_data_file, normalized_data_file
+):
+    """
+    0-1 normalize the expression data.
 
     Arguments
     ----------
@@ -118,6 +140,9 @@ def normalize_expression_data(base_dir, config_file, raw_input_data_file):
 
     raw_input_data_file: str
         File containing raw expression data
+
+    normalize_data_file:
+        Output file containing normalized expression data 
     """
 
     # Read in config variables
@@ -127,29 +152,28 @@ def normalize_expression_data(base_dir, config_file, raw_input_data_file):
     dataset_name = params["dataset_name"]
 
     # Read data
-    rpkm_data = pd.read_table(raw_input_data_file, header=0, sep="\t", index_col=0)
+    data = pd.read_csv(raw_input_data_file, header=0, sep="\t", index_col=0)
 
     print(
-        "raw input dataset contains {} samples and {} genes".format(
-            rpkm_data.shape[0], rpkm_data.shape[1]
+        "input: dataset contains {} samples and {} genes".format(
+            data.shape[0], data.shape[1]
         )
     )
 
     # 0-1 normalize per gene
-    rnaseq_scaled_df = preprocessing.MinMaxScaler().fit_transform(rpkm_data)
-    rnaseq_scaled_df = pd.DataFrame(
-        rnaseq_scaled_df, columns=rpkm_data.columns, index=rpkm_data.index
-    ).T
-
-    # Save scaled data
-    normalized_data_file = os.path.join(
-        base_dir, dataset_name, "data", "input", "recount2_gene_normalized_data.tsv.xz"
+    data_scaled_df = preprocessing.MinMaxScaler().fit_transform(data)
+    data_scaled_df = pd.DataFrame(
+        data_scaled_df, columns=data.columns, index=data.index
     )
 
-    rnaseq_scaled_df.to_csv(normalized_data_file, sep="\t", compression="xz")
+    print(
+        "Output: normalized dataset contains {} samples and {} genes".format(
+            data_scaled_df.shape[0], data_scaled_df.shape[1]
+        )
+    )
 
-    del rnaseq_scaled_df
-    gc.collect()
+    # Save scaled data
+    data_scaled_df.to_csv(normalized_data_file, sep="\t", compression="xz")
 
 
 def create_experiment_id_file(metadata_file, input_data_file, output_file, config_file):
@@ -172,10 +196,10 @@ def create_experiment_id_file(metadata_file, input_data_file, output_file, confi
 
     """
     # Read in metadata
-    metadata = pd.read_table(metadata_file, header=0, sep="\t", index_col=0)
+    metadata = pd.read_csv(metadata_file, header=0, sep="\t", index_col=0)
 
     # Read in expression data
-    normalized_data = pd.read_table(input_data_file, header=0, sep="\t", index_col=0).T
+    normalized_data = pd.read_csv(input_data_file, header=0, sep="\t", index_col=0)
 
     # Read in config variables
     params = utils.read_config(config_file)
@@ -199,7 +223,7 @@ def create_experiment_id_file(metadata_file, input_data_file, output_file, confi
 
     for experiment_id in experiment_ids:
 
-        if "Human" in dataset_name:
+        if "human" in dataset_name.lower():
             # Some project id values are descriptions
             # We will skip these
             if len(experiment_id) == 9:
@@ -232,9 +256,6 @@ def create_experiment_id_file(metadata_file, input_data_file, output_file, confi
         )
     )
 
-    del map_experiment_sample, selected_metadata
-    gc.collect()
-
 
 def train_vae(config_file, input_data_file):
     """
@@ -266,7 +287,7 @@ def train_vae(config_file, input_data_file):
     train_architecture = params["NN_architecture"]
 
     # Read data
-    normalized_data = pd.read_table(input_data_file, header=0, sep="\t", index_col=0).T
+    normalized_data = pd.read_csv(input_data_file, header=0, sep="\t", index_col=0)
 
     print(
         "input dataset contains {} samples and {} genes".format(
@@ -288,9 +309,6 @@ def train_vae(config_file, input_data_file):
         dataset_name,
         train_architecture,
     )
-
-    del normalized_data, params
-    gc.collect()
 
 
 def run_simulation(config_file, input_data_file, corrected, experiment_ids_file=None):
@@ -489,5 +507,3 @@ def run_simulation(config_file, input_data_file, corrected, experiment_ids_file=
     ci.to_pickle(ci_uncorrected_file)
     np.save(similarity_permuted_file, permuted_score)
 
-    del results
-    gc.collect()
