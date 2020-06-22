@@ -23,10 +23,14 @@ import multiprocessing
 
 import warnings
 
-def fxn(): 
+
+def fxn():
     warnings.warn("deprecated", DeprecationWarning)
 
+
 with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    fxn()
 
 from ponyo import vae, utils, simulations
 
@@ -285,6 +289,7 @@ def train_vae(config_file, input_data_file):
     latent_dim = params["latent_dim"]
     epsilon_std = params["epsilon_std"]
     train_architecture = params["NN_architecture"]
+    validation_frac = params["validation_frac"]
 
     # Read data
     normalized_data = pd.read_csv(input_data_file, header=0, sep="\t", index_col=0)
@@ -308,6 +313,7 @@ def train_vae(config_file, input_data_file):
         base_dir,
         dataset_name,
         train_architecture,
+        validation_frac,
     )
 
 

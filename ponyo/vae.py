@@ -35,6 +35,7 @@ def tybalt_2layer_model(
     base_dir,
     dataset_name,
     NN_name,
+    validation_frac,
 ):
     """
     Train 2-layer Tybalt model using input dataset
@@ -74,6 +75,9 @@ def tybalt_2layer_model(
     NN_name: str
         Neural network architecture of VAE. Format NN_<intermediate_dim>_<latent_dim>
 
+    validation_frac: float
+        Percentage of total dataset to set aside to use as a validation set.
+
     Returns
     --------
     model_decoder_file, weights_decoder_file: .h5 file
@@ -89,7 +93,8 @@ def tybalt_2layer_model(
     # See these references for further details:
     # https://docs.python.org/3.4/using/cmdline.html#envvar-PYTHONHASHSEED
     # https://github.com/keras-team/keras/issues/2280#issuecomment-306959926
-    randomState = 123
+    # randomState = 123
+    randomState = 321
     import os
 
     os.environ["PYTHONHASHSEED"] = "0"
@@ -183,7 +188,7 @@ def tybalt_2layer_model(
     # Data initalizations
 
     # Split 10% test set randomly
-    test_set_percent = 0.1
+    test_set_percent = validation_frac
     rnaseq_test_df = rnaseq.sample(frac=test_set_percent, random_state=randomState)
     rnaseq_train_df = rnaseq.drop(rnaseq_test_df.index)
 
