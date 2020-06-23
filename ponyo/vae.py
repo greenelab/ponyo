@@ -4,8 +4,6 @@ Updated October 2018
 
 Scripts to train 2-layer variational autoencoder.
 """
-import os
-import argparse
 import pandas as pd
 import tensorflow as tf
 
@@ -13,13 +11,10 @@ import tensorflow as tf
 # https://keras.io/getting-started/faq/#how-can-i-obtain-reproducible-results-using-keras-during-development
 import numpy as np
 import random as rn
-
-from keras.layers import Input, Dense, Lambda, Layer, Activation
+from keras.layers import Input, Dense, Lambda, Activation
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model, Sequential
-from keras import metrics, optimizers
-from keras.callbacks import Callback
-
+from keras import optimizers
 from ponyo.helper_vae import sampling_maker, CustomVariationalLayer, WarmUpCallback
 
 

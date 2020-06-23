@@ -6,10 +6,8 @@ Helper functions for running variational autoencoder `vae.py`.
 """
 
 from keras.callbacks import Callback
-from keras import metrics, optimizers
-from keras.models import Model, Sequential
-from keras.layers.normalization import BatchNormalization
-from keras.layers import Input, Dense, Lambda, Layer, Activation
+from keras import metrics
+from keras.layers import Layer
 from keras import backend as K
 import os
 import tensorflow as tf

@@ -358,12 +358,7 @@ def run_simulation(config_file, input_data_file, corrected, experiment_ids_file=
             dataset_name,
             "results",
             "saved_variables",
-            dataset_name
-            + "_"
-            + simulation_type
-            + "_svcca_corrected_"
-            + correction_method
-            + ".pickle",
+            f"{dataset_name}_{simulation_type}_svcca_corrected_{correction_method}.pickle",
         )
 
         ci_uncorrected_file = os.path.join(
@@ -371,12 +366,7 @@ def run_simulation(config_file, input_data_file, corrected, experiment_ids_file=
             dataset_name,
             "results",
             "saved_variables",
-            dataset_name
-            + "_"
-            + simulation_type
-            + "_ci_corrected_"
-            + correction_method
-            + ".pickle",
+            f"{dataset_name}_{simulation_type}_ci_corrected_{correction_method}.pickle",
         )
 
     else:
@@ -385,12 +375,7 @@ def run_simulation(config_file, input_data_file, corrected, experiment_ids_file=
             dataset_name,
             "results",
             "saved_variables",
-            dataset_name
-            + "_"
-            + simulation_type
-            + "_svcca_uncorrected_"
-            + correction_method
-            + ".pickle",
+            f"{dataset_name}_{simulation_type}_svcca_uncorrected_{correction_method}.pickle",
         )
 
         ci_uncorrected_file = os.path.join(
@@ -398,12 +383,7 @@ def run_simulation(config_file, input_data_file, corrected, experiment_ids_file=
             dataset_name,
             "results",
             "saved_variables",
-            dataset_name
-            + "_"
-            + simulation_type
-            + "_ci_uncorrected_"
-            + correction_method
-            + ".pickle",
+            f"{dataset_name}_{simulation_type}_ci_uncorrected_{correction_method}.pickle",
         )
 
     similarity_permuted_file = os.path.join(

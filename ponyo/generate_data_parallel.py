@@ -803,11 +803,7 @@ def apply_correction_io(
                 local_dir,
                 "experiment_simulated",
                 dataset_name + "_" + analysis_name,
-                "Experiment_map_"
-                + str(num_experiments[i])
-                + "_"
-                + str(run)
-                + ".txt.xz",
+                f"Experiment_map_{num_experiments[i]}_{run}.txt.xz",
             )
 
             # Read in data
@@ -879,11 +875,7 @@ def apply_correction_io(
                 local_dir,
                 "experiment_simulated",
                 dataset_name + "_" + analysis_name,
-                "Experiment_corrected_"
-                + str(num_experiments[i])
-                + "_"
-                + str(run)
-                + ".txt.xz",
+                f"Experiment_corrected_{num_experiments[i]}_{run}.txt.xz",
             )
 
             corrected_experiment_data_df.to_csv(
@@ -899,11 +891,7 @@ def apply_correction_io(
                 local_dir,
                 "partition_simulated",
                 dataset_name + "_" + analysis_name,
-                "Partition_corrected_"
-                + str(num_experiments[i])
-                + "_"
-                + str(run)
-                + ".txt.xz",
+                f"Partition_corrected_{num_experiments[i]}_{run}.txt.xz",
             )
 
             corrected_experiment_data_df.to_csv(
