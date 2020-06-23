@@ -512,4 +512,3 @@ def run_simulation(config_file, input_data_file, corrected, experiment_ids_file=
     mean_scores.to_pickle(similarity_uncorrected_file)
     ci.to_pickle(ci_uncorrected_file)
     np.save(similarity_permuted_file, permuted_score)
-

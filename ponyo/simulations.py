@@ -330,4 +330,3 @@ def experiment_level_simulation(
 
     # Return similarity scores and permuted score
     return permuted_score, similarity_score_df
-
