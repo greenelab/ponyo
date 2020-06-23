@@ -317,7 +317,6 @@ def tybalt_2layer_model(
     ax.set_ylabel("Loss", fontsize="xx-large", family="sans-serif")
     fig = ax.get_figure()
     fig.savefig(hist_plot_file, dpi=300)
-    return ax
 
     del ax, fig
 

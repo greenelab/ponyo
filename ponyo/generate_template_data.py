@@ -22,10 +22,14 @@ from ponyo import generate_labeled_data
 
 import warnings
 
-def fxn(): 
+
+def fxn():
     warnings.warn("deprecated", DeprecationWarning)
 
+
 with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    fxn()
 
 from numpy.random import seed
 
@@ -102,8 +106,8 @@ def shift_template_experiment(
     weights_decoder_file = glob.glob(os.path.join(NN_dir, "*_decoder_weights.h5"))[0]
 
     # Load saved models
-    loaded_model = load_model(model_encoder_file)
-    loaded_decode_model = load_model(model_decoder_file)
+    loaded_model = load_model(model_encoder_file, compile=False)
+    loaded_decode_model = load_model(model_decoder_file, compile=False)
 
     loaded_model.load_weights(weights_encoder_file)
     loaded_decode_model.load_weights(weights_decoder_file)

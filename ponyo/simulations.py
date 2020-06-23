@@ -16,10 +16,14 @@ import gc
 
 import warnings
 
-def fxn(): 
+
+def fxn():
     warnings.warn("deprecated", DeprecationWarning)
 
+
 with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    fxn()
 
 from ponyo import generate_data_parallel
 from ponyo import similarity_metric_parallel

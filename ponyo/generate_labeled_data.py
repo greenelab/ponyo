@@ -19,10 +19,14 @@ from keras.models import load_model
 from sklearn import preprocessing
 import warnings
 
-def fxn(): 
+
+def fxn():
     warnings.warn("deprecated", DeprecationWarning)
 
+
 with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    fxn()
 
 from numpy.random import seed
 

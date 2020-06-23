@@ -24,10 +24,14 @@ limma = importr("limma")
 sva = importr("sva")
 pandas2ri.activate()
 
-def fxn(): 
+
+def fxn():
     warnings.warn("deprecated", DeprecationWarning)
 
+
 with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    fxn()
 
 
 def get_sample_ids(experiment_id, dataset_name, sample_id_colname):
@@ -44,7 +48,8 @@ def get_sample_ids(experiment_id, dataset_name, sample_id_colname):
         Name for analysis directory. Either "Human" or "Pseudomonas"
 
     sample_id_colname: str
-        Column header that contains sample id that maps expression data and metadata
+        Column header that contains sample id that maps expression data
+        and metadata
 
     """
     base_dir = os.path.abspath(os.path.join(os.getcwd(), "../"))
@@ -89,12 +94,13 @@ def simulate_compendium(
 ):
     """
     Generate simulated data by randomly sampling some number of experiments
-    and linearly shifting the gene expression in the VAE latent space, preserving
-    the relationship between samples within an experiment.
+    and linearly shifting the gene expression in the VAE latent space,
+    preserving the relationship between samples within an experiment.
 
     Workflow:
-    1. Randomly select 1 experiment and get the gene expression data for that experiment
-    (here we are assuming that there is only biological variation within this experiment)
+    1. Randomly select 1 experiment and get the gene expression data for that 
+    experiment (here we are assuming that there is only biological variation 
+    within this experiment)
     2. Encode this experiment into a latent space using the trained VAE model
     3. Encode the entire dataset from the <normalized_data_file>
         3a. Select a random point in the encoded space. For each encoded feature, sample 
