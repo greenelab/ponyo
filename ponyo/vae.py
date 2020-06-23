@@ -43,18 +43,18 @@ def tybalt_2layer_model(
     Arguments
     ----------
     learning_rate: float
-        Step size used for gradient descent. In other words, it's how quickly 
+        Step size used for gradient descent. In other words, it's how quickly
         the  methods is learning
 
     batch_size: int
-        Training is performed in batches. So this determines the number of 
+        Training is performed in batches. So this determines the number of
         samples to consider at a given time.
 
     epochs: int
         The number of times to train over the entire input dataset.
 
     kappa: float
-        How fast to linearly ramp up KL loss 
+        How fast to linearly ramp up KL loss
 
     intermediate_dim: int
         Size of the hidden layer
@@ -65,7 +65,7 @@ def tybalt_2layer_model(
     epsilon_std: float
         Standard deviation of Normal distribution to sample latent space
 
-    rnaseq: pandas.dataframe 
+    rnaseq: pandas.dataframe
         Gene expression data
 
     base_dir: str
@@ -75,7 +75,7 @@ def tybalt_2layer_model(
         Name of analysis directory
 
     NN_name: str
-        Neural network architecture of VAE. 
+        Neural network architecture of VAE.
         Format NN_<intermediate_dim>_<latent_dim>
 
     validation_frac: float
@@ -84,11 +84,11 @@ def tybalt_2layer_model(
     Returns
     --------
     model_decoder_file, weights_decoder_file: .h5 file
-        Files used to generate decoding neural networks to use in downstream 
+        Files used to generate decoding neural networks to use in downstream
         analysis
 
     model_encoder_file, weights_encoder_file: .h5 file
-        Files used to generate encoding neural networks to use in downstream 
+        Files used to generate encoding neural networks to use in downstream
         analysis
 
     """
@@ -117,7 +117,8 @@ def tybalt_2layer_model(
     # Multiple threads are a potential source of
     # non-reproducible results.
     # For further details,
-    # see: https://stackoverflow.com/questions/42022950/which-seeds-have-to-be-set-where-to-realize-100-reproducibility-of-training-res
+    # see:
+    # https://stackoverflow.com/questions/42022950/which-seeds-have-to-be-set-where-to-realize-100-reproducibility-of-training-res
 
     session_conf = tf.ConfigProto(
         intra_op_parallelism_threads=1, inter_op_parallelism_threads=1
@@ -127,7 +128,8 @@ def tybalt_2layer_model(
 
     # The below tf.set_random_seed() will make random number generation
     # in the TensorFlow backend have a well-defined initial state.
-    # For further details, see: https://www.tensorflow.org/api_docs/python/tf/set_random_seed
+    # For further details, see:
+    # https://www.tensorflow.org/api_docs/python/tf/set_random_seed
 
     tf.set_random_seed(1234)
 
