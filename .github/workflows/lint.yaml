@@ -26,6 +26,7 @@ jobs:
           # Enable linters
           black: true
           flake8: true
+          flake8_args: "--ignore=E501"
           # Mark the following line false if you want linters to attempt to autocorrect your code
           auto_fix: false
           git_name: "Greene Lab Linter"
