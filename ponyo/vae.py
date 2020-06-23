@@ -43,10 +43,12 @@ def tybalt_2layer_model(
     Arguments
     ----------
     learning_rate: float
-        Step size used for gradient descent. In other words, it's how quickly the  methods is learning
+        Step size used for gradient descent. In other words, it's how quickly 
+        the  methods is learning
 
     batch_size: int
-        Training is performed in batches. So this determines the number of samples to consider at a given time.
+        Training is performed in batches. So this determines the number of 
+        samples to consider at a given time.
 
     epochs: int
         The number of times to train over the entire input dataset.
@@ -73,7 +75,8 @@ def tybalt_2layer_model(
         Name of analysis directory
 
     NN_name: str
-        Neural network architecture of VAE. Format NN_<intermediate_dim>_<latent_dim>
+        Neural network architecture of VAE. 
+        Format NN_<intermediate_dim>_<latent_dim>
 
     validation_frac: float
         Percentage of total dataset to set aside to use as a validation set.
@@ -81,10 +84,12 @@ def tybalt_2layer_model(
     Returns
     --------
     model_decoder_file, weights_decoder_file: .h5 file
-        Files used to generate decoding neural networks to use in downstream analysis
+        Files used to generate decoding neural networks to use in downstream 
+        analysis
 
     model_encoder_file, weights_encoder_file: .h5 file
-        Files used to generate encoding neural networks to use in downstream analysis
+        Files used to generate encoding neural networks to use in downstream 
+        analysis
 
     """
 
@@ -93,8 +98,7 @@ def tybalt_2layer_model(
     # See these references for further details:
     # https://docs.python.org/3.4/using/cmdline.html#envvar-PYTHONHASHSEED
     # https://github.com/keras-team/keras/issues/2280#issuecomment-306959926
-    # randomState = 123
-    randomState = 321
+    randomState = 123
     import os
 
     os.environ["PYTHONHASHSEED"] = "0"
@@ -112,7 +116,8 @@ def tybalt_2layer_model(
     # Force TensorFlow to use single thread.
     # Multiple threads are a potential source of
     # non-reproducible results.
-    # For further details, see: https://stackoverflow.com/questions/42022950/which-seeds-have-to-be-set-where-to-realize-100-reproducibility-of-training-res
+    # For further details,
+    # see: https://stackoverflow.com/questions/42022950/which-seeds-have-to-be-set-where-to-realize-100-reproducibility-of-training-res
 
     session_conf = tf.ConfigProto(
         intra_op_parallelism_threads=1, inter_op_parallelism_threads=1
@@ -200,21 +205,26 @@ def tybalt_2layer_model(
     # ENCODER
 
     # Input layer is compressed into a mean and log variance vector of size
-    # `latent_dim`. Each layer is initialized with glorot uniform weights and each
-    # step (dense connections, batch norm,and relu activation) are funneled
-    # separately
-    # Each vector of length `latent_dim` are connected to the rnaseq input tensor
+    # `latent_dim`. Each layer is initialized with glorot uniform weights and
+    # each step (dense connections, batch norm,and relu activation) are
+    # funneled separately
+    # Each vector of length `latent_dim` are connected to the rnaseq input
+    # tensor
 
     # "z_mean_dense_linear" is the encoded representation of the input
-    #    Take as input arrays of shape (*, original dim) and output arrays of shape (*, latent dim)
-    #    Combine input from previous layer using linear summ
+    # Take as input arrays of shape (*, original dim) and output arrays of
+    # shape (*, latent dim)
+    # Combine input from previous layer using linear sum
     # Normalize the activations (combined weighted nodes of the previous layer)
-    #   Transformation that maintains the mean activation close to 0 and the activation standard deviation close to 1.
-    # Apply ReLU activation function to combine weighted nodes from previous layer
+    # Transformation that maintains the mean activation close to 0 and the
+    # activation standard deviation close to 1.
+    # Apply ReLU activation function to combine weighted nodes from previous
+    # layer
     #   relu = threshold cutoff (cutoff value will be learned)
     #   ReLU function filters noise
 
-    # X is encoded using Q(z|X) to yield mu(X), sigma(X) that describes latent space distribution
+    # X is encoded using Q(z|X) to yield mu(X), sigma(X) that describes latent
+    # space distribution
     hidden_dense_linear = Dense(intermediate_dim, kernel_initializer="glorot_uniform")(
         rnaseq_input
     )
@@ -222,8 +232,10 @@ def tybalt_2layer_model(
     hidden_encoded = Activation("relu")(hidden_dense_batchnorm)
 
     # Note:
-    # Normalize and relu filter at each layer adds non-linear component (relu is non-linear function)
-    # If architecture is layer-layer-normalization-relu then the computation is still linear
+    # Normalize and relu filter at each layer adds non-linear component
+    # (relu is non-linear function)
+    # If architecture is layer-layer-normalization-relu then the computation
+    # is still linear
     # Add additional layers in triplicate
     z_mean_dense_linear = Dense(latent_dim, kernel_initializer="glorot_uniform")(
         hidden_encoded
@@ -299,14 +311,13 @@ def tybalt_2layer_model(
 
     # Visualize training performance
     history_df = pd.DataFrame(hist.history)
-    ax = history_df.plot()
+    ax = history_df.plot(y="loss", label="Training loss")
+    history_df.plot(y="val_loss", label="Validation loss", ax=ax)
     ax.set_xlabel("Epochs", fontsize="xx-large", family="sans-serif")
     ax.set_ylabel("Loss", fontsize="xx-large", family="sans-serif")
-    ax.legend(
-        ["Training Loss", "Validation Loss"], prop={"family": "sans-serif", "size": 12}
-    )
     fig = ax.get_figure()
     fig.savefig(hist_plot_file, dpi=300)
+    return ax
 
     del ax, fig
 
