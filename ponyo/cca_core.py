@@ -159,7 +159,7 @@ def compute_ccas(sigma_xx, sigma_xy, sigma_yx, sigma_yy, verbose=True):
     try:
         ux, sx, vx = np.linalg.svd(arr_x_stable)
         uy, sy, vy = np.linalg.svd(arr_y_stable)
-    except BaseException:
+    except:
         return [0, 0, 0], [0, 0, 0], 0, 0, 0, 0
     sx = np.sqrt(np.abs(sx))
     sy = np.sqrt(np.abs(sy))
