@@ -4,29 +4,30 @@ Date Created: 30 August 2019
 
 Scripts to generate gene expression compendia using experiment-preserving
 approach with added experiment id labels for visualizations.
-These scripts are used to generate visualizations that validate this 
+These scripts are used to generate visualizations that validate this
 experiment-preserving simulation approach.
 """
 
+from numpy.random import seed
 import os
-import ast
 import pandas as pd
 import numpy as np
-import random
 import glob
-import pickle
 from keras.models import load_model
 from sklearn import preprocessing
 import warnings
 
-def fxn(): 
+
+def fxn():
     warnings.warn("deprecated", DeprecationWarning)
 
+
 with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    fxn()
 
-from numpy.random import seed
 
-randomState = 123
+random_state = 123
 
 
 def get_sample_ids(experiment_id, dataset_name):
@@ -73,7 +74,7 @@ def simulate_compendium_labeled(
     base_dir,
 ):
     """
-    Generate simulated data using a list of experiment_ids found in 
+    Generate simulated data using a list of experiment_ids found in
     experiment_ids_file as templates. The compendia will contain the
     shifted experiments using the experiment_ids as templates and following
     the same workflow as simulate_compendia in generate_data_parallel.py
@@ -106,7 +107,7 @@ def simulate_compendium_labeled(
 
     local_dir: str
         Parent directory on local machine to store intermediate results
-        
+
     base_dir: str
         Root directory containing analysis subdirectories
 
@@ -116,7 +117,7 @@ def simulate_compendium_labeled(
         File containing simulated gene expression data
 
     """
-    seed(randomState)
+    seed(random_state)
 
     # Files
     NN_dir = os.path.join(base_dir, dataset_name, "models", NN_architecture)
@@ -165,7 +166,8 @@ def simulate_compendium_labeled(
         sample_ids = list(filter(str.strip, sample_ids))
 
         # Remove any sample_ids that are not found in gene expression data
-        # There are some experiments where most samples have gene expression but a few do not
+        # There are some experiments where most samples have gene expression but a
+        # few do not
         sample_ids = [
             sample for sample in sample_ids if sample in normalized_data.index
         ]

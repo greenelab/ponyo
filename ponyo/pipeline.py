@@ -9,9 +9,8 @@ Scripts called by analysis notebooks to run entire the entire analysis pipeline:
 4. Run simulation experiment, described in `simulations.py`
 """
 
+from ponyo import vae, utils, simulations
 import os
-import sys
-import ast
 import pandas as pd
 import numpy as np
 import random
@@ -19,21 +18,22 @@ import math
 from sklearn import preprocessing
 
 from joblib import Parallel, delayed
-import multiprocessing
+
+# import multiprocessing
 
 import warnings
 
-def fxn(): 
+
+def fxn():
     warnings.warn("deprecated", DeprecationWarning)
 
+
 with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    fxn()
 
-from ponyo import vae, utils, simulations
 
-from numpy.random import seed
-
-randomState = 123
-seed(randomState)
+random.seed(123)
 
 
 def setup_dir(config_file):
@@ -65,14 +65,14 @@ def setup_dir(config_file):
 
     # Check if analysis output directory exist otherwise create
     for each_dir in output_dirs:
-        if os.path.exists(each_dir) == False:
+        if not os.path.exists(each_dir):
             print("creating new directory: {}".format(each_dir))
             os.makedirs(each_dir, exist_ok=True)
 
         # Check if NN architecture directory exist otherwise create
     for each_dir in output_dirs:
         new_dir = os.path.join(each_dir, train_architecture)
-        if os.path.exists(new_dir) == False:
+        if not os.path.exists(new_dir):
             print("creating new directory: {}".format(new_dir))
             os.makedirs(new_dir, exist_ok=True)
 
@@ -81,7 +81,7 @@ def setup_dir(config_file):
 
     # Check if analysis output directory exist otherwise create
     for each_dir in output_dirs:
-        if os.path.exists(each_dir) == False:
+        if not os.path.exists(each_dir):
             print("creating new directory: {}".format(each_dir))
             os.makedirs(each_dir, exist_ok=True)
 
@@ -89,7 +89,7 @@ def setup_dir(config_file):
     for each_dir in output_dirs:
         new_dir = os.path.join(each_dir, "saved_variables")
 
-        if os.path.exists(new_dir) == False:
+        if not os.path.exists(new_dir):
             print("creating new directory: {}".format(new_dir))
             os.makedirs(new_dir, exist_ok=True)
 
@@ -101,7 +101,7 @@ def setup_dir(config_file):
 
     # Check if analysis output directory exist otherwise create
     for each_dir in output_dirs:
-        if os.path.exists(each_dir) == False:
+        if not os.path.exists(each_dir):
             print("creating new directory: {}".format(each_dir))
             os.makedirs(each_dir, exist_ok=True)
 
@@ -142,14 +142,8 @@ def normalize_expression_data(
         File containing raw expression data
 
     normalize_data_file:
-        Output file containing normalized expression data 
+        Output file containing normalized expression data
     """
-
-    # Read in config variables
-    params = utils.read_config(config_file)
-
-    # Load parameters
-    dataset_name = params["dataset_name"]
 
     # Read data
     data = pd.read_csv(raw_input_data_file, header=0, sep="\t", index_col=0)
@@ -285,6 +279,7 @@ def train_vae(config_file, input_data_file):
     latent_dim = params["latent_dim"]
     epsilon_std = params["epsilon_std"]
     train_architecture = params["NN_architecture"]
+    validation_frac = params["validation_frac"]
 
     # Read data
     normalized_data = pd.read_csv(input_data_file, header=0, sep="\t", index_col=0)
@@ -308,6 +303,7 @@ def train_vae(config_file, input_data_file):
         base_dir,
         dataset_name,
         train_architecture,
+        validation_frac,
     )
 
 
@@ -324,7 +320,7 @@ def run_simulation(config_file, input_data_file, corrected, experiment_ids_file=
         File path corresponding to input dataset to use
 
     corrected: bool
-        True if simulation is applying noise correction 
+        True if simulation is applying noise correction
 
     experiment_ids_file: str
         File containing experiment ids with expression data associated generated from ```create_experiment_id_file```
@@ -362,12 +358,7 @@ def run_simulation(config_file, input_data_file, corrected, experiment_ids_file=
             dataset_name,
             "results",
             "saved_variables",
-            dataset_name
-            + "_"
-            + simulation_type
-            + "_svcca_corrected_"
-            + correction_method
-            + ".pickle",
+            f"{dataset_name}_{simulation_type}_svcca_corrected_{correction_method}.pickle",
         )
 
         ci_uncorrected_file = os.path.join(
@@ -375,12 +366,7 @@ def run_simulation(config_file, input_data_file, corrected, experiment_ids_file=
             dataset_name,
             "results",
             "saved_variables",
-            dataset_name
-            + "_"
-            + simulation_type
-            + "_ci_corrected_"
-            + correction_method
-            + ".pickle",
+            f"{dataset_name}_{simulation_type}_ci_corrected_{correction_method}.pickle",
         )
 
     else:
@@ -389,12 +375,7 @@ def run_simulation(config_file, input_data_file, corrected, experiment_ids_file=
             dataset_name,
             "results",
             "saved_variables",
-            dataset_name
-            + "_"
-            + simulation_type
-            + "_svcca_uncorrected_"
-            + correction_method
-            + ".pickle",
+            f"{dataset_name}_{simulation_type}_svcca_uncorrected_{correction_method}.pickle",
         )
 
         ci_uncorrected_file = os.path.join(
@@ -402,12 +383,7 @@ def run_simulation(config_file, input_data_file, corrected, experiment_ids_file=
             dataset_name,
             "results",
             "saved_variables",
-            dataset_name
-            + "_"
-            + simulation_type
-            + "_ci_uncorrected_"
-            + correction_method
-            + ".pickle",
+            f"{dataset_name}_{simulation_type}_ci_uncorrected_{correction_method}.pickle",
         )
 
     similarity_permuted_file = os.path.join(
@@ -506,4 +482,3 @@ def run_simulation(config_file, input_data_file, corrected, experiment_ids_file=
     mean_scores.to_pickle(similarity_uncorrected_file)
     ci.to_pickle(ci_uncorrected_file)
     np.save(similarity_permuted_file, permuted_score)
-

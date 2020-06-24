@@ -2,34 +2,34 @@
 Author: Alexandra Lee
 Date Created: 15 June 2020
 
-Script to generate gene expression compendia using experiment-preserving 
+Script to generate gene expression compendia using experiment-preserving
 approach using a specific template experiment.
 This script is used to generate a null set of gene expression data with
 some context, defined by the template experiment.
 """
 
 import os
-import ast
 import pandas as pd
 import numpy as np
-import random
 import glob
-import pickle
+import random
 from keras.models import load_model
-from sklearn import preprocessing
 
 from ponyo import generate_labeled_data
 
 import warnings
 
-def fxn(): 
+
+def fxn():
     warnings.warn("deprecated", DeprecationWarning)
 
+
 with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    fxn()
 
-from numpy.random import seed
 
-randomState = 123
+random.seed(123)
 
 
 def shift_template_experiment(
@@ -47,7 +47,7 @@ def shift_template_experiment(
     experiment using the same workflow as simulate_compendia in generate_data_parallel.py
 
     This will return a file with a single simulated experiment following the workflow mentioned.
-    This function can be run multiple times to generate multiple simulated experiments from a 
+    This function can be run multiple times to generate multiple simulated experiments from a
     single selected_experiment_id.
 
     Arguments
@@ -61,7 +61,7 @@ def shift_template_experiment(
         ...                           | ...    | ...    |...
 
     selected_experiment_id: str
-        Experiment id selected as template 
+        Experiment id selected as template
 
     NN_architecture: str
         Name of neural network architecture to use.
@@ -102,8 +102,8 @@ def shift_template_experiment(
     weights_decoder_file = glob.glob(os.path.join(NN_dir, "*_decoder_weights.h5"))[0]
 
     # Load saved models
-    loaded_model = load_model(model_encoder_file)
-    loaded_decode_model = load_model(model_decoder_file)
+    loaded_model = load_model(model_encoder_file, compile=False)
+    loaded_decode_model = load_model(model_decoder_file, compile=False)
 
     loaded_model.load_weights(weights_encoder_file)
     loaded_decode_model.load_weights(weights_decoder_file)

@@ -5,23 +5,24 @@ Date Created: 30 August 2019
 Scripts to compare simulated compendium with simulated compendia with noise added.
 """
 
+from sklearn.decomposition import PCA
+from ponyo import cca_core
 import os
-import sys
-import ast
 import pandas as pd
 import numpy as np
 import random
-import glob
 import warnings
 
-def fxn(): 
+
+def fxn():
     warnings.warn("deprecated", DeprecationWarning)
 
+
 with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    fxn()
 
-from ponyo import cca_core
-
-from sklearn.decomposition import PCA
+random.seed(123)
 
 
 def read_data(simulated_data, file_prefix, run, local_dir, dataset_name, analysis_name):
@@ -52,7 +53,7 @@ def read_data(simulated_data, file_prefix, run, local_dir, dataset_name, analysi
 
     analysis_name: str
         Parent directory where simulated data with experiments/partitionings are be stored.
-        Format of the directory name is <dataset>_<sample/experiment>_lvl_sim 
+        Format of the directory name is <dataset>_<sample/experiment>_lvl_sim
 
     """
 
@@ -153,13 +154,13 @@ def sim_svcca_io(
 
     local_dir: str
         Root directory where simulated data with experiments/partitionings are be stored
-    
+
     dataset_name: str
         Name for analysis directory. Either "Human" or "Pseudomonas"
 
     analysis_name: str
         Parent directory where simulated data with experiments/partitionings are be stored.
-        Format of the directory name is <dataset>_<sample/experiment>_lvl_sim 
+        Format of the directory name is <dataset>_<sample/experiment>_lvl_sim
 
 
     Returns

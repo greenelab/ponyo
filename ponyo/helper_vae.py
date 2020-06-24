@@ -5,10 +5,11 @@ Date Created: 30 August 2019
 Helper functions for running variational autoencoder `vae.py`.
 """
 
+from keras.callbacks import Callback
+from keras import metrics
+from keras.layers import Layer
+from keras import backend as K
 import os
-import argparse
-import pandas as pd
-import matplotlib.pyplot as plt
 import tensorflow as tf
 import numpy as np
 import random as rn
@@ -20,7 +21,6 @@ import random as rn
 # https://docs.python.org/3.4/using/cmdline.html#envvar-PYTHONHASHSEED
 # https://github.com/keras-team/keras/issues/2280#issuecomment-306959926
 randomState = 123
-import os
 
 os.environ["PYTHONHASHSEED"] = "0"
 
@@ -37,28 +37,24 @@ rn.seed(12345)
 # Force TensorFlow to use single thread.
 # Multiple threads are a potential source of
 # non-reproducible results.
-# For further details, see: https://stackoverflow.com/questions/42022950/which-seeds-have-to-be-set-where-to-realize-100-reproducibility-of-training-res
+# For further details, see:
+# https://stackoverflow.com/questions/42022950/which-seeds-have-to-be-set-where-to-realize-100-reproducibility-of-training-res
 
 session_conf = tf.ConfigProto(
     intra_op_parallelism_threads=1, inter_op_parallelism_threads=1
 )
 
-from keras import backend as K
 
 # The below tf.set_random_seed() will make random number generation
 # in the TensorFlow backend have a well-defined initial state.
-# For further details, see: https://www.tensorflow.org/api_docs/python/tf/set_random_seed
+# For further details, see:
+# https://www.tensorflow.org/api_docs/python/tf/set_random_seed
 
 tf.set_random_seed(1234)
 
 sess = tf.Session(graph=tf.get_default_graph(), config=session_conf)
 K.set_session(sess)
 
-from keras.layers import Input, Dense, Lambda, Layer, Activation
-from keras.layers.normalization import BatchNormalization
-from keras.models import Model, Sequential
-from keras import metrics, optimizers
-from keras.callbacks import Callback
 
 # Functions
 #

@@ -2,27 +2,26 @@
 Author: Alexandra Lee
 Date Created: 11 November 2019
 
-Scripts to run simulation different types of simulations 
-(sample-level or experiment-level) 
+Scripts to run simulation different types of simulations
+(sample-level or experiment-level)
 using functions in `generate_data_parallel.py`
 """
-import os
-import sys
-import glob
-import pickle
+from ponyo import similarity_metric_parallel
+from ponyo import generate_data_parallel
 import pandas as pd
-import numpy as np
-import gc
-
+import random
 import warnings
 
-def fxn(): 
+
+def fxn():
     warnings.warn("deprecated", DeprecationWarning)
 
-with warnings.catch_warnings():
 
-from ponyo import generate_data_parallel
-from ponyo import similarity_metric_parallel
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    fxn()
+
+random.seed(123)
 
 
 def sample_level_simulation(
@@ -46,7 +45,7 @@ def sample_level_simulation(
     1. Simulate gene expression data, ignorning the sample-experiment relationship
     2. Add varying numbers of technical variation
     3. Compare the similarity of the gene expression structure between the simulated data
-        vs simulated data + technical variation.  
+        vs simulated data + technical variation.
 
     Arguments
     ----------
@@ -62,14 +61,14 @@ def sample_level_simulation(
 
     analysis_name: str
         Parent directory where simulated data with experiments/partitionings will be stored.
-        Format of the directory name is <dataset>_<sample/experiment>_lvl_sim 
+        Format of the directory name is <dataset>_<sample/experiment>_lvl_sim
 
     num_simulated_samples: int
         Number of samples to simulate
 
     lst_num_experiments: list
         List of different numbers of experiments to add to
-        simulated data.  These are the number of sources of 
+        simulated data.  These are the number of sources of
         technical variation that are added to the simulated
         data
 
@@ -95,7 +94,7 @@ def sample_level_simulation(
 
     local_dir: str
         Parent directory on local machine to store intermediate results
-        
+
     base_dir: str
         Root directory containing analysis subdirectories
 
@@ -196,7 +195,7 @@ def experiment_level_simulation(
         with a given experiment
     2. Add varying numbers of technical variation
     3. Compare the similarity of the gene expression structure between the simulated data
-        vs simulated data + technical variation. 
+        vs simulated data + technical variation.
 
     Arguments
     ----------
@@ -212,14 +211,14 @@ def experiment_level_simulation(
 
     analysis_name: str
         Parent directory where simulated data with experiments/partitionings will be stored.
-        Format of the directory name is <dataset>_<sample/experiment>_lvl_sim 
+        Format of the directory name is <dataset>_<sample/experiment>_lvl_sim
 
     num_simulated_samples: int
         Number of samples to simulate
 
     lst_num_experiments: list
         List of different numbers of partitions to add to
-        simulated data.  These are the number of sources of 
+        simulated data.  These are the number of sources of
         technical variation that are added to the simulated
         data
 
@@ -326,4 +325,3 @@ def experiment_level_simulation(
 
     # Return similarity scores and permuted score
     return permuted_score, similarity_score_df
-
