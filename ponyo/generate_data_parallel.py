@@ -859,12 +859,13 @@ def apply_correction_io(
 
             if correction_method == "combat":
                 corrected_experiment_data = sva.ComBat(
-                    experiment_data, batch=experiment_map
+                    np.array(experiment_data), batch=experiment_map
                 )
 
                 # Convert R object to pandas df
                 # corrected_experiment_data_df = pandas2ri.ri2py_dataframe(
-                #    corrected_experiment_data)
+                #    corrected_experiment_data
+                # )
                 corrected_experiment_data_df = pd.DataFrame(corrected_experiment_data)
 
                 corrected_experiment_data_df.columns = experiment_data.columns
