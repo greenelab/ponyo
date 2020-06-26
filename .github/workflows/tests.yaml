@@ -1,0 +1,25 @@
+name: Test analysis notebooks
+
+on: [push, pull_request]
+
+jobs:
+  run-analysis:
+    name: Test analysis notebooks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+
+      - name: Install and activate conda env
+        uses: goanpeca/setup-miniconda@v1
+        with:
+          miniconda-version: "latest"
+          environment-file: environment.yml
+          activate-environment: simulate_expression_compendia
+      
