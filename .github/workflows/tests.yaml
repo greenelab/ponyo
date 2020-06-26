@@ -22,4 +22,14 @@ jobs:
           miniconda-version: "latest"
           environment-file: environment.yml
           activate-environment: simulate_expression_compendia
+
+      - name: Run analysis notebooks
+        run: |
+          pip install pytest
+          pip install nbval
+          pytest -v --nbval-lax --current-env Pseudomonas_tests/Pseudomonas_sample_limma.ipynb
+          pytest -v --nbval-lax --current-env Pseudomonas_tests/Pseudomonas_sample_combat.ipynb
+          pytest -v --nbval-lax --current-env Pseudomonas_tests/Pseudomonas_experiment_limma.ipynb
+          pytest -v --nbval-lax --current-env Human_tests/Human_sample_limma.ipynb
+          pytest -v --nbval-lax --current-env Human_tests/Human_experiment_limma.ipynb
       
