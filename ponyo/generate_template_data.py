@@ -178,3 +178,11 @@ def shift_template_experiment(
     )
 
     simulated_data_scaled_df.to_csv(out_file, float_format="%.3f", sep="\t")
+
+    out_encoded_file = os.path.join(
+        local_dir,
+        "pseudo_experiment",
+        f"selected_simulated_encoded_data_{selected_experiment_id}_{run}.txt",
+    )
+
+    simulated_data_encoded_df.to_csv(out_encoded_file, float_format="%.3f", sep="\t")
