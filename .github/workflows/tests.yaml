@@ -16,14 +16,19 @@ jobs:
         with:
           python-version: 3.8
 
-      - name: Install conda
-        uses: goanpeca/setup-miniconda@v1
-        with:
-          miniconda-version: "latest"
-          environment-file: environment.yml
+      - name: Setup conda environment
+        run: |
+          # $CONDA is an environment variable pointing to the root of the miniconda directory
+          $CONDA/bin/conda env update --file environment.yml --name base
 
-      - name: Activate conda environment
-        run: conda activate simulate_expression_compendia
+      # - name: Install conda
+      #   uses: goanpeca/setup-miniconda@v1
+      #   with:
+      #     miniconda-version: "latest"
+      #     environment-file: environment.yml
+
+      # - name: Activate conda environment
+      #   run: conda activate simulate_expression_compendia
 
       - name: Run analysis notebooks
         run: |
