@@ -23,6 +23,7 @@ jobs:
           $CONDA/bin/pip install .
           $CONDA/bin/pip install pytest
           $CONDA/bin/pip install nbval
+          export LD_LIBRARY_PATH=$(python -m rpy2.situation LD_LIBRARY_PATH):${LD_LIBRARY_PATH}
 
       # - name: Install conda
       #   uses: goanpeca/setup-miniconda@v1
