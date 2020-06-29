@@ -23,22 +23,13 @@ jobs:
           $CONDA/bin/pip install .
           $CONDA/bin/pip install pytest
           $CONDA/bin/pip install nbval
-          export LD_LIBRARY_PATH=$(python -m rpy2.situation LD_LIBRARY_PATH):${LD_LIBRARY_PATH}
+      #    export LD_LIBRARY_PATH=$(python -m rpy2.situation LD_LIBRARY_PATH):${LD_LIBRARY_PATH}
 
-      # - name: Install conda
-      #   uses: goanpeca/setup-miniconda@v1
-      #   with:
-      #     miniconda-version: "latest"
-      #     environment-file: environment.yml
-
-      # - name: Activate conda environment
-      #   run: conda activate simulate_expression_compendia
-
-      - name: Run analysis notebooks
-        run: |
-          $CONDA/bin/pytest -v --nbval-lax --current-env Pseudomonas_tests/Pseudomonas_sample_limma.ipynb
-          $CONDA/bin/pytest -v --nbval-lax --current-env Pseudomonas_tests/Pseudomonas_sample_combat.ipynb
-          $CONDA/bin/pytest -v --nbval-lax --current-env Pseudomonas_tests/Pseudomonas_experiment_limma.ipynb
-          $CONDA/bin/pytest -v --nbval-lax --current-env Human_tests/Human_sample_limma.ipynb
-          $CONDA/bin/pytest -v --nbval-lax --current-env Human_tests/Human_experiment_limma.ipynb
+      #- name: Run analysis notebooks
+      #  run: |
+      #    $CONDA/bin/pytest -v --nbval-lax --current-env Pseudomonas_tests/Pseudomonas_sample_limma.ipynb
+      #    $CONDA/bin/pytest -v --nbval-lax --current-env Pseudomonas_tests/Pseudomonas_sample_combat.ipynb
+      #    $CONDA/bin/pytest -v --nbval-lax --current-env Pseudomonas_tests/Pseudomonas_experiment_limma.ipynb
+      #    $CONDA/bin/pytest -v --nbval-lax --current-env Human_tests/Human_sample_limma.ipynb
+      #    $CONDA/bin/pytest -v --nbval-lax --current-env Human_tests/Human_experiment_limma.ipynb
       
