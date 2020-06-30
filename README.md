@@ -16,6 +16,6 @@ pip install ponyo
 ```
 
 ## How to use
-This method has been used in [simulate-expression-compendia repo](https://github.com/greenelab/simulate-expression-compendia)
+This method has been used in [simulate-expression-compendia](https://github.com/greenelab/simulate-expression-compendia) repository.
 
-Example analysis notebooks using ponyo can be found in [Human_tests](Human_tests/) and [Pseudomonas_tests](Pseudomonas_tests/). 
+Example analysis notebooks using ponyo on test data can be found in [Human_tests](https://github.com/greenelab/ponyo/tree/master/Human_tests) and [Pseudomonas_tests](https://github.com/greenelab/ponyo/tree/master/Pseudomonas_tests). 
