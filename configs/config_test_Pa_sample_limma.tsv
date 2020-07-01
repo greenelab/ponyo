@@ -1,4 +1,4 @@
-local_dir	"/home/alexandra/Documents/Data/Batch_effects_test/"
+local_dir	"../Batch_effects_test/"
 dataset_name	"Pseudomonas_tests"
 simulation_type	"sample_lvl_sim"
 NN_architecture	"NN_2500_30"
