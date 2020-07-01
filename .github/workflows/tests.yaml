@@ -28,8 +28,8 @@ jobs:
 
       - name: Run analysis notebooks
         run: |
-          $CONDA/bin/R RHOME
-      #    $CONDA/bin/pytest -v --nbval-lax --current-env Pseudomonas_tests/Pseudomonas_sample_limma.ipynb
+          export R_HOME=`$CONDA/bin/R RHOME`
+          $CONDA/bin/pytest -v --nbval-lax --current-env Pseudomonas_tests/Pseudomonas_sample_limma.ipynb
       #    $CONDA/bin/pytest -v --nbval-lax --current-env Pseudomonas_tests/Pseudomonas_sample_combat.ipynb
       #    $CONDA/bin/pytest -v --nbval-lax --current-env Pseudomonas_tests/Pseudomonas_experiment_limma.ipynb
       #    $CONDA/bin/pytest -v --nbval-lax --current-env Human_tests/Human_sample_limma.ipynb
