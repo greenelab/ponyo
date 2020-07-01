@@ -147,7 +147,6 @@ def normalize_expression_data(
 
     # Read data
     data = pd.read_csv(raw_input_data_file, header=0, sep="\t", index_col=0)
-    raise Exception(data)
     print(
         "input: dataset contains {} samples and {} genes".format(
             data.shape[0], data.shape[1]
