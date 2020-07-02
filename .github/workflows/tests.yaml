@@ -24,6 +24,7 @@ jobs:
           $CONDA/bin/pip install pytest
           $CONDA/bin/pip install nbval
           $CONDA/bin/pip install pytest-cov
+          $CONDA/bin/pip install python-coveralls
 
       - name: Run analysis notebooks
         run: |
@@ -35,6 +36,5 @@ jobs:
           $CONDA/bin/pytest -v --nbval-lax --current-env Human_tests/Human_experiment_limma.ipynb --cov=ponyo --cov-append
 
       - name: Coveralls
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          coveralls
