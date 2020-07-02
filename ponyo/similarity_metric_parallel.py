@@ -10,7 +10,6 @@ from ponyo import cca_core
 import os
 import pandas as pd
 import numpy as np
-import random
 import warnings
 
 
@@ -22,7 +21,7 @@ with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     fxn()
 
-random.seed(123)
+np.random.seed(123)
 
 
 def read_data(simulated_data, file_prefix, run, local_dir, dataset_name, analysis_name):

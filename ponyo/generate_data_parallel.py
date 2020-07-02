@@ -11,7 +11,6 @@ apply noise correction to simulated data, permute simulated data.
 import os
 import pandas as pd
 import numpy as np
-import random
 import glob
 import warnings
 from keras.models import load_model
@@ -33,7 +32,7 @@ with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     fxn()
 
-random.seed(123)
+np.random.seed(123)
 
 
 def get_sample_ids(experiment_id, dataset_name, sample_id_colname):

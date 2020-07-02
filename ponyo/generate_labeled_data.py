@@ -28,6 +28,7 @@ with warnings.catch_warnings():
 
 
 random_state = 123
+seed(random_state)
 
 
 def get_sample_ids(experiment_id, dataset_name):

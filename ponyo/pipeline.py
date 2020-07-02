@@ -13,7 +13,6 @@ from ponyo import vae, utils, simulations
 import os
 import pandas as pd
 import numpy as np
-import random
 import math
 from sklearn import preprocessing
 
@@ -33,7 +32,7 @@ with warnings.catch_warnings():
     fxn()
 
 
-random.seed(123)
+np.random.seed(123)
 
 
 def setup_dir(config_file):

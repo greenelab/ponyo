@@ -9,7 +9,6 @@ using functions in `generate_data_parallel.py`
 from ponyo import similarity_metric_parallel
 from ponyo import generate_data_parallel
 import pandas as pd
-import random
 import warnings
 
 
@@ -21,7 +20,7 @@ with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     fxn()
 
-random.seed(123)
+np.random.seed(123)
 
 
 def sample_level_simulation(

@@ -12,7 +12,6 @@ import os
 import pandas as pd
 import numpy as np
 import glob
-import random
 from keras.models import load_model
 
 from ponyo import generate_labeled_data
@@ -29,7 +28,7 @@ with warnings.catch_warnings():
     fxn()
 
 
-random.seed(123)
+np.random.seed(123)
 
 
 def shift_template_experiment(

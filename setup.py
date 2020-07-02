@@ -22,7 +22,6 @@ setup(
     install_requires=[
         "pandas",
         "numpy",
-        "random",
         "glob",
         "keras",
         "tensorflow",
