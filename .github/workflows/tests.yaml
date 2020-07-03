@@ -1,0 +1,31 @@
+name: Test simulations
+
+on: [push, pull_request]
+
+jobs:
+  run-analysis:
+    name: Test simulation notebooks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+
+      - name: Setup conda environment
+        run: |
+          # $CONDA is an environment variable pointing to the root of the miniconda directory
+          $CONDA/bin/conda env update --file environment.yml --name base
+          $CONDA/bin/pip install -e .
+          $CONDA/bin/pip install pytest
+          $CONDA/bin/pip install nbval
+
+      - name: Run simulation notebooks
+        run: |
+          $CONDA/bin/pytest -v --nbval-lax --current-env human_tests/Human_random_sampling_simulation.ipynb
+          $CONDA/bin/pytest -v --nbval-lax --current-env human_tests/Human_latent_transformation_simulation.ipynb
+          $CONDA/bin/pytest -v --nbval-lax --current-env human_tests/Human_template_simulation.ipynb
