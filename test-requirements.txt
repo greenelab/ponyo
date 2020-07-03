@@ -1,0 +1,6 @@
+.
+pytest
+nbval
+coverage<5.0
+pytest-cov
+python-coveralls
