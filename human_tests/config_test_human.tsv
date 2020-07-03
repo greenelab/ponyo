@@ -1,0 +1,17 @@
+local_dir	"../test_results/"
+scaler_transform_file	"../test_results/scaler_transform.pickle"
+dataset_name	"human_tests"
+simulation_type	"None"
+NN_architecture	"NN_2500_30"
+learning_rate	0.001
+batch_size	5
+epochs	10
+kappa	0.01
+intermediate_dim	2500
+latent_dim	30
+epsilon_std	1.0
+project_id	"SRP016140"
+num_simulated_samples	100
+num_simulated	2
+metadata_colname	'run'
+validation_frac	0.1
