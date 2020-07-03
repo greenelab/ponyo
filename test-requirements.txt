@@ -1,5 +1,10 @@
-.
+-e .
 pytest
 nbval
 coverage<5.0
 pytest-cov
+
+# until this PR gets pulled in use this
+git+https://github.com/TimoRoth/coveralls-python.git
+# instead of
+# python-coveralls

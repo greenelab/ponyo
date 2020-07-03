@@ -21,7 +21,6 @@ jobs:
           # $CONDA is an environment variable pointing to the root of the miniconda directory
           $CONDA/bin/conda env update --file environment.yml --name base
           $CONDA/bin/pip install -r test-requirements.txt
-          $CONDA/bin/pip install --upgrade git+https://github.com/TimoRoth/coveralls-python.git
 
       - name: Run analysis notebooks
         run: |
