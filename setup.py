@@ -19,16 +19,5 @@ setup(
     license="BSD 3-Clause",
     packages=["ponyo"],
     zip_safe=False,
-    install_requires=[
-        "pandas",
-        "numpy",
-        "glob",
-        "keras",
-        "tensorflow",
-        "sklearn",
-        "joblib",
-        "rpy2",
-        "r-base>=3.6.0",
-        "bioconductor-limma" "bioconductor-sva",
-    ],
+    install_requires=["pandas", "numpy", "glob2", "keras", "tensorflow", "sklearn"],
 )
