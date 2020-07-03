@@ -74,7 +74,7 @@ def get_sample_ids(experiment_id, dataset_name, sample_id_colname):
     return sample_ids
 
 
-def simulate_compendium(
+def simulate_by_latent_transformation(
     num_simulated_experiments,
     normalized_data_file,
     NN_architecture,
@@ -213,8 +213,6 @@ def simulate_compendium(
         # Get centroid of original data
         centroid = data_encoded_df.mean(axis=0)
 
-        # Add individual vectors(centroid, sample point) to new_centroid
-
         # Encode original gene expression data into latent space
         data_encoded_all = loaded_model.predict_on_batch(normalized_data)
         data_encoded_all_df = pd.DataFrame(
@@ -288,7 +286,7 @@ def simulate_compendium(
     return simulated_data_scaled_df
 
 
-def simulate_data(
+def simulate_by_random_sampling(
     normalized_data_file,
     NN_architecture,
     dataset_name,
@@ -424,8 +422,8 @@ def shift_template_experiment(
     run,
 ):
     """
-    Generate simulated data using the selected_experiment_id as a template
-    experiment using the same workflow as simulate_compendia in generate_data_parallel.py
+    Generate new simulated experiment using the selected_experiment_id as a template
+    experiment using the same workflow as `simulate_by_latent_transform`
 
     This will return a file with a single simulated experiment following the workflow mentioned.
     This function can be run multiple times to generate multiple simulated experiments from a
