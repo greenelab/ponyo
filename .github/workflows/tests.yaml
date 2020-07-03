@@ -33,4 +33,5 @@ jobs:
 
       - name: Coveralls
         run: |
-          $CONDA/bin/coveralls
+          CI_BRANCH=${GITHUB_REF#"ref/heads"} $CONDA/bin/coveralls
+        shell: bash
