@@ -32,6 +32,7 @@ jobs:
           $CONDA/bin/pytest -v --nbval-lax --current-env Human_tests/Human_experiment_limma.ipynb --cov=ponyo --cov-append
 
       - name: Coveralls
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          CI_BRANCH=${GITHUB_REF#"ref/heads"} $CONDA/bin/coveralls
-        shell: bash
+          $CONDA/bin/coveralls
