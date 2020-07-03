@@ -10,6 +10,7 @@ training in `vae.tybalt_2layer_model`
 
 from ponyo import vae, utils
 import os
+import pickle
 import pandas as pd
 import numpy as np
 from sklearn import preprocessing
@@ -49,6 +50,8 @@ def normalize_expression_data(
     normalize_data_file:
         Output file containing normalized expression data
     """
+    # Read in config variables
+    params = utils.read_config(config_file)
 
     # Read data
     data = pd.read_csv(raw_input_data_file, header=0, sep="\t", index_col=0)
@@ -59,7 +62,8 @@ def normalize_expression_data(
     )
 
     # 0-1 normalize per gene
-    data_scaled_df = preprocessing.MinMaxScaler().fit_transform(data)
+    scaler = preprocessing.MinMaxScaler()
+    data_scaled_df = scaler.fit_transform(data)
     data_scaled_df = pd.DataFrame(
         data_scaled_df, columns=data.columns, index=data.index
     )
@@ -69,6 +73,13 @@ def normalize_expression_data(
             data_scaled_df.shape[0], data_scaled_df.shape[1]
         )
     )
+
+    # Save scaler transform
+    scaler_file = params["scaler_transform_file"]
+
+    outfile = open(scaler_file, "wb")
+    pickle.dump(scaler, outfile)
+    outfile.close()
 
     # Save scaled data
     data_scaled_df.to_csv(normalized_data_file, sep="\t", compression="xz")
