@@ -550,6 +550,7 @@ def shift_template_experiment(
         columns=selected_data_df.columns,
     )
 
+    # Un-normalize the data in order to run DE analysis downstream
     simulated_data_scaled = scaler.inverse_transform(simulated_data_decoded_df)
 
     simulated_data_scaled_df = pd.DataFrame(
@@ -562,7 +563,7 @@ def shift_template_experiment(
     test_file = os.path.join(
         local_dir,
         "pseudo_experiment",
-        "template_data_" + selected_experiment_id + "_test.txt",
+        "template_normalized_data_" + selected_experiment_id + "_test.txt",
     )
 
     selected_data_df.to_csv(test_file, float_format="%.3f", sep="\t")
