@@ -10,8 +10,9 @@ kappa	0.01
 intermediate_dim	2500
 latent_dim	30
 epsilon_std	1.0
-project_id	"SRP016140"
-num_simulated_samples	100
-num_simulated	2
-metadata_colname	'run'
 validation_frac	0.1
+num_simulated_samples	100
+num_simulated_experiments = 50
+num_simulated	2
+project_id	"SRP016140"
+metadata_colname	'run'
