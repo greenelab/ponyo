@@ -45,35 +45,32 @@ def setup_dir(config_file):
         os.path.join(base_dir, dataset_name, "logs"),
     ]
 
-    # Check if analysis output directory exist otherwise create
+    # Check if the following directories exist
+    # and if not to create them
     for each_dir in output_dirs:
+
+        # Check if analysis output directory exist otherwise create
         if not os.path.exists(each_dir):
             print("creating new directory: {}".format(each_dir))
             os.makedirs(each_dir, exist_ok=True)
 
         # Check if NN architecture directory exist otherwise create
-    for each_dir in output_dirs:
-        new_dir = os.path.join(each_dir, train_architecture)
-        if not os.path.exists(new_dir):
-            print("creating new directory: {}".format(new_dir))
-            os.makedirs(new_dir, exist_ok=True)
-
-    # Create results directories
-    output_dirs = [os.path.join(base_dir, dataset_name, "results")]
+        NN_dir = os.path.join(each_dir, train_architecture)
+        if not os.path.exists(NN_dir):
+            print("creating new directory: {}".format(NN_dir))
+            os.makedirs(NN_dir, exist_ok=True)
 
     # Check if analysis output directory exist otherwise create
-    for each_dir in output_dirs:
-        if not os.path.exists(each_dir):
-            print("creating new directory: {}".format(each_dir))
-            os.makedirs(each_dir, exist_ok=True)
+    results_dir = os.path.join(base_dir, dataset_name, "results")
+    if not os.path.exists(results_dir):
+        print("creating new directory: {}".format(results_dir))
+        os.makedirs(results_dir, exist_ok=True)
 
     # Check if 'saved_variables' directory exist otherwise create
-    for each_dir in output_dirs:
-        new_dir = os.path.join(each_dir, "saved_variables")
-
-        if not os.path.exists(new_dir):
-            print("creating new directory: {}".format(new_dir))
-            os.makedirs(new_dir, exist_ok=True)
+    var_dir = os.path.join(each_dir, "saved_variables")
+    if not os.path.exists(var_dir):
+        print("creating new directory: {}".format(var_dir))
+        os.makedirs(var_dir, exist_ok=True)
 
     # Create local directories to store intermediate files
     output_dirs = [

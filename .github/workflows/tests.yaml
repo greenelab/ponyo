@@ -29,3 +29,4 @@ jobs:
           $CONDA/bin/pytest -v --nbval-lax --current-env human_tests/Human_random_sampling_simulation.ipynb
           $CONDA/bin/pytest -v --nbval-lax --current-env human_tests/Human_latent_transform_simulation.ipynb
           $CONDA/bin/pytest -v --nbval-lax --current-env human_tests/Human_template_simulation.ipynb
+          

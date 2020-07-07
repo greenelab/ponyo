@@ -27,12 +27,12 @@ The tables lists the core parameters required to generate simulated data using m
 | Name | Description |
 | :--- | :---------- |
 | local_dir| str: Parent directory on local machine to store intermediate results|
-| scaler_transform_file| str: Files to store mapping from normalized to raw gene expression range|
-| dataset_name| str: Name for analysis directory. Either "Human" or "Pseudomonas"|
-| simulation_type | str: "sample_lvl_sim" or "experiment_lvl_sim"|
+| scaler_transform_file| str: File to store mapping from normalized to raw gene expression range|
+| dataset_name| str: Name for analysis directory containing notebooks using ponyo|
+| simulation_type | str: Name of simulation approach directory to store results locally|
 | NN_architecture | str: Name of neural network architecture to use. Format 'NN_<intermediate layer>_<latent layer>'|
-| learning_rate| float: Parent directory on local machine to store intermediate results|
-| batch_size | str: Name for analysis directory. Either "Human" or "Pseudomonas"|
+| learning_rate| float: Step size used for gradient descent. In other words, it's how quickly the  methods is learning|
+| batch_size | str: Training is performed in batches. So this determines the number of samples to consider at a given time.|
 | epochs | int: Number of times to train over the entire input dataset|
 | kappa | float: How fast to linearly ramp up KL loss|
 | intermediate_dim| int: Size of the hidden layer|
