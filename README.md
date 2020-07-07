@@ -32,15 +32,15 @@ The tables lists the core parameters required to generate simulated data using m
 | simulation_type | str: Name of simulation approach directory to store results locally|
 | NN_architecture | str: Name of neural network architecture to use. Format 'NN_<intermediate layer>_<latent layer>'|
 | learning_rate| float: Step size used for gradient descent. In other words, it's how quickly the  methods is learning|
-| batch_size | str: Training is performed in batches. So this determines the number of samples to consider at a given time.|
+| batch_size | str: Training is performed in batches. So this determines the number of samples to consider at a given time|
 | epochs | int: Number of times to train over the entire input dataset|
 | kappa | float: How fast to linearly ramp up KL loss|
 | intermediate_dim| int: Size of the hidden layer|
 | latent_dim | int: Size of the bottleneck layer|
 | epsilon_std | float: Standard deviation of Normal distribution to sample latent space|
-| validation_frac | float: Fraction of input samples to use to validate for VAE training.|
+| validation_frac | float: Fraction of input samples to use to validate for VAE training|
 | num_simulated_samples* | int: If using random sampling approach, simulate a compendia with these many samples|
 | num_simulated_experiments*| int: If using latent-transformation approach, simulate a compendia with these many experiments|
 | num_simulated*| int: If using template-based approach, simulate these many experiments|
-| project_id*| int: If using template-based approach, experiment id to use as template experiment.|
+| project_id*| int: If using template-based approach, experiment id to use as template experiment|
 | metadata_colname | str: Column header that contains sample id that maps expression data and metadata|
