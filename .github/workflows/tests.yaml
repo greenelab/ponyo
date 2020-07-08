@@ -20,13 +20,15 @@ jobs:
         run: |
           # $CONDA is an environment variable pointing to the root of the miniconda directory
           $CONDA/bin/conda env update --file environment.yml --name base
-          $CONDA/bin/pip install -e .
+          $CONDA/bin/pip install .
           $CONDA/bin/pip install pytest
           $CONDA/bin/pip install nbval
 
       - name: Run simulation notebooks
         run: |
           $CONDA/bin/pytest -v --nbval-lax --current-env human_tests/Human_random_sampling_simulation.ipynb
+          # Test if results of vae training are reproducible
+          $CONDA/bin/pytest -v --current-env human_tests/Human_random_sampling_simulation.ipynb
           $CONDA/bin/pytest -v --nbval-lax --current-env human_tests/Human_latent_transform_simulation.ipynb
           $CONDA/bin/pytest -v --nbval-lax --current-env human_tests/Human_template_simulation.ipynb
           

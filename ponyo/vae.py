@@ -10,6 +10,7 @@ import tensorflow as tf
 # To ensure reproducibility using Keras during development
 # https://keras.io/getting-started/faq/#how-can-i-obtain-reproducible-results-using-keras-during-development
 import numpy as np
+import random as rn
 from keras.layers import Input, Dense, Lambda, Activation
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model, Sequential
@@ -105,7 +106,7 @@ def tybalt_2layer_model(
     # The below is necessary for starting core Python generated random numbers
     # in a well-defined state.
 
-    np.random.seed(12345)
+    rn.random.seed(12345)
 
     # Force TensorFlow to use single thread.
     # Multiple threads are a potential source of
