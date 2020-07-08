@@ -106,7 +106,7 @@ def tybalt_2layer_model(
     # The below is necessary for starting core Python generated random numbers
     # in a well-defined state.
 
-    rn.random.seed(12345)
+    rn.seed(12345)
 
     # Force TensorFlow to use single thread.
     # Multiple threads are a potential source of
