@@ -1,10 +1,10 @@
-name: Test analysis notebooks
+name: Test simulations
 
 on: [push, pull_request]
 
 jobs:
   run-analysis:
-    name: Test analysis notebooks
+    name: Test simulation notebooks
     runs-on: ubuntu-latest
 
     steps:
@@ -24,12 +24,9 @@ jobs:
           $CONDA/bin/pip install pytest
           $CONDA/bin/pip install nbval
 
-      - name: Run analysis notebooks
+      - name: Run simulation notebooks
         run: |
-          export R_HOME=`$CONDA/bin/R RHOME`
-          $CONDA/bin/pytest -v --nbval-lax --current-env Pseudomonas_tests/Pseudomonas_sample_limma.ipynb
-          $CONDA/bin/pytest -v --nbval-lax --current-env Pseudomonas_tests/Pseudomonas_sample_combat.ipynb
-          $CONDA/bin/pytest -v --nbval-lax --current-env Pseudomonas_tests/Pseudomonas_experiment_limma.ipynb
-          $CONDA/bin/pytest -v --nbval-lax --current-env Human_tests/Human_sample_limma.ipynb
-          $CONDA/bin/pytest -v --nbval-lax --current-env Human_tests/Human_experiment_limma.ipynb
-      
+          $CONDA/bin/pytest -v --nbval-lax --current-env human_tests/Human_random_sampling_simulation.ipynb
+          $CONDA/bin/pytest -v --nbval-lax --current-env human_tests/Human_latent_transform_simulation.ipynb
+          $CONDA/bin/pytest -v --nbval-lax --current-env human_tests/Human_template_simulation.ipynb
+          
