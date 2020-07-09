@@ -19,5 +19,11 @@ setup(
     license="BSD 3-Clause",
     packages=["ponyo"],
     zip_safe=False,
-    install_requires=["pandas", "numpy", "keras", "tensorflow==1.13.1", "sklearn"],
+    install_requires=[
+        "pandas",
+        "numpy",
+        "keras==2.3.1",
+        "tensorflow==1.13.1",
+        "sklearn",
+    ],
 )
