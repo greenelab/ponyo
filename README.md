@@ -1,5 +1,5 @@
-![logo](https://github.com/ajlee21/ponyo/blob/logo/logo.png)
-# ponyo
+![logo](https://github.com/ajlee21/ponyo/blob/logo/logo.png =100x100)
+# ponyo 
 
 **Alexandra Lee and Casey Greene 2020**
 
