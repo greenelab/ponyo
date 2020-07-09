@@ -19,6 +19,7 @@ jobs:
       - name: Setup conda environment
         run: |
           pip install .
+          pip install -r test-requirements.txt
           pip install pytest
           pip install nbval
 
