@@ -1,3 +1,4 @@
+![logo](https://raw.githubusercontent.com/ajlee21/ponyo/tree/logo/logo.png)
 # ponyo
 
 **Alexandra Lee and Casey Greene 2020**
