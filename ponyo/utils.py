@@ -67,7 +67,7 @@ def setup_dir(config_file):
         os.makedirs(results_dir, exist_ok=True)
 
     # Check if 'saved_variables' directory exist otherwise create
-    var_dir = os.path.join(each_dir, "saved_variables")
+    var_dir = os.path.join(results_dir, "saved_variables")
     if not os.path.exists(var_dir):
         print("creating new directory: {}".format(var_dir))
         os.makedirs(var_dir, exist_ok=True)
