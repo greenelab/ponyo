@@ -1,5 +1,5 @@
 .
 pytest
 nbval
-umap
+umap-learn
 plotnine
