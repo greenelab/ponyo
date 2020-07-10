@@ -26,4 +26,5 @@ setup(
         "tensorflow==1.13.1",
         "sklearn",
     ],
+    tests_require=["pytest", "nbval", "umap-learn", "plotnine"],
 )

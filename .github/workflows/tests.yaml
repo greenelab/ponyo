@@ -18,7 +18,7 @@ jobs:
 
       - name: Setup environment
         run: |
-          pip install -r requirements.txt
+          pip install .[test]
 
       - name: Run simulation notebooks
         run: |
