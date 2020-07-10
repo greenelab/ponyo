@@ -7,6 +7,12 @@ HERE = pathlib.Path(__file__).parent
 # The text of the README file
 README = (HERE / "README.md").read_text()
 
+test_pckgs = ["pytest", "nbval", "umap-learn", "plotnine"]
+
+extras = {
+    "test": test_pckgs,
+}
+
 setup(
     name="ponyo",
     version="0.1",
@@ -26,5 +32,6 @@ setup(
         "tensorflow==1.13.1",
         "sklearn",
     ],
-    tests_require=["pytest", "nbval", "umap-learn", "plotnine"],
+    tests_require=test_pckgs,
+    extras_require=extras,
 )
