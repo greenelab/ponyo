@@ -1,5 +1,0 @@
-.
-pytest
-nbval
-umap-learn
-plotnine
