@@ -1,4 +1,4 @@
-<img src="https://github.com/ajlee21/ponyo/blob/logo/logo.png" width=100 align=right>
+<img src="https://github.com/greenelab/ponyo/blob/master/logo.png" width=150 align=right> 
 
 # ponyo 
 
