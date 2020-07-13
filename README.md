@@ -1,4 +1,6 @@
-# ponyo
+<img src="https://github.com/greenelab/ponyo/blob/master/logo.png" width=150 align=right> 
+
+# ponyo 
 
 **Alexandra Lee and Casey Greene 2020**
 

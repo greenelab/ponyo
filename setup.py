@@ -7,6 +7,12 @@ HERE = pathlib.Path(__file__).parent
 # The text of the README file
 README = (HERE / "README.md").read_text()
 
+test_pckgs = ["pytest", "nbval", "umap-learn", "plotnine"]
+
+extras = {
+    "test": test_pckgs,
+}
+
 setup(
     name="ponyo",
     version="0.1",
@@ -19,5 +25,13 @@ setup(
     license="BSD 3-Clause",
     packages=["ponyo"],
     zip_safe=False,
-    install_requires=["pandas", "numpy", "glob2", "keras", "tensorflow", "sklearn"],
+    install_requires=[
+        "pandas",
+        "numpy",
+        "keras==2.3.1",
+        "tensorflow==1.13.1",
+        "sklearn",
+    ],
+    tests_require=test_pckgs,
+    extras_require=extras,
 )
