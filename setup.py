@@ -29,7 +29,7 @@ setup(
         "pandas",
         "numpy",
         "keras==2.3.1",
-        "tensorflow==1.13.1",
+        "tensorflow==1.15.2",
         "sklearn",
     ],
     tests_require=test_pckgs,
