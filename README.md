@@ -1,6 +1,7 @@
 <img src="https://github.com/greenelab/ponyo/blob/master/logo.png" width=150 align=right> 
 
 # ponyo 
+[![Coverage Status](https://coveralls.io/repos/github/greenelab/ponyo/badge.svg?branch=master)](https://coveralls.io/github/greenelab/ponyo?branch=master)
 
 **Alexandra Lee and Casey Greene 2020**
 
