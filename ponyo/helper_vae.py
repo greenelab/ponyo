@@ -12,7 +12,6 @@ from keras import backend as K
 import os
 import tensorflow as tf
 import numpy as np
-import random as rn
 
 # The below is necessary in Python 3.2.3 onwards to
 # have reproducible behavior for certain hash-based operations.
@@ -32,7 +31,7 @@ np.random.seed(42)
 # The below is necessary for starting core Python generated random numbers
 # in a well-defined state.
 
-rn.seed(12345)
+np.random.seed(12345)
 
 # Force TensorFlow to use single thread.
 # Multiple threads are a potential source of

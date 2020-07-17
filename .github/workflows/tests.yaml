@@ -1,10 +1,10 @@
-name: Test analysis notebooks
+name: Test simulations
 
 on: [push, pull_request]
 
 jobs:
   run-analysis:
-    name: Test analysis notebooks
+    name: Test simulation notebooks
     runs-on: ubuntu-latest
 
     steps:
@@ -14,25 +14,14 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v1
         with:
-          python-version: 3.8
+          python-version: 3.7
 
-      - name: Setup conda environment
+      - name: Setup environment
         run: |
-          # $CONDA is an environment variable pointing to the root of the miniconda directory
-          $CONDA/bin/conda env update --file environment.yml --name base
-          $CONDA/bin/pip install -r test-requirements.txt
+          pip install -e .[test]
 
-      - name: Run analysis notebooks
+      - name: Run simulation notebooks
         run: |
-          export R_HOME=`$CONDA/bin/R RHOME`
-          $CONDA/bin/pytest -v --nbval-lax --current-env Pseudomonas_tests/Pseudomonas_sample_limma.ipynb --cov=ponyo
-          $CONDA/bin/pytest -v --nbval-lax --current-env Pseudomonas_tests/Pseudomonas_sample_combat.ipynb --cov=ponyo --cov-append
-          $CONDA/bin/pytest -v --nbval-lax --current-env Pseudomonas_tests/Pseudomonas_experiment_limma.ipynb --cov=ponyo --cov-append
-          $CONDA/bin/pytest -v --nbval-lax --current-env Human_tests/Human_sample_limma.ipynb --cov=ponyo --cov-append
-          $CONDA/bin/pytest -v --nbval-lax --current-env Human_tests/Human_experiment_limma.ipynb --cov=ponyo --cov-append
-
-      - name: Coveralls
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          $CONDA/bin/coveralls
+          pytest -v --nbval-lax --current-env human_tests/Human_random_sampling_simulation.ipynb --cov=ponyo
+          pytest -v --nbval-lax --current-env human_tests/Human_latent_transform_simulation.ipynb --cov=ponyo --cov-append
+          pytest -v --nbval-lax --current-env human_tests/Human_template_simulation.ipynb --cov=ponyo --cov-append
