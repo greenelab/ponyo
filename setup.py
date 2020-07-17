@@ -7,7 +7,15 @@ HERE = pathlib.Path(__file__).parent
 # The text of the README file
 README = (HERE / "README.md").read_text()
 
-test_pckgs = ["pytest", "nbval", "umap-learn", "plotnine"]
+test_pckgs = [
+    "pytest",
+    "nbval",
+    "umap-learn",
+    "plotnine",
+    "coverage<5.0",
+    "pytest-cov",
+    "coveralls>=2.1.0",
+]
 
 extras = {
     "test": test_pckgs,

@@ -18,11 +18,10 @@ jobs:
 
       - name: Setup environment
         run: |
-          pip install .[test]
+          pip install -e .[test]
 
       - name: Run simulation notebooks
         run: |
-          pytest -v --nbval-lax --current-env human_tests/Human_random_sampling_simulation.ipynb
-          pytest -v --nbval-lax --current-env human_tests/Human_latent_transform_simulation.ipynb
-          pytest -v --nbval-lax --current-env human_tests/Human_template_simulation.ipynb
-          
+          pytest -v --nbval-lax --current-env human_tests/Human_random_sampling_simulation.ipynb --cov=ponyo
+          pytest -v --nbval-lax --current-env human_tests/Human_latent_transform_simulation.ipynb --cov=ponyo --cov-append
+          pytest -v --nbval-lax --current-env human_tests/Human_template_simulation.ipynb --cov=ponyo --cov-append
