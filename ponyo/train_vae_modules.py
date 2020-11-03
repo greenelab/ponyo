@@ -27,9 +27,6 @@ with warnings.catch_warnings():
     fxn()
 
 
-np.random.seed(123)
-
-
 def normalize_expression_data(
     base_dir, config_file, raw_input_data_file, normalized_data_file
 ):

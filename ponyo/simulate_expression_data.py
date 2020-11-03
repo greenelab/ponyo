@@ -24,8 +24,6 @@ with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     fxn()
 
-np.random.seed(123)
-
 
 def get_sample_ids(experiment_id, dataset_name, sample_id_colname):
     """
