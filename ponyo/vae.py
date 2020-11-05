@@ -10,7 +10,9 @@ import tensorflow as tf
 # To ensure reproducibility using Keras during development
 # https://keras.io/getting-started/faq/#how-can-i-obtain-reproducible-results-using-keras-during-development
 import numpy as np
-import random as rn
+import os
+
+from keras import backend as K
 from keras.layers import Input, Dense, Lambda, Activation
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model, Sequential
@@ -88,26 +90,6 @@ def tybalt_2layer_model(
 
     """
 
-    # The below is necessary in Python 3.2.3 onwards to
-    # have reproducible behavior for certain hash-based operations.
-    # See these references for further details:
-    # https://docs.python.org/3.4/using/cmdline.html#envvar-PYTHONHASHSEED
-    # https://github.com/keras-team/keras/issues/2280#issuecomment-306959926
-    randomState = 123
-    import os
-
-    os.environ["PYTHONHASHSEED"] = "0"
-
-    # The below is necessary for starting Numpy generated random numbers
-    # in a well-defined initial state.
-
-    np.random.seed(42)
-
-    # The below is necessary for starting core Python generated random numbers
-    # in a well-defined state.
-
-    rn.seed(12345)
-
     # Force TensorFlow to use single thread.
     # Multiple threads are a potential source of
     # non-reproducible results.
@@ -118,15 +100,6 @@ def tybalt_2layer_model(
     session_conf = tf.ConfigProto(
         intra_op_parallelism_threads=1, inter_op_parallelism_threads=1
     )
-
-    from keras import backend as K
-
-    # The below tf.set_random_seed() will make random number generation
-    # in the TensorFlow backend have a well-defined initial state.
-    # For further details, see:
-    # https://www.tensorflow.org/api_docs/python/tf/set_random_seed
-
-    tf.set_random_seed(1234)
 
     sess = tf.Session(graph=tf.get_default_graph(), config=session_conf)
     K.set_session(sess)
@@ -191,7 +164,7 @@ def tybalt_2layer_model(
 
     # Split 10% test set randomly
     test_set_percent = validation_frac
-    rnaseq_test_df = rnaseq.sample(frac=test_set_percent, random_state=randomState)
+    rnaseq_test_df = rnaseq.sample(frac=test_set_percent)
     rnaseq_train_df = rnaseq.drop(rnaseq_test_df.index)
 
     # Create a placeholder for an encoded (original-dimensional)

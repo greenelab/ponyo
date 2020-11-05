@@ -9,29 +9,8 @@ from keras.callbacks import Callback
 from keras import metrics
 from keras.layers import Layer
 from keras import backend as K
-import os
 import tensorflow as tf
-import numpy as np
 
-# The below is necessary in Python 3.2.3 onwards to
-# have reproducible behavior for certain hash-based operations.
-# See these references for further details:
-# https://keras.io/getting-started/faq/#how-can-i-obtain-reproducible-results-using-keras-during-development
-# https://docs.python.org/3.4/using/cmdline.html#envvar-PYTHONHASHSEED
-# https://github.com/keras-team/keras/issues/2280#issuecomment-306959926
-randomState = 123
-
-os.environ["PYTHONHASHSEED"] = "0"
-
-# The below is necessary for starting Numpy generated random numbers
-# in a well-defined initial state.
-
-np.random.seed(42)
-
-# The below is necessary for starting core Python generated random numbers
-# in a well-defined state.
-
-np.random.seed(12345)
 
 # Force TensorFlow to use single thread.
 # Multiple threads are a potential source of
@@ -42,14 +21,6 @@ np.random.seed(12345)
 session_conf = tf.ConfigProto(
     intra_op_parallelism_threads=1, inter_op_parallelism_threads=1
 )
-
-
-# The below tf.set_random_seed() will make random number generation
-# in the TensorFlow backend have a well-defined initial state.
-# For further details, see:
-# https://www.tensorflow.org/api_docs/python/tf/set_random_seed
-
-tf.set_random_seed(1234)
 
 sess = tf.Session(graph=tf.get_default_graph(), config=session_conf)
 K.set_session(sess)

@@ -23,7 +23,7 @@ extras = {
 
 setup(
     name="ponyo",
-    version="0.1",
+    version="0.2",
     description="Install functions to simulate gene expression compendia",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -37,8 +37,9 @@ setup(
         "pandas",
         "numpy",
         "keras==2.3.1",
-        "tensorflow==1.13.1",
-        "sklearn",
+        "tensorflow==1.15.4",
+        "scikit-learn",
+        "h5py<3",
     ],
     tests_require=test_pckgs,
     extras_require=extras,
