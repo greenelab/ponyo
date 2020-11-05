@@ -21,7 +21,15 @@ pip install ponyo
 ## How to use
 Example notebooks using ponyo on test data can be found in [human_tests](https://github.com/greenelab/ponyo/tree/master/human_tests)
 
-Additionally, this method has been used in [simulate-expression-compendia](https://github.com/greenelab/simulate-expression-compendia) repository.
+Additionally, this method has been used in [simulate-expression-compendia](https://github.com/greenelab/simulate-expression-compendia) and [generic-expression-patterns](https://github.com/greenelab/generic-expression-patterns) repositories.
+
+## Setting random seeds
+To keep the VAE training deterministic, you will need to set multiple random seeds:
+1. numpy random
+2. python random
+3. tensorflow random
+
+For an example of this, see [human_tests](https://github.com/greenelab/ponyo/tree/master/human_tests)
 
 ## Configuration file
 
