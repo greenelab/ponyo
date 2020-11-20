@@ -25,49 +25,43 @@ with warnings.catch_warnings():
     fxn()
 
 
-def get_sample_ids(experiment_id, dataset_name, sample_id_colname):
+def get_sample_ids(
+    metadata_filename, delimiter, experiment_colname, experiment_id, sample_id_colname
+):
     """
     Returns sample ids (found in gene expression df) associated with
     a given list of experiment ids (found in the metadata)
 
     Arguments
     ----------
-    experiment_ids_file: str
-        File containing all cleaned experiment ids
+    metadata_filename: str
+        Metadata file path. Note: The format of this metadata file
+        requires the index column to contain experiment ids.
 
-    dataset_name: str
-        Name for analysis directory. Either "Human" or "Pseudomonas"
+    delimiter: str
+        Delimiter for metadata file
+
+    experiment_colname: str
+        Column header that contains the experiment ids
+
+    experiment_id: str
+        Experiment id selected to retrieve sample ids for
 
     sample_id_colname: str
         Column header that contains sample id that maps expression data
         and metadata
 
     """
-    base_dir = os.path.abspath(os.path.join(os.getcwd(), "../"))
 
-    if "pseudomonas" in dataset_name.lower():
-        # metadata file
-        mapping_file = os.path.join(
-            base_dir, dataset_name, "data", "metadata", "sample_annotations.tsv"
-        )
+    # Read in metadata
+    metadata = pd.read_csv(metadata_filename, header=0, sep=delimiter, index_col=None)
 
-        # Read in metadata
-        metadata = pd.read_csv(mapping_file, header=0, sep="\t", index_col=0)
+    # Set index column to experiment id column
+    metadata.set_index(experiment_colname, inplace=True)
 
-        selected_metadata = metadata.loc[experiment_id]
-        sample_ids = list(selected_metadata[sample_id_colname])
-
-    else:
-        # metadata file
-        mapping_file = os.path.join(
-            base_dir, dataset_name, "data", "metadata", "recount2_metadata.tsv"
-        )
-
-        # Read in metadata
-        metadata = pd.read_csv(mapping_file, header=0, sep="\t", index_col=0)
-
-        selected_metadata = metadata.loc[experiment_id]
-        sample_ids = list(selected_metadata[sample_id_colname])
+    # Select samples associated with experiment id
+    selected_metadata = metadata.loc[experiment_id]
+    sample_ids = list(selected_metadata[sample_id_colname])
 
     return sample_ids
 
@@ -199,11 +193,14 @@ def simulate_by_random_sampling(
 
 def simulate_by_latent_transformation(
     num_simulated_experiments,
-    normalized_data_file,
+    normalized_data_filename,
     NN_architecture,
     dataset_name,
     analysis_name,
-    experiment_ids_file,
+    metadata_filename,
+    metadata_delimiter="\t",
+    experiment_id_colname,
+    experiment_ids_filename,
     sample_id_colname,
     local_dir,
     base_dir,
@@ -234,7 +231,7 @@ def simulate_by_latent_transformation(
     number_simulated_experiments: int
         Number of experiments to simulate
 
-    normalized_data_file: str
+    normalized_data_filename: str
         File containing normalized gene expression data
 
         ------------------------------| PA0001 | PA0002 |...
@@ -253,7 +250,7 @@ def simulate_by_latent_transformation(
         Parent directory where simulated data with experiments/partitionings will be stored.
         Format of the directory name is <dataset_name>_<sample/experiment>_lvl_sim
 
-    experiment_ids_file: str
+    experiment_ids_filename: str
         File containing all cleaned experiment ids
 
     sample_id_colname: str
@@ -313,7 +310,11 @@ def simulate_by_latent_transformation(
 
         # Get corresponding sample ids
         sample_ids = get_sample_ids(
-            selected_experiment_id, dataset_name, sample_id_colname
+            metadata_filename,
+            metadata_delimiter,
+            experiment_id_colname,
+            selected_experiment_id,
+            sample_id_colname,
         )
 
         # Remove any missing sample ids
@@ -500,7 +501,13 @@ def shift_template_experiment(
     normalized_data = pd.read_csv(normalized_data_file, header=0, sep="\t", index_col=0)
 
     # Get corresponding sample ids
-    sample_ids = get_sample_ids(selected_experiment_id, dataset_name, sample_id_colname)
+    sample_ids = get_sample_ids(
+        metadata_filename,
+        metadata_delimiter,
+        experiment_id_colname,
+        selected_experiment_id,
+        sample_id_colname,
+    )
 
     # Gene expression data for selected samples
     selected_data_df = normalized_data.loc[sample_ids]
