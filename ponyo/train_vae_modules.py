@@ -72,7 +72,7 @@ def normalize_expression_data(
     )
 
     # Save scaler transform
-    scaler_filename = params["scaler_transform_file"]
+    scaler_filename = params["scaler_transform_filename"]
 
     outfile = open(scaler_filename, "wb")
     pickle.dump(scaler, outfile)
