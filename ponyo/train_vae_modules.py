@@ -28,7 +28,7 @@ with warnings.catch_warnings():
 
 
 def normalize_expression_data(
-    base_dir, config_file, raw_input_data_file, normalized_data_file
+    base_dir, config_filename, raw_input_data_filename, normalized_data_filename
 ):
     """
     0-1 normalize the expression data.
@@ -38,20 +38,20 @@ def normalize_expression_data(
     base_dir: str
         Root directory containing analysis subdirectories
 
-    config_file: str
+    config_filename: str
         File containing user defined parameters
 
-    raw_input_data_file: str
+    raw_input_data_filename: str
         File containing raw expression data
 
-    normalize_data_file:
+    normalize_data_filename:
         Output file containing normalized expression data
     """
     # Read in config variables
-    params = utils.read_config(config_file)
+    params = utils.read_config(config_filename)
 
     # Read data
-    data = pd.read_csv(raw_input_data_file, header=0, sep="\t", index_col=0)
+    data = pd.read_csv(raw_input_data_filename, header=0, sep="\t", index_col=0)
     print(
         "input: dataset contains {} samples and {} genes".format(
             data.shape[0], data.shape[1]
@@ -72,32 +72,32 @@ def normalize_expression_data(
     )
 
     # Save scaler transform
-    scaler_file = params["scaler_transform_file"]
+    scaler_filename = params["scaler_transform_file"]
 
-    outfile = open(scaler_file, "wb")
+    outfile = open(scaler_filename, "wb")
     pickle.dump(scaler, outfile)
     outfile.close()
 
     # Save scaled data
-    data_scaled_df.to_csv(normalized_data_file, sep="\t", compression="xz")
+    data_scaled_df.to_csv(normalized_data_filename, sep="\t", compression="xz")
 
 
-def train_vae(config_file, input_data_file):
+def train_vae(config_filename, input_data_filename):
     """
     Trains VAE model using parameters set in config file
 
     Arguments
     ----------
-    config_file: str
+    config_filename: str
         File containing user defined parameters
 
-    input_data_file: str
+    input_data_filename: str
         File path corresponding to input dataset to use
 
     """
 
     # Read in config variables
-    params = utils.read_config(config_file)
+    params = utils.read_config(config_filename)
 
     # Load parameters
     base_dir = os.path.abspath(os.path.join(os.getcwd(), "../"))
@@ -113,7 +113,7 @@ def train_vae(config_file, input_data_file):
     validation_frac = params["validation_frac"]
 
     # Read data
-    normalized_data = pd.read_csv(input_data_file, header=0, sep="\t", index_col=0)
+    normalized_data = pd.read_csv(input_data_filename, header=0, sep="\t", index_col=0)
 
     print(
         "input dataset contains {} samples and {} genes".format(

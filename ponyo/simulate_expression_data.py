@@ -67,7 +67,7 @@ def get_sample_ids(
 
 
 def simulate_by_random_sampling(
-    normalized_data_file,
+    normalized_data_filename,
     NN_architecture,
     dataset_name,
     analysis_name,
@@ -93,7 +93,7 @@ def simulate_by_random_sampling(
 
     Arguments
     ----------
-    normalized_data_file: str
+    normalized_data_filename: str
         File containing normalized gene expression data
 
         ------------------------------| PA0001 | PA0002 |...
@@ -129,23 +129,29 @@ def simulate_by_random_sampling(
 
     # Files
     NN_dir = os.path.join(base_dir, dataset_name, "models", NN_architecture)
-    model_encoder_file = glob.glob(os.path.join(NN_dir, "*_encoder_model.h5"))[0]
+    model_encoder_filename = glob.glob(os.path.join(NN_dir, "*_encoder_model.h5"))[0]
 
-    weights_encoder_file = glob.glob(os.path.join(NN_dir, "*_encoder_weights.h5"))[0]
+    weights_encoder_filename = glob.glob(os.path.join(NN_dir, "*_encoder_weights.h5"))[
+        0
+    ]
 
-    model_decoder_file = glob.glob(os.path.join(NN_dir, "*_decoder_model.h5"))[0]
+    model_decoder_filename = glob.glob(os.path.join(NN_dir, "*_decoder_model.h5"))[0]
 
-    weights_decoder_file = glob.glob(os.path.join(NN_dir, "*_decoder_weights.h5"))[0]
+    weights_decoder_filename = glob.glob(os.path.join(NN_dir, "*_decoder_weights.h5"))[
+        0
+    ]
 
     # Load saved models
-    loaded_model = load_model(model_encoder_file)
-    loaded_decode_model = load_model(model_decoder_file)
+    loaded_model = load_model(model_encoder_filename)
+    loaded_decode_model = load_model(model_decoder_filename)
 
-    loaded_model.load_weights(weights_encoder_file)
-    loaded_decode_model.load_weights(weights_decoder_file)
+    loaded_model.load_weights(weights_encoder_filename)
+    loaded_decode_model.load_weights(weights_decoder_filename)
 
     # Read data
-    normalized_data = pd.read_csv(normalized_data_file, header=0, sep="\t", index_col=0)
+    normalized_data = pd.read_csv(
+        normalized_data_filename, header=0, sep="\t", index_col=0
+    )
 
     print(
         "Normalized gene expression data contains {} samples and {} genes".format(
@@ -284,20 +290,24 @@ def simulate_by_latent_transformation(
     NN_dir = os.path.join(base_dir, dataset_name, "models", NN_architecture)
     latent_dim = NN_architecture.split("_")[-1]
 
-    model_encoder_file = glob.glob(os.path.join(NN_dir, "*_encoder_model.h5"))[0]
+    model_encoder_filename = glob.glob(os.path.join(NN_dir, "*_encoder_model.h5"))[0]
 
-    weights_encoder_file = glob.glob(os.path.join(NN_dir, "*_encoder_weights.h5"))[0]
+    weights_encoder_filename = glob.glob(os.path.join(NN_dir, "*_encoder_weights.h5"))[
+        0
+    ]
 
-    model_decoder_file = glob.glob(os.path.join(NN_dir, "*_decoder_model.h5"))[0]
+    model_decoder_filename = glob.glob(os.path.join(NN_dir, "*_decoder_model.h5"))[0]
 
-    weights_decoder_file = glob.glob(os.path.join(NN_dir, "*_decoder_weights.h5"))[0]
+    weights_decoder_filename = glob.glob(os.path.join(NN_dir, "*_decoder_weights.h5"))[
+        0
+    ]
 
     # Load saved models
-    loaded_model = load_model(model_encoder_file)
-    loaded_decode_model = load_model(model_decoder_file)
+    loaded_model = load_model(model_encoder_filename)
+    loaded_decode_model = load_model(model_decoder_filename)
 
-    loaded_model.load_weights(weights_encoder_file)
-    loaded_decode_model.load_weights(weights_decoder_file)
+    loaded_model.load_weights(weights_encoder_filename)
+    loaded_decode_model.load_weights(weights_decoder_filename)
 
     # Read data
     experiment_ids = pd.read_csv(
@@ -424,11 +434,13 @@ def simulate_by_latent_transformation(
     )
 
     # Save before and after experiment for visualization validation
-    before_encoded_file = os.path.join(local_dir, "simulated_before_encoded.txt")
-    after_encoded_file = os.path.join(local_dir, "simulated_after_encoded.txt")
+    before_encoded_filename = os.path.join(local_dir, "simulated_before_encoded.txt")
+    after_encoded_filename = os.path.join(local_dir, "simulated_after_encoded.txt")
 
-    data_encoded_df.to_csv(before_encoded_file, float_format="%.3f", sep="\t")
-    simulated_data_encoded_df.to_csv(after_encoded_file, float_format="%.3f", sep="\t")
+    data_encoded_df.to_csv(before_encoded_filename, float_format="%.3f", sep="\t")
+    simulated_data_encoded_df.to_csv(
+        after_encoded_filename, float_format="%.3f", sep="\t"
+    )
 
     return simulated_data_scaled_df
 
@@ -503,7 +515,7 @@ def shift_template_experiment(
 
     Returns
     --------
-    simulated_data_file: str
+    simulated_data_filename: str
         File containing simulated gene expression data
 
     """
@@ -512,20 +524,24 @@ def shift_template_experiment(
     NN_dir = os.path.join(base_dir, dataset_name, "models", NN_architecture)
     latent_dim = NN_architecture.split("_")[-1]
 
-    model_encoder_file = glob.glob(os.path.join(NN_dir, "*_encoder_model.h5"))[0]
+    model_encoder_filename = glob.glob(os.path.join(NN_dir, "*_encoder_model.h5"))[0]
 
-    weights_encoder_file = glob.glob(os.path.join(NN_dir, "*_encoder_weights.h5"))[0]
+    weights_encoder_filename = glob.glob(os.path.join(NN_dir, "*_encoder_weights.h5"))[
+        0
+    ]
 
-    model_decoder_file = glob.glob(os.path.join(NN_dir, "*_decoder_model.h5"))[0]
+    model_decoder_filename = glob.glob(os.path.join(NN_dir, "*_decoder_model.h5"))[0]
 
-    weights_decoder_file = glob.glob(os.path.join(NN_dir, "*_decoder_weights.h5"))[0]
+    weights_decoder_filename = glob.glob(os.path.join(NN_dir, "*_decoder_weights.h5"))[
+        0
+    ]
 
     # Load saved models
-    loaded_model = load_model(model_encoder_file, compile=False)
-    loaded_decode_model = load_model(model_decoder_file, compile=False)
+    loaded_model = load_model(model_encoder_filename, compile=False)
+    loaded_decode_model = load_model(model_decoder_filename, compile=False)
 
-    loaded_model.load_weights(weights_encoder_file)
-    loaded_decode_model.load_weights(weights_decoder_file)
+    loaded_model.load_weights(weights_encoder_filename)
+    loaded_decode_model.load_weights(weights_decoder_filename)
 
     # Get corresponding sample ids
     sample_ids = get_sample_ids(
@@ -592,27 +608,30 @@ def shift_template_experiment(
     )
 
     # Save template data for visualization validation
-    test_file = os.path.join(
+    test_filename = os.path.join(
         local_dir,
         "pseudo_experiment",
         "template_normalized_data_" + selected_experiment_id + "_test.txt",
     )
 
-    selected_data_df.to_csv(test_file, float_format="%.3f", sep="\t")
+    selected_data_df.to_csv(test_filename, float_format="%.3f", sep="\t")
 
     # Save
-    out_file = os.path.join(
+    out_filename = os.path.join(
         local_dir,
         "pseudo_experiment",
         "selected_simulated_data_" + selected_experiment_id + "_" + str(run) + ".txt",
     )
 
-    simulated_data_scaled_df.to_csv(out_file, float_format="%.3f", sep="\t")
+    simulated_data_scaled_df.to_csv(out_filename, float_format="%.3f", sep="\t")
 
-    out_encoded_file = os.path.join(
+    out_encoded_filename = os.path.join(
         local_dir,
         "pseudo_experiment",
         f"selected_simulated_encoded_data_{selected_experiment_id}_{run}.txt",
     )
 
-    simulated_data_encoded_df.to_csv(out_encoded_file, float_format="%.3f", sep="\t")
+    simulated_data_encoded_df.to_csv(
+        out_encoded_filename, float_format="%.3f", sep="\t"
+    )
+

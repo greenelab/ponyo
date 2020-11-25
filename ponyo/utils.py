@@ -18,21 +18,21 @@ def read_config(filename):
     return config_dict
 
 
-def setup_dir(config_file):
+def setup_dir(config_filename):
     """
     Create directories to store files created by VAE training and
     simulation analysis
 
     Arguments
     ----------
-    config_file: str
+    config_filename: str
         File containing user defined parameters
     """
 
     base_dir = os.path.abspath(os.path.join(os.getcwd(), "../"))
 
     # Read in config variables
-    params = read_config(config_file)
+    params = read_config(config_filename)
 
     # Load parameters
     local_dir = params["local_dir"]
@@ -85,33 +85,35 @@ def setup_dir(config_file):
             os.makedirs(each_dir, exist_ok=True)
 
 
-def create_experiment_id_file(metadata_file, input_data_file, output_file, config_file):
+def create_experiment_id_file(
+    metadata_filename, input_data_filename, output_filename, config_filename
+):
     """
     Create file with experiment ids that are associated with expression data
 
     Arguments
     ----------
-    metadata_file: str
+    metadata_filename: str
         File containing metadata annotations per sample
 
-    input_data_file: str
+    input_data_filename: str
         File containing normalized expression data
 
-    output_file: str
+    output_filename: str
         File containing experiment ids with expression data and sample annotations
 
-    config_file: str
+    config_filename: str
         File containing user defined parameters
 
     """
     # Read in metadata
-    metadata = pd.read_csv(metadata_file, header=0, sep="\t", index_col=0)
+    metadata = pd.read_csv(metadata_filename, header=0, sep="\t", index_col=0)
 
     # Read in expression data
-    normalized_data = pd.read_csv(input_data_file, header=0, sep="\t", index_col=0)
+    normalized_data = pd.read_csv(input_data_filename, header=0, sep="\t", index_col=0)
 
     # Read in config variables
-    params = read_config(config_file)
+    params = read_config(config_filename)
 
     # Load parameters
     sample_id_colname = params["metadata_colname"]
@@ -158,7 +160,7 @@ def create_experiment_id_file(metadata_file, input_data_file, output_file, confi
     experiment_ids_with_gene_expression_df = pd.DataFrame(
         experiment_ids_with_gene_expression, columns=["experiment_id"]
     )
-    experiment_ids_with_gene_expression_df.to_csv(output_file, sep="\t")
+    experiment_ids_with_gene_expression_df.to_csv(output_filename, sep="\t")
     print(
         "{} experiment ids saved to file".format(
             len(experiment_ids_with_gene_expression)
