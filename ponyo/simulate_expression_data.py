@@ -198,10 +198,10 @@ def simulate_by_latent_transformation(
     dataset_name,
     analysis_name,
     metadata_filename,
-    metadata_delimiter="\t",
+    metadata_delimiter,
     experiment_id_colname,
-    experiment_ids_filename,
     sample_id_colname,
+    experiment_ids_filename,
     local_dir,
     base_dir,
 ):
@@ -250,11 +250,25 @@ def simulate_by_latent_transformation(
         Parent directory where simulated data with experiments/partitionings will be stored.
         Format of the directory name is <dataset_name>_<sample/experiment>_lvl_sim
 
+    metadata_filename: str
+        Metadata file path. Note: The format of this metadata file
+        requires the index column to contain experiment ids.
+
+    metadata_delimiter: str
+        Delimiter for metadata file
+
     experiment_ids_filename: str
         File containing all cleaned experiment ids
 
+    experiment_colname: str
+        Column header that contains the experiment ids
+
+    experiment_id: str
+        Experiment id selected to retrieve sample ids for
+
     sample_id_colname: str
-        Column header that contains sample id that maps expression data and metadata
+        Column header that contains sample id that maps expression data
+        and metadata
 
     local_dir: str
         Parent directory on local machine to store intermediate results
@@ -288,9 +302,13 @@ def simulate_by_latent_transformation(
     loaded_decode_model.load_weights(weights_decoder_file)
 
     # Read data
-    experiment_ids = pd.read_csv(experiment_ids_file, header=0, sep="\t", index_col=0)
+    experiment_ids = pd.read_csv(
+        experiment_ids_filename, header=0, sep="\t", index_col=0
+    )
 
-    normalized_data = pd.read_csv(normalized_data_file, header=0, sep="\t", index_col=0)
+    normalized_data = pd.read_csv(
+        normalized_data_filename, header=0, sep="\t", index_col=0
+    )
 
     print(
         "Normalized gene expression data contains {} samples and {} genes".format(
@@ -418,12 +436,15 @@ def simulate_by_latent_transformation(
 
 
 def shift_template_experiment(
-    normalized_data_file,
-    selected_experiment_id,
-    sample_id_colname,
+    normalized_data_filename,
     NN_architecture,
     dataset_name,
     scaler,
+    metadata_filename,
+    metadata_delimiter,
+    experiment_id_colname,
+    sample_id_colname,
+    selected_experiment_id,
     local_dir,
     base_dir,
     run,
@@ -438,19 +459,13 @@ def shift_template_experiment(
 
     Arguments
     ----------
-    normalized_data_file: str
+    normalized_data_filename: str
         File containing normalized gene expression data
 
         ------------------------------| PA0001 | PA0002 |...
         05_PA14000-4-2_5-10-07_S2.CEL | 0.8533 | 0.7252 |...
         54375-4-05.CEL                | 0.7789 | 0.7678 |...
         ...                           | ...    | ...    |...
-
-    selected_experiment_id: str
-        Experiment id selected as template
-
-    sample_id_colname: str
-        Column header that contains sample id that maps expression data and metadata
 
     NN_architecture: str
         Name of neural network architecture to use.
@@ -461,6 +476,26 @@ def shift_template_experiment(
 
     scaler: minmax model
         Model used to transform data into a different range
+
+    metadata_filename: str
+        Metadata file path. Note: The format of this metadata file
+        requires the index column to contain experiment ids.
+
+    metadata_delimiter: str
+        Delimiter for metadata file
+
+    experiment_colname: str
+        Column header that contains the experiment ids
+
+    experiment_id: str
+        Experiment id selected to retrieve sample ids for
+
+    sample_id_colname: str
+        Column header that contains sample id that maps expression data
+        and metadata
+
+    selected_experiment_id: str
+        Experiment id selected as template
 
     local_dir: str
         Parent directory on local machine to store intermediate results
@@ -498,7 +533,9 @@ def shift_template_experiment(
     loaded_decode_model.load_weights(weights_decoder_file)
 
     # Read data
-    normalized_data = pd.read_csv(normalized_data_file, header=0, sep="\t", index_col=0)
+    normalized_data = pd.read_csv(
+        normalized_data_filename, header=0, sep="\t", index_col=0
+    )
 
     # Get corresponding sample ids
     sample_ids = get_sample_ids(
