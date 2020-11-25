@@ -634,4 +634,3 @@ def shift_template_experiment(
     simulated_data_encoded_df.to_csv(
         out_encoded_filename, float_format="%.3f", sep="\t"
     )
-
