@@ -257,18 +257,16 @@ def simulate_by_latent_transformation(
     metadata_delimiter: str
         Delimiter for metadata file
 
-    experiment_ids_filename: str
-        File containing all cleaned experiment ids
-
     experiment_colname: str
         Column header that contains the experiment ids
-
-    experiment_id: str
-        Experiment id selected to retrieve sample ids for
 
     sample_id_colname: str
         Column header that contains sample id that maps expression data
         and metadata
+
+    experiment_ids_filename: str
+        File containing all cleaned experiment ids to retrieve sample
+        ids for
 
     local_dir: str
         Parent directory on local machine to store intermediate results
@@ -436,7 +434,7 @@ def simulate_by_latent_transformation(
 
 
 def shift_template_experiment(
-    normalized_data_filename,
+    normalized_data,
     NN_architecture,
     dataset_name,
     scaler,
@@ -459,8 +457,8 @@ def shift_template_experiment(
 
     Arguments
     ----------
-    normalized_data_filename: str
-        File containing normalized gene expression data
+    normalized_data: str
+        Normalized gene expression data
 
         ------------------------------| PA0001 | PA0002 |...
         05_PA14000-4-2_5-10-07_S2.CEL | 0.8533 | 0.7252 |...
@@ -486,9 +484,6 @@ def shift_template_experiment(
 
     experiment_colname: str
         Column header that contains the experiment ids
-
-    experiment_id: str
-        Experiment id selected to retrieve sample ids for
 
     sample_id_colname: str
         Column header that contains sample id that maps expression data
@@ -531,11 +526,6 @@ def shift_template_experiment(
 
     loaded_model.load_weights(weights_encoder_file)
     loaded_decode_model.load_weights(weights_decoder_file)
-
-    # Read data
-    normalized_data = pd.read_csv(
-        normalized_data_filename, header=0, sep="\t", index_col=0
-    )
 
     # Get corresponding sample ids
     sample_ids = get_sample_ids(
