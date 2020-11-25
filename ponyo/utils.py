@@ -116,7 +116,7 @@ def create_experiment_id_file(
     params = read_config(config_filename)
 
     # Load parameters
-    sample_id_colname = params["metadata_colname"]
+    sample_id_colname = params["metadata_sample_colname"]
     dataset_name = params["dataset_name"]
 
     # Get sample id that maps between metadata and expression files
