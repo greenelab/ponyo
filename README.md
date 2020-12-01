@@ -38,8 +38,12 @@ The tables lists the core parameters required to generate simulated data using m
 | Name | Description |
 | :--- | :---------- |
 | local_dir| str: Parent directory on local machine to store intermediate results|
-| scaler_transform_file| str: File to store mapping from normalized to raw gene expression range|
 | dataset_name| str: Name for analysis directory containing notebooks using ponyo|
+| raw_data_filename| str: File storing raw gene expression data|
+| normalized_data_filename| str: File storing normalized gene expression data|
+| metadata_filename*| str: File containing metadata associated with data|
+| experiment_ids_filename*| str: File containing list of experiment ids that have gene expression data available|
+| scaler_transform_filename| str: File to store mapping from normalized to raw gene expression range|
 | simulation_type | str: Name of simulation approach directory to store results locally|
 | NN_architecture | str: Name of neural network architecture to use. Format 'NN_<intermediate layer>_<latent layer>'|
 | learning_rate| float: Step size used for gradient descent. In other words, it's how quickly the  methods is learning|
@@ -53,5 +57,7 @@ The tables lists the core parameters required to generate simulated data using m
 | num_simulated_samples* | int: If using random sampling approach, simulate a compendia with these many samples|
 | num_simulated_experiments*| int: If using latent-transformation approach, simulate a compendia with these many experiments|
 | num_simulated*| int: If using template-based approach, simulate these many experiments|
+| metadata_delimiter*| str: Delimiter to parse metadata file|
+| metadata_experiment_colname* | str: Column header that contains experiment id that maps expression data and metadata|
+| metadata_sample_colname* | str: Column header that contains sample id that maps expression data and metadata|
 | project_id*| int: If using template-based approach, experiment id to use as template experiment|
-| metadata_colname | str: Column header that contains sample id that maps expression data and metadata|

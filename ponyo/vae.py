@@ -80,11 +80,11 @@ def tybalt_2layer_model(
 
     Returns
     --------
-    model_decoder_file, weights_decoder_file: .h5 file
+    model_decoder_filnamee, weights_decoder_filename: .h5 file
         Files used to generate decoding neural networks to use in downstream
         analysis
 
-    model_encoder_file, weights_encoder_file: .h5 file
+    model_encoder_filename, weights_encoder_filename: .h5 file
         Files used to generate encoding neural networks to use in downstream
         analysis
 
@@ -112,7 +112,7 @@ def tybalt_2layer_model(
     original_dim = rnaseq.shape[1]
     beta = K.variable(0)
 
-    stat_file = os.path.join(
+    stat_filename = os.path.join(
         base_dir,
         dataset_name,
         "logs",
@@ -120,7 +120,7 @@ def tybalt_2layer_model(
         "tybalt_2layer_{}latent_stats.tsv".format(latent_dim),
     )
 
-    hist_plot_file = os.path.join(
+    hist_plot_filename = os.path.join(
         base_dir,
         dataset_name,
         "logs",
@@ -128,7 +128,7 @@ def tybalt_2layer_model(
         "tybalt_2layer_{}latent_hist.svg".format(latent_dim),
     )
 
-    model_encoder_file = os.path.join(
+    model_encoder_filename = os.path.join(
         base_dir,
         dataset_name,
         "models",
@@ -136,7 +136,7 @@ def tybalt_2layer_model(
         "tybalt_2layer_{}latent_encoder_model.h5".format(latent_dim),
     )
 
-    weights_encoder_file = os.path.join(
+    weights_encoder_filename = os.path.join(
         base_dir,
         dataset_name,
         "models",
@@ -144,7 +144,7 @@ def tybalt_2layer_model(
         "tybalt_2layer_{}latent_encoder_weights.h5".format(latent_dim),
     )
 
-    model_decoder_file = os.path.join(
+    model_decoder_filename = os.path.join(
         base_dir,
         dataset_name,
         "models",
@@ -152,7 +152,7 @@ def tybalt_2layer_model(
         "tybalt_2layer_{}latent_decoder_model.h5".format(latent_dim),
     )
 
-    weights_decoder_file = os.path.join(
+    weights_decoder_filename = os.path.join(
         base_dir,
         dataset_name,
         "models",
@@ -286,7 +286,7 @@ def tybalt_2layer_model(
     ax.set_xlabel("Epochs", fontsize="xx-large", family="sans-serif")
     ax.set_ylabel("Loss", fontsize="xx-large", family="sans-serif")
     fig = ax.get_figure()
-    fig.savefig(hist_plot_file, dpi=300)
+    fig.savefig(hist_plot_filename, dpi=300)
 
     del ax, fig
 
@@ -298,15 +298,15 @@ def tybalt_2layer_model(
     history_df = history_df.assign(batch_size=batch_size)
     history_df = history_df.assign(epochs=epochs)
     history_df = history_df.assign(kappa=kappa)
-    history_df.to_csv(stat_file, sep="\t", index=False)
+    history_df.to_csv(stat_filename, sep="\t", index=False)
 
     # Save models
     # (source) https://machinelearningmastery.com/save-load-keras-deep-learning-models/
     # Save encoder model
-    encoder.save(model_encoder_file)
+    encoder.save(model_encoder_filename)
 
     # serialize weights to HDF5
-    encoder.save_weights(weights_encoder_file)
+    encoder.save_weights(weights_encoder_filename)
 
     # Save decoder model
     # (source) https://github.com/greenelab/tybalt/blob/master/scripts/nbconverted/tybalt_vae.py
@@ -315,10 +315,10 @@ def tybalt_2layer_model(
     _x_decoded_mean = decoder_model(decoder_input)
     decoder = Model(decoder_input, _x_decoded_mean)
 
-    decoder.save(model_decoder_file)
+    decoder.save(model_decoder_filename)
 
     # serialize weights to HDF5
-    decoder.save_weights(weights_decoder_file)
+    decoder.save_weights(weights_decoder_filename)
 
     # Save weight matrix:  how each gene contribute to each feature
     # build a generator that can sample from the learned distribution
