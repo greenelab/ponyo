@@ -35,8 +35,8 @@ def get_sample_ids(
     Arguments
     ----------
     metadata_filename: str
-        Metadata file path. Note: The format of this metadata file
-        requires the index column to contain experiment ids.
+        Metadata file path. An example metadata file can be found
+        here: https://github.com/greenelab/ponyo/blob/master/human_tests/data/metadata/recount2_metadata.tsv
 
     delimiter: str
         Delimiter for metadata file
@@ -469,7 +469,7 @@ def shift_template_experiment(
 
     Arguments
     ----------
-    normalized_data: str
+    normalized_data: df
         Normalized gene expression data
 
         ------------------------------| PA0001 | PA0002 |...
