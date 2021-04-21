@@ -166,6 +166,7 @@ def simulate_by_random_sampling(
 
     return simulated_data
 
+
 def run_sample_simulation(encoder, decoder, normalized_data, num_simulated_samples):
     """
     This function does the actual simulation work for simulate_by_random_sampling.
@@ -227,6 +228,7 @@ def run_sample_simulation(encoder, decoder, normalized_data, num_simulated_sampl
     )
 
     return simulated_data
+
 
 def simulate_by_latent_transformation(
     num_simulated_experiments,
