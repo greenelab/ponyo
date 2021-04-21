@@ -12,7 +12,6 @@ from ponyo import vae, utils
 import os
 import pickle
 import pandas as pd
-import numpy as np
 from sklearn import preprocessing
 
 import warnings
