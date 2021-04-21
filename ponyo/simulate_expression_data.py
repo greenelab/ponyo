@@ -159,10 +159,42 @@ def simulate_by_random_sampling(
         )
     )
 
+    simulated_data = run_sample_simulation(loaded_model,
+                                           loaded_decode_model,
+                                           normalized_data,
+                                           num_simulated_samples)
+
+    return simulated_data
+
+def run_sample_simulation(encoder, decoder, normalized_data, num_simulated_samples):
+    """
+    This function does the actual simulation work for simulate_by_random_sampling.
+    To be more precise, it uses a VAE to simulate data based on the distribution of
+    `normalized_data`.
+
+    Arguments
+    ----------
+    encoder: keras.models.Model
+        The encoder half of the VAE. `encoder` takes in a (samples x genes) dataframe of
+        gene expression data and encodes it into a latent space
+    decoder: keras.models.Model
+        The decoder half of the VAE. `decoder` takes a dataframe of means and standard deviations
+        and uses them to simulate gene expression data close to the distribution of normalized_data
+    normalized_data: pd.DataFrame
+        The data to be used to train the VAE
+    num_simulated_samples: int
+        The number of samples to simulate
+
+    Returns
+    --------
+    simulated_data: pd.DataFrame
+        The data simulated from the autoencoder
+
+    """
     # Simulate data
 
     # Encode into latent space
-    data_encoded = loaded_model.predict_on_batch(normalized_data)
+    data_encoded = encoder.predict_on_batch(normalized_data)
     data_encoded_df = pd.DataFrame(data_encoded, index=normalized_data.index)
 
     latent_dim = data_encoded_df.shape[1]
@@ -185,7 +217,7 @@ def simulate_by_random_sampling(
     new_data_df = pd.DataFrame(data=new_data)
 
     # Decode samples
-    new_data_decoded = loaded_decode_model.predict_on_batch(new_data_df)
+    new_data_decoded = decoder.predict_on_batch(new_data_df)
     simulated_data = pd.DataFrame(data=new_data_decoded)
 
     print(
@@ -195,7 +227,6 @@ def simulate_by_random_sampling(
     )
 
     return simulated_data
-
 
 def simulate_by_latent_transformation(
     num_simulated_experiments,
