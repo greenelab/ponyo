@@ -159,10 +159,46 @@ def simulate_by_random_sampling(
         )
     )
 
+    simulated_data = run_sample_simulation(loaded_model,
+                                           loaded_decode_model,
+                                           normalized_data,
+                                           num_simulated_samples)
+
+    return simulated_data
+
+
+def run_sample_simulation(encoder, decoder, normalized_data, num_simulated_samples):
+    """
+    This function does the actual simulation work for simulate_by_random_sampling.
+    To be more precise, it uses a VAE to simulate data based on the distribution of
+    `normalized_data`.
+
+    Arguments
+    ----------
+    encoder: keras.models.Model
+        The encoder half of the VAE. `encoder` takes in a (samples x genes) dataframe of
+        gene expression data and encodes it into a latent space
+
+    decoder: keras.models.Model
+        The decoder half of the VAE. `decoder` takes a dataframe of means and standard deviations
+        and uses them to simulate gene expression data close to the distribution of normalized_data
+
+    normalized_data: pd.DataFrame
+        The data to be used to train the VAE
+
+    num_simulated_samples: int
+        The number of samples to simulate
+
+    Returns
+    --------
+    simulated_data: pd.DataFrame
+        The data simulated from the autoencoder
+
+    """
     # Simulate data
 
     # Encode into latent space
-    data_encoded = loaded_model.predict_on_batch(normalized_data)
+    data_encoded = encoder.predict_on_batch(normalized_data)
     data_encoded_df = pd.DataFrame(data_encoded, index=normalized_data.index)
 
     latent_dim = data_encoded_df.shape[1]
@@ -185,7 +221,7 @@ def simulate_by_random_sampling(
     new_data_df = pd.DataFrame(data=new_data)
 
     # Decode samples
-    new_data_decoded = loaded_decode_model.predict_on_batch(new_data_df)
+    new_data_decoded = decoder.predict_on_batch(new_data_df)
     simulated_data = pd.DataFrame(data=new_data_decoded)
 
     print(
@@ -234,7 +270,7 @@ def simulate_by_latent_transformation(
 
     Arguments
     ----------
-    number_simulated_experiments: int
+    num_simulated_experiments: int
         Number of experiments to simulate
 
     normalized_data_filename: str
@@ -325,6 +361,93 @@ def simulate_by_latent_transformation(
     )
 
     # Simulate data
+    simulation_results = run_latent_transformation_simulation(loaded_model,
+                                                              loaded_decode_model,
+                                                              normalized_data,
+                                                              experiment_ids,
+                                                              metadata_filename,
+                                                              metadata_delimiter,
+                                                              experiment_id_colname,
+                                                              sample_id_colname,
+                                                              num_simulated_experiments,
+                                                              latent_dim)
+    (simulated_data_scaled_df, simulated_data_encoded_df, data_encoded_df) = simulation_results
+
+    # Save before and after experiment for visualization validation
+    before_encoded_filename = os.path.join(local_dir, "simulated_before_encoded.txt")
+    after_encoded_filename = os.path.join(local_dir, "simulated_after_encoded.txt")
+
+    data_encoded_df.to_csv(before_encoded_filename, float_format="%.3f", sep="\t")
+    simulated_data_encoded_df.to_csv(
+        after_encoded_filename, float_format="%.3f", sep="\t"
+    )
+
+    return simulated_data_scaled_df
+
+
+def run_latent_transformation_simulation(encoder,
+                                         decoder,
+                                         normalized_data,
+                                         experiment_ids,
+                                         metadata_filename,
+                                         metadata_delimiter,
+                                         experiment_id_colname,
+                                         sample_id_colname,
+                                         num_simulated_experiments,
+                                         latent_dim):
+
+    """
+    This function handles the simulation logic used in `simulate_by_latent_transformation`
+
+    Arguments
+    ---------
+    encoder: keras.models.Model
+        The encoder half of the VAE. `encoder` takes in a (samples x genes) dataframe of
+        gene expression data and encodes it into a latent space
+
+    decoder: keras.models.Model
+        The decoder half of the VAE. `decoder` takes a dataframe of means and standard deviations
+        and uses them to simulate gene expression data close to the distribution of a
+        a set of experiments from normalized_data
+
+    normalized_data: pd.DataFrame
+        The data to be used to train the VAE
+
+    experiment_ids: pd.DataFrame
+        The set of ids for experiments present in normalized_data
+
+    metadata_filename: str
+        Metadata file path. Note: The format of this metadata file
+        requires the index column to contain experiment ids.
+
+    metadata_delimiter: str
+        Delimiter for metadata file
+
+    experiment_colname: str
+        Column header that contains the experiment ids
+
+    sample_id_colname: str
+        Column header that contains sample id that maps expression data
+        and metadata
+
+    num_simulated_experiments: int
+        The number of experiments to simulate
+
+    latent_dim: int
+        The number of dimensions in the latent space
+
+    Returns
+    -------
+    simulated_data_scaled_df: pd.DataFrame
+        The simulated data rescaled to have a max of 1 and a min of zero
+
+    simulated_data_encoded_df: pd.DataFrame
+        The raw data created by taking an experiment from the data and shifting its
+        centroid to elsewhere in the latent space
+
+    data_encoded_df: pd.DataFrame
+        The results of shifting `normalized_data` into the latent space specified by `encoder`
+    """
 
     simulated_data_df = pd.DataFrame()
 
@@ -357,14 +480,14 @@ def simulate_by_latent_transformation(
         selected_data_df = normalized_data.loc[sample_ids]
 
         # Encode selected experiment into latent space
-        data_encoded = loaded_model.predict_on_batch(selected_data_df)
+        data_encoded = encoder.predict_on_batch(selected_data_df)
         data_encoded_df = pd.DataFrame(data_encoded, index=selected_data_df.index)
 
         # Get centroid of original data
         centroid = data_encoded_df.mean(axis=0)
 
         # Encode original gene expression data into latent space
-        data_encoded_all = loaded_model.predict_on_batch(normalized_data)
+        data_encoded_all = encoder.predict_on_batch(normalized_data)
         data_encoded_all_df = pd.DataFrame(
             data_encoded_all, index=normalized_data.index
         )
@@ -388,7 +511,7 @@ def simulate_by_latent_transformation(
         )
 
         # Decode simulated data into raw gene space
-        simulated_data_decoded = loaded_decode_model.predict_on_batch(
+        simulated_data_decoded = decoder.predict_on_batch(
             simulated_data_encoded_df
         )
 
@@ -433,16 +556,7 @@ def simulate_by_latent_transformation(
         )
     )
 
-    # Save before and after experiment for visualization validation
-    before_encoded_filename = os.path.join(local_dir, "simulated_before_encoded.txt")
-    after_encoded_filename = os.path.join(local_dir, "simulated_after_encoded.txt")
-
-    data_encoded_df.to_csv(before_encoded_filename, float_format="%.3f", sep="\t")
-    simulated_data_encoded_df.to_csv(
-        after_encoded_filename, float_format="%.3f", sep="\t"
-    )
-
-    return simulated_data_scaled_df
+    return simulated_data_scaled_df, simulated_data_encoded_df, data_encoded_df
 
 
 def shift_template_experiment(
@@ -555,48 +669,11 @@ def shift_template_experiment(
     # Gene expression data for selected samples
     selected_data_df = normalized_data.loc[sample_ids]
 
-    # Encode selected experiment into latent space
-    data_encoded = loaded_model.predict_on_batch(selected_data_df)
-    data_encoded_df = pd.DataFrame(data_encoded, index=selected_data_df.index)
-
-    # Get centroid of original data
-    centroid = data_encoded_df.mean(axis=0)
-
-    # Add individual vectors(centroid, sample point) to new_centroid
-
-    # Encode original gene expression data into latent space
-    data_encoded_all = loaded_model.predict_on_batch(normalized_data)
-    data_encoded_all_df = pd.DataFrame(data_encoded_all, index=normalized_data.index)
-
-    data_encoded_all_df.head()
-
-    # Find a new location in the latent space by sampling from the latent space
-    encoded_means = data_encoded_all_df.mean(axis=0)
-    encoded_stds = data_encoded_all_df.std(axis=0)
-
-    latent_dim = int(latent_dim)
-    new_centroid = np.zeros(latent_dim)
-
-    for j in range(latent_dim):
-        new_centroid[j] = np.random.normal(encoded_means[j], encoded_stds[j])
-
-    shift_vec_df = new_centroid - centroid
-    # print(shift_vec_df)
-
-    simulated_data_encoded_df = data_encoded_df.apply(
-        lambda x: x + shift_vec_df, axis=1
-    )
-
-    # Decode simulated data into raw gene space
-    simulated_data_decoded = loaded_decode_model.predict_on_batch(
-        simulated_data_encoded_df
-    )
-
-    simulated_data_decoded_df = pd.DataFrame(
-        simulated_data_decoded,
-        index=simulated_data_encoded_df.index,
-        columns=selected_data_df.columns,
-    )
+    simulated_data_decoded_df, simulated_data_encoded_df = run_shift_template(loaded_model,
+                                                                              loaded_decode_model,
+                                                                              normalized_data,
+                                                                              selected_data_df,
+                                                                              latent_dim)
 
     # Un-normalize the data in order to run DE analysis downstream
     simulated_data_scaled = scaler.inverse_transform(simulated_data_decoded_df)
@@ -634,3 +711,84 @@ def shift_template_experiment(
     simulated_data_encoded_df.to_csv(
         out_encoded_filename, float_format="%.3f", sep="\t"
     )
+
+
+def run_shift_template(encoder,
+                       decoder,
+                       normalized_data,
+                       selected_data_df,
+                       latent_dim
+                       ):
+    """
+    This function does the template shifting used in `shift_template_experiment`.
+
+    Arguments
+    ---------
+    encoder: keras.models.Model
+        The encoder half of the VAE. `encoder` takes in a (samples x genes) dataframe of
+        gene expression data and encodes it into a latent space
+
+    decoder: keras.models.Model
+        The decoder half of the VAE. `decoder` takes a dataframe of means and standard deviations
+        and uses them to simulate gene expression data close to the distribution of normalized_data
+
+    normalized_data: pd.DataFrame
+        The data to be used to train the VAE
+
+    selected_data_df: pd.DataFrame
+        The samples to be shifted in the latent space
+
+    latent_dim: int
+        The dimension of the latent space the samples will be shifted in
+
+    Returns
+    -------
+    simulated_data_decoded_df: pd.DataFrame
+        The simulated data created by shifting the samples in the latent space
+
+    simulated_data_encoded_df: pd.DataFrame
+        The latent means and standard deviations in the latent space used to simulate the data
+    """
+    # Encode selected experiment into latent space
+    data_encoded = encoder.predict_on_batch(selected_data_df)
+    data_encoded_df = pd.DataFrame(data_encoded, index=selected_data_df.index)
+
+    # Get centroid of original data
+    centroid = data_encoded_df.mean(axis=0)
+
+    # Add individual vectors(centroid, sample point) to new_centroid
+
+    # Encode original gene expression data into latent space
+    data_encoded_all = encoder.predict_on_batch(normalized_data)
+    data_encoded_all_df = pd.DataFrame(data_encoded_all, index=normalized_data.index)
+
+    data_encoded_all_df.head()
+
+    # Find a new location in the latent space by sampling from the latent space
+    encoded_means = data_encoded_all_df.mean(axis=0)
+    encoded_stds = data_encoded_all_df.std(axis=0)
+
+    latent_dim = int(latent_dim)
+    new_centroid = np.zeros(latent_dim)
+
+    for j in range(latent_dim):
+        new_centroid[j] = np.random.normal(encoded_means[j], encoded_stds[j])
+
+    shift_vec_df = new_centroid - centroid
+
+    simulated_data_encoded_df = data_encoded_df.apply(
+        lambda x: x + shift_vec_df, axis=1
+    )
+
+    # Decode simulated data into raw gene space
+    simulated_data_decoded = decoder.predict_on_batch(
+        simulated_data_encoded_df
+    )
+
+    simulated_data_decoded_df = pd.DataFrame(
+        simulated_data_decoded,
+        index=simulated_data_encoded_df.index,
+        columns=selected_data_df.columns,
+    )
+
+    return simulated_data_decoded_df, simulated_data_encoded_df
