@@ -23,7 +23,7 @@ extras = {
 
 setup(
     name="ponyo",
-    version="0.3",
+    version="0.4",
     description="Install functions to simulate gene expression compendia",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -34,6 +34,7 @@ setup(
     packages=["ponyo"],
     zip_safe=False,
     install_requires=[
+        "python>=3.5, <3.8"
         "pandas",
         "numpy",
         "keras==2.3.1",
