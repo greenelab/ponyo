@@ -33,8 +33,8 @@ setup(
     license="BSD 3-Clause",
     packages=["ponyo"],
     zip_safe=False,
+    python_requires="=3.5, <3.8",
     install_requires=[
-        "python>=3.5, <3.8",
         "pandas",
         "numpy",
         "keras==2.3.1",
