@@ -14,7 +14,7 @@ test_pckgs = [
     "plotnine",
     "coverage<5.0",
     "pytest-cov",
-    "coveralls>=2.1.0",
+    "coveralls==2.2.0",
 ]
 
 extras = {
