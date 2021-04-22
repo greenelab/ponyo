@@ -34,7 +34,7 @@ setup(
     packages=["ponyo"],
     zip_safe=False,
     install_requires=[
-        "python>=3.5, <3.8"
+        "python>=3.5, <3.8",
         "pandas",
         "numpy",
         "keras==2.3.1",
