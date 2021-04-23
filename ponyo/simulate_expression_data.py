@@ -159,10 +159,9 @@ def simulate_by_random_sampling(
         )
     )
 
-    simulated_data = run_sample_simulation(loaded_model,
-                                           loaded_decode_model,
-                                           normalized_data,
-                                           num_simulated_samples)
+    simulated_data = run_sample_simulation(
+        loaded_model, loaded_decode_model, normalized_data, num_simulated_samples
+    )
 
     return simulated_data
 
@@ -361,17 +360,23 @@ def simulate_by_latent_transformation(
     )
 
     # Simulate data
-    simulation_results = run_latent_transformation_simulation(loaded_model,
-                                                              loaded_decode_model,
-                                                              normalized_data,
-                                                              experiment_ids,
-                                                              metadata_filename,
-                                                              metadata_delimiter,
-                                                              experiment_id_colname,
-                                                              sample_id_colname,
-                                                              num_simulated_experiments,
-                                                              latent_dim)
-    (simulated_data_scaled_df, simulated_data_encoded_df, data_encoded_df) = simulation_results
+    simulation_results = run_latent_transformation_simulation(
+        loaded_model,
+        loaded_decode_model,
+        normalized_data,
+        experiment_ids,
+        metadata_filename,
+        metadata_delimiter,
+        experiment_id_colname,
+        sample_id_colname,
+        num_simulated_experiments,
+        latent_dim,
+    )
+    (
+        simulated_data_scaled_df,
+        simulated_data_encoded_df,
+        data_encoded_df,
+    ) = simulation_results
 
     # Save before and after experiment for visualization validation
     before_encoded_filename = os.path.join(local_dir, "simulated_before_encoded.txt")
@@ -385,16 +390,18 @@ def simulate_by_latent_transformation(
     return simulated_data_scaled_df
 
 
-def run_latent_transformation_simulation(encoder,
-                                         decoder,
-                                         normalized_data,
-                                         experiment_ids,
-                                         metadata_filename,
-                                         metadata_delimiter,
-                                         experiment_id_colname,
-                                         sample_id_colname,
-                                         num_simulated_experiments,
-                                         latent_dim):
+def run_latent_transformation_simulation(
+    encoder,
+    decoder,
+    normalized_data,
+    experiment_ids,
+    metadata_filename,
+    metadata_delimiter,
+    experiment_id_colname,
+    sample_id_colname,
+    num_simulated_experiments,
+    latent_dim,
+):
 
     """
     This function handles the simulation logic used in `simulate_by_latent_transformation`
@@ -511,9 +518,7 @@ def run_latent_transformation_simulation(encoder,
         )
 
         # Decode simulated data into raw gene space
-        simulated_data_decoded = decoder.predict_on_batch(
-            simulated_data_encoded_df
-        )
+        simulated_data_decoded = decoder.predict_on_batch(simulated_data_encoded_df)
 
         simulated_data_decoded_df = pd.DataFrame(
             simulated_data_decoded,
@@ -669,11 +674,9 @@ def shift_template_experiment(
     # Gene expression data for selected samples
     selected_data_df = normalized_data.loc[sample_ids]
 
-    simulated_data_decoded_df, simulated_data_encoded_df = run_shift_template(loaded_model,
-                                                                              loaded_decode_model,
-                                                                              normalized_data,
-                                                                              selected_data_df,
-                                                                              latent_dim)
+    simulated_data_decoded_df, simulated_data_encoded_df = run_shift_template(
+        loaded_model, loaded_decode_model, normalized_data, selected_data_df, latent_dim
+    )
 
     # Un-normalize the data in order to run DE analysis downstream
     simulated_data_scaled = scaler.inverse_transform(simulated_data_decoded_df)
@@ -713,12 +716,7 @@ def shift_template_experiment(
     )
 
 
-def run_shift_template(encoder,
-                       decoder,
-                       normalized_data,
-                       selected_data_df,
-                       latent_dim
-                       ):
+def run_shift_template(encoder, decoder, normalized_data, selected_data_df, latent_dim):
     """
     This function does the template shifting used in `shift_template_experiment`.
 
@@ -781,9 +779,7 @@ def run_shift_template(encoder,
     )
 
     # Decode simulated data into raw gene space
-    simulated_data_decoded = decoder.predict_on_batch(
-        simulated_data_encoded_df
-    )
+    simulated_data_decoded = decoder.predict_on_batch(simulated_data_encoded_df)
 
     simulated_data_decoded_df = pd.DataFrame(
         simulated_data_decoded,

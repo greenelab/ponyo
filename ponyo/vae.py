@@ -20,16 +20,17 @@ from keras import optimizers
 from ponyo.helper_vae import sampling_maker, CustomVariationalLayer, WarmUpCallback
 
 
-def run_tybalt_training(expression_data,
-                        learning_rate,
-                        batch_size,
-                        epochs,
-                        kappa,
-                        intermediate_dim,
-                        latent_dim,
-                        epsilon_std,
-                        validation_frac,
-                        ):
+def run_tybalt_training(
+    expression_data,
+    learning_rate,
+    batch_size,
+    epochs,
+    kappa,
+    intermediate_dim,
+    latent_dim,
+    epsilon_std,
+    validation_frac,
+):
     """
     Create and train a VAE based on the Tybalt paper.
     This function does the heavy lifting for `tybalt_2layer_model`, while the calling function
@@ -331,15 +332,17 @@ def tybalt_2layer_model(
         "tybalt_2layer_{}latent_decoder_weights.h5".format(latent_dim),
     )
 
-    encoder, decoder_model, hist = run_tybalt_training(rnaseq,
-                                                       learning_rate,
-                                                       batch_size,
-                                                       epochs,
-                                                       kappa,
-                                                       intermediate_dim,
-                                                       latent_dim,
-                                                       epsilon_std,
-                                                       validation_frac)
+    encoder, decoder_model, hist = run_tybalt_training(
+        rnaseq,
+        learning_rate,
+        batch_size,
+        epochs,
+        kappa,
+        intermediate_dim,
+        latent_dim,
+        epsilon_std,
+        validation_frac,
+    )
 
     encoded_rnaseq_df = encoder.predict_on_batch(rnaseq)
     encoded_rnaseq_df = pd.DataFrame(encoded_rnaseq_df, index=rnaseq.index)
