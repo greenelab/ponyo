@@ -14,7 +14,7 @@ test_pckgs = [
     "plotnine",
     "coverage<5.0",
     "pytest-cov",
-    "coveralls>=2.1.0",
+    "coveralls==2.2.0",
 ]
 
 extras = {
@@ -23,7 +23,7 @@ extras = {
 
 setup(
     name="ponyo",
-    version="0.3",
+    version="0.4",
     description="Install functions to simulate gene expression compendia",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -33,6 +33,7 @@ setup(
     license="BSD 3-Clause",
     packages=["ponyo"],
     zip_safe=False,
+    python_requires=">=3.5, <3.8",
     install_requires=[
         "pandas",
         "numpy",
