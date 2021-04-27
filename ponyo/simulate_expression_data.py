@@ -236,6 +236,7 @@ def simulate_by_latent_transformation(
     num_simulated_experiments,
     normalized_data_filename,
     NN_architecture,
+    latent_dim,
     dataset_name,
     analysis_name,
     metadata_filename,
@@ -283,6 +284,9 @@ def simulate_by_latent_transformation(
     NN_architecture: str
         Name of neural network architecture to use.
         Format 'NN_<intermediate layer>_<latent layer>'
+    
+    latent_dim: int
+        The number of dimensions in the latent space
 
     dataset_name: str
         Name for analysis directory. Either "Human" or "Pseudomonas"
@@ -323,7 +327,6 @@ def simulate_by_latent_transformation(
 
     # Files
     NN_dir = os.path.join(base_dir, dataset_name, "models", NN_architecture)
-    latent_dim = NN_architecture.split("_")[-1]
 
     model_encoder_filename = glob.glob(os.path.join(NN_dir, "*_encoder_model.h5"))[0]
 
@@ -567,6 +570,7 @@ def run_latent_transformation_simulation(
 def shift_template_experiment(
     normalized_data,
     NN_architecture,
+    latent_dim,
     dataset_name,
     scaler,
     metadata_filename,
@@ -599,6 +603,9 @@ def shift_template_experiment(
     NN_architecture: str
         Name of neural network architecture to use.
         Format 'NN_<intermediate layer>_<latent layer>'
+
+    latent_dim: int
+        The number of dimensions in the latent space
 
     dataset_name: str
         Name for analysis directory. Either "Human" or "Pseudomonas"
@@ -641,7 +648,6 @@ def shift_template_experiment(
 
     # Files
     NN_dir = os.path.join(base_dir, dataset_name, "models", NN_architecture)
-    latent_dim = NN_architecture.split("_")[-1]
 
     model_encoder_filename = glob.glob(os.path.join(NN_dir, "*_encoder_model.h5"))[0]
 
