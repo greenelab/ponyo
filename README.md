@@ -19,7 +19,7 @@ pip install ponyo
 ```
 
 ## Types of simulations
-There are 3 types of simulations that ponyo allows:
+There are 3 types of simulations that ponyo implements:
 
 | Name | Description |
 | :--- | :---------- |
