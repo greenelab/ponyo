@@ -13,6 +13,9 @@ import os
 import pickle
 import pandas as pd
 from sklearn import preprocessing
+import tensorflow as tf
+import numpy as np
+import random
 
 import warnings
 
@@ -24,6 +27,33 @@ def fxn():
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     fxn()
+
+
+def set_all_seeds(np_seed=42, rn_seed=12345, tf_seed=1234):
+    """
+    This function sets all seeds to get reproducible VAE trained
+    models.
+    """
+
+    # The below is necessary in Python 3.2.3 onwards to
+    # have reproducible behavior for certain hash-based operations.
+    # See these references for further details:
+    # https://keras.io/getting-started/faq/#how-can-i-obtain-reproducible-results-using-keras-during-development
+    # https://docs.python.org/3.4/using/cmdline.html#envvar-PYTHONHASHSEED
+    # https://github.com/keras-team/keras/issues/2280#issuecomment-306959926
+
+    os.environ["PYTHONHASHSEED"] = "0"
+
+    # The below is necessary for starting Numpy generated random numbers
+    # in a well-defined initial state.
+    np.random.seed(np_seed)
+
+    # The below is necessary for starting core Python generated random numbers
+    # in a well-defined state.
+    random.seed(rn_seed)
+    # The below tf.set_random_seed() will make random number generation
+    # in the TensorFlow backend have a well-defined initial state.
+    tf.set_random_seed(tf_seed)
 
 
 def normalize_expression_data(
