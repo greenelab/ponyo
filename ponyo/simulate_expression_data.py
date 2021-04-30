@@ -568,7 +568,7 @@ def run_latent_transformation_simulation(
 
 
 def shift_template_experiment(
-    normalized_data,
+    normalized_data_filename,
     NN_architecture,
     latent_dim,
     dataset_name,
@@ -580,7 +580,7 @@ def shift_template_experiment(
     selected_experiment_id,
     local_dir,
     base_dir,
-    run,
+    num_runs,
 ):
     """
     Generate new simulated experiment using the selected_experiment_id as a template
@@ -592,8 +592,8 @@ def shift_template_experiment(
 
     Arguments
     ----------
-    normalized_data: df
-        Normalized gene expression data
+    normalized_data_filename: str
+        File containing normalized gene expression data
 
         ------------------------------| PA0001 | PA0002 |...
         05_PA14000-4-2_5-10-07_S2.CEL | 0.8533 | 0.7252 |...
@@ -636,8 +636,8 @@ def shift_template_experiment(
     base_dir: str
         Root directory containing analysis subdirectories
 
-    run: int
-        Simulation run
+    num_runs: int
+        Number of experiments to simulate
 
     Returns
     --------
@@ -668,6 +668,11 @@ def shift_template_experiment(
     loaded_model.load_weights(weights_encoder_filename)
     loaded_decode_model.load_weights(weights_decoder_filename)
 
+    # Read data
+    normalized_data = pd.read_csv(
+        normalized_data_filename, header=0, sep="\t", index_col=0
+    )
+
     # Get corresponding sample ids
     sample_ids = get_sample_ids(
         metadata_filename,
@@ -680,18 +685,38 @@ def shift_template_experiment(
     # Gene expression data for selected samples
     selected_data_df = normalized_data.loc[sample_ids]
 
-    simulated_data_decoded_df, simulated_data_encoded_df = run_shift_template(
-        loaded_model, loaded_decode_model, normalized_data, selected_data_df, latent_dim
-    )
+    for run in range(num_runs):
+        simulated_data_decoded_df, simulated_data_encoded_df = run_shift_template(
+            loaded_model, loaded_decode_model, normalized_data, selected_data_df, latent_dim
+        )
 
-    # Un-normalize the data in order to run DE analysis downstream
-    simulated_data_scaled = scaler.inverse_transform(simulated_data_decoded_df)
+        # Un-normalize the data in order to run DE analysis downstream
+        simulated_data_scaled = scaler.inverse_transform(simulated_data_decoded_df)
 
-    simulated_data_scaled_df = pd.DataFrame(
-        simulated_data_scaled,
-        columns=simulated_data_decoded_df.columns,
-        index=simulated_data_decoded_df.index,
-    )
+        simulated_data_scaled_df = pd.DataFrame(
+            simulated_data_scaled,
+            columns=simulated_data_decoded_df.columns,
+            index=simulated_data_decoded_df.index,
+        )
+
+        # Save
+        out_filename = os.path.join(
+            local_dir,
+            "pseudo_experiment",
+            "selected_simulated_data_" + selected_experiment_id + "_" + str(run) + ".txt",
+        )
+
+        simulated_data_scaled_df.to_csv(out_filename, float_format="%.3f", sep="\t")
+
+        out_encoded_filename = os.path.join(
+            local_dir,
+            "pseudo_experiment",
+            f"selected_simulated_encoded_data_{selected_experiment_id}_{run}.txt",
+        )
+
+        simulated_data_encoded_df.to_csv(
+            out_encoded_filename, float_format="%.3f", sep="\t"
+        )
 
     # Save template data for visualization validation
     test_filename = os.path.join(
@@ -699,27 +724,7 @@ def shift_template_experiment(
         "pseudo_experiment",
         "template_normalized_data_" + selected_experiment_id + "_test.txt",
     )
-
     selected_data_df.to_csv(test_filename, float_format="%.3f", sep="\t")
-
-    # Save
-    out_filename = os.path.join(
-        local_dir,
-        "pseudo_experiment",
-        "selected_simulated_data_" + selected_experiment_id + "_" + str(run) + ".txt",
-    )
-
-    simulated_data_scaled_df.to_csv(out_filename, float_format="%.3f", sep="\t")
-
-    out_encoded_filename = os.path.join(
-        local_dir,
-        "pseudo_experiment",
-        f"selected_simulated_encoded_data_{selected_experiment_id}_{run}.txt",
-    )
-
-    simulated_data_encoded_df.to_csv(
-        out_encoded_filename, float_format="%.3f", sep="\t"
-    )
 
 
 def run_shift_template(encoder, decoder, normalized_data, selected_data_df, latent_dim):
