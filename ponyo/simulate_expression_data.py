@@ -669,7 +669,7 @@ def shift_template_experiment(
     loaded_decode_model.load_weights(weights_decoder_filename)
 
     # Read data
-    normalized_data = normalized_data = pd.read_csv(
+    normalized_data = pd.read_csv(
         normalized_data_filename, header=0, sep="\t", index_col=0
     )
 
