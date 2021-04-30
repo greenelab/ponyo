@@ -29,7 +29,7 @@ with warnings.catch_warnings():
     fxn()
 
 
-def set_all_seeds(np_seed=42, rn_seed=12345, tf_seed=1234):
+def set_all_seeds(seed_val=42):
     """
     This function sets all seeds to get reproducible VAE trained
     models.
@@ -46,14 +46,14 @@ def set_all_seeds(np_seed=42, rn_seed=12345, tf_seed=1234):
 
     # The below is necessary for starting Numpy generated random numbers
     # in a well-defined initial state.
-    np.random.seed(np_seed)
+    np.random.seed(seed_val)
 
     # The below is necessary for starting core Python generated random numbers
     # in a well-defined state.
-    random.seed(rn_seed)
+    random.seed(seed_val)
     # The below tf.set_random_seed() will make random number generation
     # in the TensorFlow backend have a well-defined initial state.
-    tf.set_random_seed(tf_seed)
+    tf.set_random_seed(seed_val)
 
 
 def normalize_expression_data(
