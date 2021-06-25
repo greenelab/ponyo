@@ -66,18 +66,21 @@ class CustomVariationalLayer(Layer):
 
         super(CustomVariationalLayer, self).__init__(**kwargs)
 
-    def vae_loss(self, x_input, x_decoded):
-        reconstruction_loss = self.original_dim * metrics.binary_crossentropy(
-            x_input, x_decoded
-        )
-
-        kl_loss = -0.5 * K.sum(
+    def kl_loss(self):
+        return -0.5 * K.sum(
             1
             + self.z_log_var_encoded
             - K.square(self.z_mean_encoded)
             - K.exp(self.z_log_var_encoded),
             axis=-1,
         )
+
+    def reconstruction_loss(self, x_input, x_decoded):
+        return self.original_dim * metrics.binary_crossentropy(x_input, x_decoded)
+
+    def vae_loss(self, x_input, x_decoded):
+        reconstruction_loss = self.reconstruction_loss(x_input, x_decoded)
+        kl_loss = self.kl_loss()
 
         return K.mean(reconstruction_loss + (K.get_value(self.beta) * kl_loss))
 
@@ -86,6 +89,11 @@ class CustomVariationalLayer(Layer):
         x_decoded = inputs[1]
         loss = self.vae_loss(x, x_decoded)
         self.add_loss(loss, inputs=inputs)
+
+        kl_loss = self.kl_loss()
+        self.add_metric(kl_loss, name="kl_loss")
+        reconstruction_loss = self.reconstruction_loss(x, x_decoded)
+        self.add_metric(reconstruction_loss, name="recons_loss")
         # We won't actually use the output.
         return x
 
