@@ -38,7 +38,7 @@ setup(
         "pandas",
         "numpy",
         "keras==2.3.1",
-        "tensorflow==1.15.4",
+        "tensorflow==2.7.2",
         "scikit-learn",
         "h5py<3",
     ],
