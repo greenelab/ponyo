@@ -129,7 +129,7 @@ def train_vae(config_filename, input_data_filename):
     params = utils.read_config(config_filename)
 
     # Load parameters
-    base_dir = os.path.abspath(os.path.join(os.getcwd(), "../"))
+    base_dir = params["base_dir"]
     dataset_name = params["dataset_name"]
     learning_rate = params["learning_rate"]
     batch_size = params["batch_size"]

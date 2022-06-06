@@ -29,8 +29,6 @@ def setup_dir(config_filename):
         File containing user defined parameters
     """
 
-    base_dir = os.path.abspath(os.path.join(os.getcwd(), "../"))
-
     # Read in config variables
     params = read_config(config_filename)
 
@@ -38,6 +36,10 @@ def setup_dir(config_filename):
     local_dir = params["local_dir"]
     dataset_name = params["dataset_name"]
     train_architecture = params["NN_architecture"]
+
+    # Use base dir specified by the user otherwise set to be the
+    # base directory to be one level up from where the function is run
+    base_dir = params["base_dir"]
 
     # Create VAE directories
     output_dirs = [
