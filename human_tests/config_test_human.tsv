@@ -1,3 +1,4 @@
+base_dir	"../"
 local_dir	"../test_results/"
 raw_data_filename	"data/input/recount2_gene_RPKM_data_test.tsv"
 normalized_data_filename	"data/input/recount2_gene_normalized_data_test.tsv.xz"
