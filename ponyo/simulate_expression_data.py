@@ -8,6 +8,7 @@ VAE on gene expression data.
 """
 
 import os
+import pickle
 import pandas as pd
 import numpy as np
 import glob
