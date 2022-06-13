@@ -70,7 +70,7 @@ The tables lists the core parameters required to generate simulated data using m
 | num_simulated*| int: The number of experiments to simulate (i.e. the number of times to shift the starting template experiment). This parameter is needed if using the latent transformation approach - shift_template_experiment.|
 | metadata_experiment_colname* | str: Column header that contains experiment id that maps expression data and metadata. This parameter needed if using either latent transformation approaches.|
 | metadata_sample_colname* | str: Column header that contains sample id that maps expression data and metadata. This parameter needed if using either latent transformation approaches.|
-| project_id*| int: The experiment id to use as template experiment. The id is using the values found in the <metadata_experiment_colname> column of the <metadata_filename>. This <project_id> corresponds to a group of samples that were used to test an single hypothesis. This parameter is needed if using either latent transformation approaches.|
+| project_id*| int: The experiment id to use as a template experiment. This <project_id> corresponds to a group of samples that were used to test an single hypothesis. This parameter is needed if using either latent transformation approaches.|
 
 For guidance on setting VAE training prameters, see configurations used in [simulate-expression-compendia](https://github.com/greenelab/simulate-expression-compendia/configs) and [generic-expression-patterns](https://github.com/greenelab/generic-expression-patterns/configs) repositories
 
