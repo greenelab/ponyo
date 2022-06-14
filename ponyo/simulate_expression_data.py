@@ -814,7 +814,7 @@ def compare_match_features(template_filename, compendium_filename):
     then add gene to template experiment with median gene expression value from the VAE model.
     
     template_filename: str
-        File containing template gene expression data. Expect matrix of dimension: sample x gene
+        File containing template gene expression data. Expect matrix of dimension: sample (rows) x gene (columns)
         
     compendium_filename: str
         File containing un-normalized compendium gene expression data. 
