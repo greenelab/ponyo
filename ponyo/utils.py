@@ -120,6 +120,7 @@ def create_experiment_id_file(
     # Load parameters
     sample_id_colname = params["metadata_sample_colname"]
     dataset_name = params["dataset_name"]
+    is_recount2 = params["is_recount2"]
 
     # Get sample id that maps between metadata and expression files
     map_experiment_sample = metadata[[sample_id_colname]]
@@ -136,7 +137,7 @@ def create_experiment_id_file(
 
     for experiment_id in experiment_ids:
 
-        if "human" in dataset_name.lower():
+        if is_recount2:
             # Some project id values are descriptions
             # We will skip these
             if len(experiment_id) == 9:
