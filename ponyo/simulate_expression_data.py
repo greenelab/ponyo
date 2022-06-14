@@ -804,21 +804,20 @@ def run_shift_template(encoder, decoder, normalized_data, selected_data_df, late
 def compare_match_features(template_filename, compendium_filename):
     """
     This function checks that the feature space matches between
-    template experiment and the VAE model.  
-    (i.e. ensure genes in template and VAE model are the same).
+    template experiment and the VAE model. 
+    In other words, this function checks that the gene ids (column names)
+    are the same in the template experiment and the VAE model. 
     
     If there are differences this function does the following:
     If a gene is present in template experiment but not in the VAE model, then drop gene
     If a gene is present in VAE model but not in the template experiment, 
-    then add gene to template experiment with median gene expression value
+    then add gene to template experiment with median gene expression value from the VAE model.
     
     template_filename: str
         File containing template gene expression data. Expect matrix of dimension: sample x gene
         
     compendium_filename: str
         File containing un-normalized compendium gene expression data. 
-        Gene ids are either using PA#### (P. aeruginosa)
-        or using HGNC symbols (Human)
         
     """
     # Read template experiment
