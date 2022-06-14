@@ -904,7 +904,7 @@ def process_template_experiment(
     Arguments
     ----------
     template_filename: str
-        File containing template gene expression data. Expect matrix of dimension: sample x gene        
+        File containing template gene expression data. Expect matrix of dimension: sample (rows) x gene (columns)
     compendium_filename: str
         File containing un-normalized compendium gene expression data. 
         Gene ids are either using PA#### (P. aeruginosa)
