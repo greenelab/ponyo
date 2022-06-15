@@ -537,17 +537,16 @@ def run_latent_transformation_simulation(
 
 def shift_template_experiment(
     normalized_data_filename,
-    #NN_architecture,
+    vae_model_dir,
     latent_dim,
-    # dataset_name,
-    scaler, # filename
+    scaler_filename,
     metadata_filename,
     metadata_delimiter,
     experiment_id_colname,
     sample_id_colname,
     selected_experiment_id,
     local_dir,
-    # base_dir,
+    simulated_data_dir,
     num_simulated_experiments,
 ):
     """
@@ -568,18 +567,14 @@ def shift_template_experiment(
         54375-4-05.CEL                | 0.7789 | 0.7678 |...
         ...                           | ...    | ...    |...
 
-    NN_architecture: str
-        Name of neural network architecture to use.
-        Format 'NN_<intermediate layer>_<latent layer>'
+    vae_model_dir: str
+        Directory containing VAE model files
 
     latent_dim: int
         The number of dimensions in the latent space
 
-    dataset_name: str
-        Name for analysis directory. Either "Human" or "Pseudomonas"
-
-    scaler: minmax model
-        Model used to transform data into a different range
+    scaler_filename: str
+        File containing model used to transform data into a different range
 
     metadata_filename: str
         Metadata file path. Note: The format of this metadata file
@@ -601,31 +596,28 @@ def shift_template_experiment(
     local_dir: str
         Parent directory on local machine to store intermediate results
 
-    base_dir: str
-        Root directory containing analysis subdirectories
+    simulated_data_dir: str
+        Directory containing simulated experiments
 
     num_simulated_experiments: int
         Number of experiments to simulate
 
     Returns
     --------
-    simulated_data_filename: str
-        File containing simulated gene expression data
+    Simulated gene expression data stored in simulated_data_dir
 
     """
 
     # Files
-    NN_dir = os.path.join(base_dir, dataset_name, "models", NN_architecture) #vae_model_dir replace
+    model_encoder_filename = glob.glob(os.path.join(vae_model_dir, "*_encoder_model.h5"))[0]
 
-    model_encoder_filename = glob.glob(os.path.join(NN_dir, "*_encoder_model.h5"))[0]
-
-    weights_encoder_filename = glob.glob(os.path.join(NN_dir, "*_encoder_weights.h5"))[
+    weights_encoder_filename = glob.glob(os.path.join(vae_model_dir, "*_encoder_weights.h5"))[
         0
     ]
 
-    model_decoder_filename = glob.glob(os.path.join(NN_dir, "*_decoder_model.h5"))[0]
+    model_decoder_filename = glob.glob(os.path.join(vae_model_dir, "*_decoder_model.h5"))[0]
 
-    weights_decoder_filename = glob.glob(os.path.join(NN_dir, "*_decoder_weights.h5"))[
+    weights_decoder_filename = glob.glob(os.path.join(vae_model_dir, "*_decoder_weights.h5"))[
         0
     ]
 
@@ -653,9 +645,10 @@ def shift_template_experiment(
     # Gene expression data for selected samples
     selected_data_df = normalized_data.loc[sample_ids]
 
-    # Read in scaler filename
+    # Load pickled file
+    scaler = pickle.load(open(scaler_filename, "rb"))
 
-    for run in range(num_runs):
+    for run in range(num_simulated_experiments):
         simulated_data_decoded_df, simulated_data_encoded_df = run_shift_template(
             loaded_model, loaded_decode_model, normalized_data, selected_data_df, latent_dim
         )
@@ -671,17 +664,15 @@ def shift_template_experiment(
 
         # Save SIMULATED DIRECTORY HERE
         out_filename = os.path.join(
-            local_dir,
-            "pseudo_experiment",
-            "selected_simulated_data_" + selected_experiment_id + "_" + str(run) + ".txt",
+            simulated_data_dir,
+            "selected_simulated_data_" + selected_experiment_id + "_" + str(run) + ".tsv",
         )
 
         simulated_data_scaled_df.to_csv(out_filename, float_format="%.3f", sep="\t")
 
         out_encoded_filename = os.path.join(
-            local_dir,
-            "pseudo_experiment",
-            f"selected_simulated_encoded_data_{selected_experiment_id}_{run}.txt",
+            simulated_data_dir,
+            f"selected_simulated_encoded_data_{selected_experiment_id}_{run}.tsv",
         )
 
         simulated_data_encoded_df.to_csv(
@@ -691,7 +682,7 @@ def shift_template_experiment(
     # Save template data for example visualization
     test_filename = os.path.join(
         local_dir,
-        "template_normalized_data_" + selected_experiment_id + "_test.txt",
+        "template_normalized_data_" + selected_experiment_id + "_test.tsv",
     )
     selected_data_df.to_csv(test_filename, float_format="%.3f", sep="\t")
 
@@ -909,7 +900,8 @@ def embed_shift_template_experiment(
     scaler_filename,
     local_dir,
     latent_dim,
-    num_runs,
+    num_simulated_experiments,
+    simulated_data_dir,
 ):
     """
     Generate new simulated experiment using the selected_experiment_id as a template
@@ -939,7 +931,7 @@ def embed_shift_template_experiment(
     base_dir: str
         Root directory containing analysis subdirectories
 
-    num_runs: int
+    num_simulated_experiments: int
         Number of simulated experiments
 
     Returns
@@ -950,17 +942,15 @@ def embed_shift_template_experiment(
     """
 
     # Files
-    NN_dir = vae_model_dir
+    model_encoder_filename = glob.glob(os.path.join(vae_model_dir, "*_encoder_model.h5"))[0]
 
-    model_encoder_filename = glob.glob(os.path.join(NN_dir, "*_encoder_model.h5"))[0]
-
-    weights_encoder_filename = glob.glob(os.path.join(NN_dir, "*_encoder_weights.h5"))[
+    weights_encoder_filename = glob.glob(os.path.join(vae_model_dir, "*_encoder_weights.h5"))[
         0
     ]
 
-    model_decoder_filename = glob.glob(os.path.join(NN_dir, "*_decoder_model.h5"))[0]
+    model_decoder_filename = glob.glob(os.path.join(vae_model_dir, "*_decoder_model.h5"))[0]
 
-    weights_decoder_filename = glob.glob(os.path.join(NN_dir, "*_decoder_weights.h5"))[
+    weights_decoder_filename = glob.glob(os.path.join(vae_model_dir, "*_decoder_weights.h5"))[
         0
     ]
 
@@ -972,7 +962,7 @@ def embed_shift_template_experiment(
         normalized_template_filename, header=0, sep="\t", index_col=0
     )
 
-    # Load pickled file
+    # Load pickled scaler transform file
     with open(scaler_filename, "rb") as scaler_fh:
         scaler = pickle.load(scaler_fh)
 
@@ -986,7 +976,7 @@ def embed_shift_template_experiment(
     # Gene expression data for template experiment
     selected_data_df = normalized_template
 
-    for run in range(num_runs):
+    for run in range(num_simulated_experiments):
         simulated_data_decoded_df, simulated_data_encoded_df = run_embed_shift_template_experiment(
                 loaded_model, loaded_decode_model, normalized_compendium, selected_data_df, latent_dim
             )
@@ -1000,30 +990,27 @@ def embed_shift_template_experiment(
             index=simulated_data_decoded_df.index,
         )
 
-        # Save
+        # Save simulated experiments
         out_filename = os.path.join(
-            local_dir,
-            "pseudo_experiment",
-            "selected_simulated_data_" + selected_experiment_id + "_" + str(run) + ".txt",
+            simulated_data_dir,
+            "selected_simulated_data_" + selected_experiment_id + "_" + str(run) + ".tsv",
         )
 
         simulated_data_scaled_df.to_csv(out_filename, float_format="%.3f", sep="\t")
 
         out_encoded_filename = os.path.join(
-            local_dir,
-            "pseudo_experiment",
-            f"selected_simulated_encoded_data_{selected_experiment_id}_{run}.txt",
+            simulated_data_dir,
+            f"selected_simulated_encoded_data_{selected_experiment_id}_{run}.tsv",
         )
 
         simulated_data_encoded_df.to_csv(
             out_encoded_filename, float_format="%.3f", sep="\t"
         )
     
-    # Save template data for visualization validation
+    # Save template data for example visualization
         test_filename = os.path.join(
             local_dir,
-            "pseudo_experiment",
-            "template_normalized_data_" + selected_experiment_id + "_test.txt",
+            "template_normalized_data_" + selected_experiment_id + "_test.tsv",
         )
 
         selected_data_df.to_csv(test_filename, float_format="%.3f", sep="\t")

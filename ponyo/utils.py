@@ -36,12 +36,14 @@ def setup_dir(config_filename):
     training_stats_dir = params["training_stats_dir"]
     vae_model_dir = params["vae_model_dir"]
     local_dir = params["local_dir"]
+    simulated_data_dir = params["simulated_data_dir"]
 
     # Directories to create
     output_dirs = [
         training_stats_dir,
         vae_model_dir,
-        local_dir
+        local_dir,
+        simulated_data_dir
     ]
 
     # Check if the following directories exist
