@@ -922,8 +922,8 @@ def embed_shift_template_experiment(
         54375-4-05.CEL                | 0.7789 | 0.7678 |...
         ...                           | ...    | ...    |...
 
-    scaler: minmax model
-        Model used to transform data into a different range
+    scaler_filename: str
+        File containing model used to transform data into a different range
 
     local_dir: str
         Parent directory on local machine to store intermediate results
@@ -933,6 +933,9 @@ def embed_shift_template_experiment(
 
     num_simulated_experiments: int
         Number of simulated experiments
+
+    simulated_data_dir: str
+        Data containing simulated gene expression data
 
     Returns
     --------
