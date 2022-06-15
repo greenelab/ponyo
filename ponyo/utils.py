@@ -35,11 +35,13 @@ def setup_dir(config_filename):
     # Load parameters
     training_stats_dir = params["training_stats_dir"]
     vae_model_dir = params["vae_model_dir"]
+    local_dir = params["local_dir"]
 
-    # Create VAE directories
+    # Directories to create
     output_dirs = [
         training_stats_dir,
         vae_model_dir,
+        local_dir
     ]
 
     # Check if the following directories exist
@@ -50,6 +52,8 @@ def setup_dir(config_filename):
         if not os.path.exists(each_dir):
             print("creating new directory: {}".format(each_dir))
             os.makedirs(each_dir, exist_ok=True)
+
+
 
 
 def create_experiment_id_file(

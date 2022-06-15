@@ -218,17 +218,14 @@ def run_sample_simulation(encoder, decoder, normalized_data, num_simulated_sampl
 def simulate_by_latent_transformation(
     num_simulated_experiments,
     normalized_data_filename,
-    NN_architecture,
+    vae_model_dir,
     latent_dim,
-    dataset_name,
-    analysis_name,
     metadata_filename,
     metadata_delimiter,
     experiment_id_colname,
     sample_id_colname,
     experiment_ids_filename,
     local_dir,
-    base_dir,
 ):
     """
     Generate simulated data by randomly sampling some number of experiments
@@ -264,19 +261,11 @@ def simulate_by_latent_transformation(
         54375-4-05.CEL                | 0.7789 | 0.7678 |...
         ...                           | ...    | ...    |...
 
-    NN_architecture: str
-        Name of neural network architecture to use.
-        Format 'NN_<intermediate layer>_<latent layer>'
+    vae_model_dir: str
+        Directory containing VAE model files
     
     latent_dim: int
         The number of dimensions in the latent space
-
-    dataset_name: str
-        Name for analysis directory. Either "Human" or "Pseudomonas"
-
-    analysis_name: str
-        Parent directory where simulated data with experiments/partitionings will be stored.
-        Format of the directory name is <dataset_name>_<sample/experiment>_lvl_sim
 
     metadata_filename: str
         Metadata file path. Note: The format of this metadata file
@@ -299,8 +288,6 @@ def simulate_by_latent_transformation(
     local_dir: str
         Parent directory on local machine to store intermediate results
 
-    base_dir: str
-        Root directory containing analysis subdirectories
 
     Returns
     --------
@@ -309,17 +296,15 @@ def simulate_by_latent_transformation(
     """
 
     # Files
-    NN_dir = os.path.join(base_dir, dataset_name, "models", NN_architecture)
+    model_encoder_filename = glob.glob(os.path.join(vae_model_dir, "*_encoder_model.h5"))[0]
 
-    model_encoder_filename = glob.glob(os.path.join(NN_dir, "*_encoder_model.h5"))[0]
-
-    weights_encoder_filename = glob.glob(os.path.join(NN_dir, "*_encoder_weights.h5"))[
+    weights_encoder_filename = glob.glob(os.path.join(vae_model_dir, "*_encoder_weights.h5"))[
         0
     ]
 
-    model_decoder_filename = glob.glob(os.path.join(NN_dir, "*_decoder_model.h5"))[0]
+    model_decoder_filename = glob.glob(os.path.join(vae_model_dir, "*_decoder_model.h5"))[0]
 
-    weights_decoder_filename = glob.glob(os.path.join(NN_dir, "*_decoder_weights.h5"))[
+    weights_decoder_filename = glob.glob(os.path.join(vae_model_dir, "*_decoder_weights.h5"))[
         0
     ]
 
@@ -364,9 +349,9 @@ def simulate_by_latent_transformation(
         data_encoded_df,
     ) = simulation_results
 
-    # Save before and after experiment for visualization validation
-    before_encoded_filename = os.path.join(local_dir, "simulated_before_encoded.txt")
-    after_encoded_filename = os.path.join(local_dir, "simulated_after_encoded.txt")
+    # Save before and after experiment for example visualization
+    before_encoded_filename = os.path.join(local_dir, "simulated_before_encoded.tsv")
+    after_encoded_filename = os.path.join(local_dir, "simulated_after_encoded.tsv")
 
     data_encoded_df.to_csv(before_encoded_filename, float_format="%.3f", sep="\t")
     simulated_data_encoded_df.to_csv(
@@ -552,18 +537,18 @@ def run_latent_transformation_simulation(
 
 def shift_template_experiment(
     normalized_data_filename,
-    NN_architecture,
+    #NN_architecture,
     latent_dim,
-    dataset_name,
-    scaler,
+    # dataset_name,
+    scaler, # filename
     metadata_filename,
     metadata_delimiter,
     experiment_id_colname,
     sample_id_colname,
     selected_experiment_id,
     local_dir,
-    base_dir,
-    num_runs,
+    # base_dir,
+    num_simulated_experiments,
 ):
     """
     Generate new simulated experiment using the selected_experiment_id as a template
@@ -619,7 +604,7 @@ def shift_template_experiment(
     base_dir: str
         Root directory containing analysis subdirectories
 
-    num_runs: int
+    num_simulated_experiments: int
         Number of experiments to simulate
 
     Returns
@@ -630,7 +615,7 @@ def shift_template_experiment(
     """
 
     # Files
-    NN_dir = os.path.join(base_dir, dataset_name, "models", NN_architecture)
+    NN_dir = os.path.join(base_dir, dataset_name, "models", NN_architecture) #vae_model_dir replace
 
     model_encoder_filename = glob.glob(os.path.join(NN_dir, "*_encoder_model.h5"))[0]
 
@@ -668,6 +653,8 @@ def shift_template_experiment(
     # Gene expression data for selected samples
     selected_data_df = normalized_data.loc[sample_ids]
 
+    # Read in scaler filename
+
     for run in range(num_runs):
         simulated_data_decoded_df, simulated_data_encoded_df = run_shift_template(
             loaded_model, loaded_decode_model, normalized_data, selected_data_df, latent_dim
@@ -682,7 +669,7 @@ def shift_template_experiment(
             index=simulated_data_decoded_df.index,
         )
 
-        # Save
+        # Save SIMULATED DIRECTORY HERE
         out_filename = os.path.join(
             local_dir,
             "pseudo_experiment",
@@ -701,10 +688,9 @@ def shift_template_experiment(
             out_encoded_filename, float_format="%.3f", sep="\t"
         )
 
-    # Save template data for visualization validation
+    # Save template data for example visualization
     test_filename = os.path.join(
         local_dir,
-        "pseudo_experiment",
         "template_normalized_data_" + selected_experiment_id + "_test.txt",
     )
     selected_data_df.to_csv(test_filename, float_format="%.3f", sep="\t")
