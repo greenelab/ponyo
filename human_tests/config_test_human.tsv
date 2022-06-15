@@ -25,3 +25,4 @@ metadata_experiment_colname	"project"
 metadata_sample_colname	"run"
 project_id	"SRP016059"
 is_recount2	True
+simulated_data_dir	"../test_results/simulated_data/"
