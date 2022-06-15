@@ -57,7 +57,7 @@ def set_all_seeds(seed_val=42):
 
 
 def normalize_expression_data(
-    base_dir, config_filename, raw_input_data_filename, normalized_data_filename
+    config_filename, raw_input_data_filename, normalized_data_filename
 ):
     """
     0-1 normalize the expression data.
@@ -129,8 +129,6 @@ def train_vae(config_filename, input_data_filename):
     params = utils.read_config(config_filename)
 
     # Load parameters
-    base_dir = params["base_dir"]
-    dataset_name = params["dataset_name"]
     learning_rate = params["learning_rate"]
     batch_size = params["batch_size"]
     epochs = params["epochs"]
@@ -138,7 +136,8 @@ def train_vae(config_filename, input_data_filename):
     intermediate_dim = params["intermediate_dim"]
     latent_dim = params["latent_dim"]
     epsilon_std = params["epsilon_std"]
-    train_architecture = params["NN_architecture"]
+    training_stats_dir = params["training_stats_dir"]
+    vae_model_dir = params["vae_model_dir"]
     validation_frac = params["validation_frac"]
 
     # Read data
@@ -160,8 +159,7 @@ def train_vae(config_filename, input_data_filename):
         latent_dim,
         epsilon_std,
         normalized_data,
-        base_dir,
-        dataset_name,
-        train_architecture,
+        training_stats_dir,
+        vae_model_dir,
         validation_frac,
     )

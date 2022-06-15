@@ -69,12 +69,8 @@ def get_sample_ids(
 
 def simulate_by_random_sampling(
     normalized_data_filename,
-    NN_architecture,
-    dataset_name,
-    analysis_name,
     num_simulated_samples,
-    local_dir,
-    base_dir,
+    vae_model_dir,
 ):
     """
     Generate simulated data by randomly sampling from VAE latent space.
@@ -102,25 +98,12 @@ def simulate_by_random_sampling(
         54375-4-05.CEL                | 0.7789 | 0.7678 |...
         ...                           | ...    | ...    |...
 
-    NN_architecture: str
-        Name of neural network architecture to use.
-        Format 'NN_<intermediate layer>_<latent layer>'
-
-    dataset_name: str
-        Name of analysis directory, Either "Human" or "Pseudomonas"
-
-    analysis_name: str
-        Parent directory where simulated data with experiments/partitionings will be stored.
-        Format of the directory name is <dataset_name>_<sample/experiment>_lvl_sim
-
     number_simulated_samples: int
         Number of samples to simulate
 
-    local_dir: str
-        Parent directory on local machine to store intermediate results
+    vae_model_dir: str
+        Parent directory containing the VAE model files
 
-    base_dir: str
-        Root directory containing analysis subdirectories
 
     Returns
     --------
@@ -129,16 +112,15 @@ def simulate_by_random_sampling(
     """
 
     # Files
-    NN_dir = os.path.join(base_dir, dataset_name, "models", NN_architecture)
-    model_encoder_filename = glob.glob(os.path.join(NN_dir, "*_encoder_model.h5"))[0]
+    model_encoder_filename = glob.glob(os.path.join(vae_model_dir, "*_encoder_model.h5"))[0]
 
-    weights_encoder_filename = glob.glob(os.path.join(NN_dir, "*_encoder_weights.h5"))[
+    weights_encoder_filename = glob.glob(os.path.join(vae_model_dir, "*_encoder_weights.h5"))[
         0
     ]
 
-    model_decoder_filename = glob.glob(os.path.join(NN_dir, "*_decoder_model.h5"))[0]
+    model_decoder_filename = glob.glob(os.path.join(vae_model_dir, "*_decoder_model.h5"))[0]
 
-    weights_decoder_filename = glob.glob(os.path.join(NN_dir, "*_decoder_weights.h5"))[
+    weights_decoder_filename = glob.glob(os.path.join(vae_model_dir, "*_decoder_weights.h5"))[
         0
     ]
 
@@ -215,7 +197,7 @@ def run_sample_simulation(encoder, decoder, normalized_data, num_simulated_sampl
             encoded_means[j], encoded_stds[j], num_simulated_samples
         )
 
-        # Use standard normal
+        # Alternative: use standard normal
         # new_data[:,j] = np.random.normal(0, 1, num_simulated_samples)
 
     new_data_df = pd.DataFrame(data=new_data)

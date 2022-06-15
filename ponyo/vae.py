@@ -39,7 +39,8 @@ def run_tybalt_training(
     Arguments
     ---------
     expression_data: pandas.dataframe
-        The expression data to be used to train the VAE
+        The expression data used to train the VAE. Expect gene expression activity to be
+        normalized such that each feature/gene is within the same range.
 
     learning_rate: float
         Step size used for gradient descent. In other words, it's how quickly
@@ -81,6 +82,7 @@ def run_tybalt_training(
     hist: keras.callbacks.History
         The history object containing training information returned when fitting the VAE
     """
+
     original_dim = expression_data.shape[1]
     beta = K.variable(0)
 
@@ -221,10 +223,9 @@ def tybalt_2layer_model(
     intermediate_dim,
     latent_dim,
     epsilon_std,
-    rnaseq,
-    base_dir,
-    dataset_name,
-    NN_name,
+    expression_data,
+    training_stats_dir,
+    vae_model_dir,
     validation_frac,
 ):
     """
@@ -255,18 +256,15 @@ def tybalt_2layer_model(
     epsilon_std: float
         Standard deviation of Normal distribution to sample latent space
 
-    rnaseq: pandas.dataframe
-        Gene expression data
+    expression_data: pandas.dataframe
+        Gene expression data to train VAE on. Expect gene expression activity to be
+        normalized such that each feature/gene is within the same range.
 
-    base_dir: str
-        Root directory containing analysis subdirectories
-
-    dataset_name: str
-        Name of analysis directory
-
-    NN_name: str
-        Neural network architecture of VAE.
-        Format NN_<intermediate_dim>_<latent_dim>
+    training_stats_dir: str
+        Directory that will contain VAE training statistics files
+    
+    vae_model_dir: str
+        Directory that will contain VAE model files
 
     validation_frac: float
         Percentage of total dataset to set aside to use as a validation set.
@@ -285,55 +283,37 @@ def tybalt_2layer_model(
     # Initialize hyper parameters
 
     stat_filename = os.path.join(
-        base_dir,
-        dataset_name,
-        "logs",
-        NN_name,
+        training_stats_dir,
         "tybalt_2layer_{}latent_stats.tsv".format(latent_dim),
     )
 
     hist_plot_filename = os.path.join(
-        base_dir,
-        dataset_name,
-        "logs",
-        NN_name,
+        training_stats_dir,
         "tybalt_2layer_{}latent_hist.svg".format(latent_dim),
     )
 
     model_encoder_filename = os.path.join(
-        base_dir,
-        dataset_name,
-        "models",
-        NN_name,
+        vae_model_dir,
         "tybalt_2layer_{}latent_encoder_model.h5".format(latent_dim),
     )
 
     weights_encoder_filename = os.path.join(
-        base_dir,
-        dataset_name,
-        "models",
-        NN_name,
+        vae_model_dir,
         "tybalt_2layer_{}latent_encoder_weights.h5".format(latent_dim),
     )
 
     model_decoder_filename = os.path.join(
-        base_dir,
-        dataset_name,
-        "models",
-        NN_name,
+        vae_model_dir,
         "tybalt_2layer_{}latent_decoder_model.h5".format(latent_dim),
     )
 
     weights_decoder_filename = os.path.join(
-        base_dir,
-        dataset_name,
-        "models",
-        NN_name,
+        vae_model_dir,
         "tybalt_2layer_{}latent_decoder_weights.h5".format(latent_dim),
     )
 
     encoder, decoder_model, hist = run_tybalt_training(
-        rnaseq,
+        expression_data,
         learning_rate,
         batch_size,
         epochs,
@@ -344,11 +324,11 @@ def tybalt_2layer_model(
         validation_frac,
     )
 
-    encoded_rnaseq_df = encoder.predict_on_batch(rnaseq)
-    encoded_rnaseq_df = pd.DataFrame(encoded_rnaseq_df, index=rnaseq.index)
+    encoded_expression_df = encoder.predict_on_batch(expression_data)
+    encoded_expression_df = pd.DataFrame(encoded_expression_df, index=expression_data.index)
 
-    encoded_rnaseq_df.columns.name = "sample_id"
-    encoded_rnaseq_df.columns = encoded_rnaseq_df.columns + 1
+    encoded_expression_df.columns.name = "sample_id"
+    encoded_expression_df.columns = encoded_expression_df.columns + 1
 
     # Visualize training performance
     history_df = pd.DataFrame(hist.history)

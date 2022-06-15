@@ -4,10 +4,9 @@ raw_data_filename	"data/input/recount2_compendium_data_test.tsv"
 normalized_data_filename	"data/input/recount2_gene_normalized_data_test.tsv.xz"
 metadata_filename	"data/metadata/recount2_metadata.tsv"
 experiment_ids_filename	"data/metadata/experiment_ids.txt"
-scaler_transform_filename	"../test_results/scaler_transform.pickle"
+scaler_transform_filename	"models/scaler_transform.pickle"
 dataset_name	"human_tests"
 simulation_type	"None"
-NN_architecture	"NN_2500_30"
 learning_rate	0.001
 batch_size	5
 epochs	10
@@ -16,6 +15,8 @@ intermediate_dim	2500
 latent_dim	30
 epsilon_std	1.0
 validation_frac	0.1
+training_stats_dir	"logs/"
+vae_model_dir	"models/"
 num_simulated_samples	100
 num_simulated_experiments	50
 num_simulated	2

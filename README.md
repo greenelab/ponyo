@@ -66,6 +66,7 @@ The tables lists the core parameters required to generate simulated data using m
 | latent_dim | int: Size of the bottleneck layer|
 | epsilon_std | float: Standard deviation of Normal distribution to sample latent space|
 | validation_frac | float: Fraction of input samples to use to validate for VAE training|
+| vae_model_dir | str:  The location where the VAE model files (.h5) are stored.|
 | num_simulated_samples* | int: The number of samples to simulate. This parameter is needed if using the random sampling approach.|
 | num_simulated_experiments*| int: The number of experiments to simulate. This parameter is needed if using the latent transformation approach - simulate_by_latent_transform.|
 | num_simulated*| int: The number of experiments to simulate (i.e. the number of times to shift the starting template experiment). This parameter is needed if using the latent transformation approach - shift_template_experiment.|
