@@ -33,18 +33,17 @@ def setup_dir(config_filename):
     params = read_config(config_filename)
 
     # Load parameters
+    training_stats_dir = params["training_stats_dir"]
+    vae_model_dir = params["vae_model_dir"]
     local_dir = params["local_dir"]
-    dataset_name = params["dataset_name"]
-    train_architecture = params["NN_architecture"]
+    simulated_data_dir = params["simulated_data_dir"]
 
-    # Use base dir specified by the user otherwise set to be the
-    # base directory to be one level up from where the function is run
-    base_dir = params["base_dir"]
-
-    # Create VAE directories
+    # Directories to create
     output_dirs = [
-        os.path.join(base_dir, dataset_name, "models"),
-        os.path.join(base_dir, dataset_name, "logs"),
+        training_stats_dir,
+        vae_model_dir,
+        local_dir,
+        simulated_data_dir
     ]
 
     # Check if the following directories exist
@@ -56,35 +55,7 @@ def setup_dir(config_filename):
             print("creating new directory: {}".format(each_dir))
             os.makedirs(each_dir, exist_ok=True)
 
-        # Check if NN architecture directory exist otherwise create
-        NN_dir = os.path.join(each_dir, train_architecture)
-        if not os.path.exists(NN_dir):
-            print("creating new directory: {}".format(NN_dir))
-            os.makedirs(NN_dir, exist_ok=True)
 
-    # Check if analysis output directory exist otherwise create
-    results_dir = os.path.join(base_dir, dataset_name, "results")
-    if not os.path.exists(results_dir):
-        print("creating new directory: {}".format(results_dir))
-        os.makedirs(results_dir, exist_ok=True)
-
-    # Check if 'saved_variables' directory exist otherwise create
-    var_dir = os.path.join(results_dir, "saved_variables")
-    if not os.path.exists(var_dir):
-        print("creating new directory: {}".format(var_dir))
-        os.makedirs(var_dir, exist_ok=True)
-
-    # Create local directories to store intermediate files
-    output_dirs = [
-        os.path.join(local_dir, "experiment_simulated"),
-        os.path.join(local_dir, "partition_simulated"),
-    ]
-
-    # Check if analysis output directory exist otherwise create
-    for each_dir in output_dirs:
-        if not os.path.exists(each_dir):
-            print("creating new directory: {}".format(each_dir))
-            os.makedirs(each_dir, exist_ok=True)
 
 
 def create_experiment_id_file(
@@ -119,7 +90,6 @@ def create_experiment_id_file(
 
     # Load parameters
     sample_id_colname = params["metadata_sample_colname"]
-    dataset_name = params["dataset_name"]
     is_recount2 = params["is_recount2"]
 
     # Get sample id that maps between metadata and expression files

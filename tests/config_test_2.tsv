@@ -20,6 +20,8 @@ intermediate_dim	2500
 latent_dim	30
 epsilon_std	1.0
 validation_frac	0.1
+training_stats_dir	"logs/"
+vae_model_dir	"models/"
 num_simulated_samples	100
 num_simulated_experiments	50
 num_simulated	2
