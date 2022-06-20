@@ -5,8 +5,7 @@ normalized_compendium_filename	"data/input/recount2_gene_normalized_data_test.ts
 metadata_filename	"data/metadata/recount2_metadata.tsv"
 experiment_ids_filename	"data/metadata/experiment_ids.txt"
 scaler_transform_filename	"../test_results/scaler_transform.pickle"
-dataset_name	"tests"
-simulation_type	"None"
+vae_model_dir	"models/"
 learning_rate	0.001
 batch_size	5
 epochs	10
