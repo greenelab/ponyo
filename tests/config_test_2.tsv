@@ -1,7 +1,7 @@
 base_dir	"../"
 local_dir	"../test_results/"
-raw_data_filename	"data/input/recount2_compendium_data_test.tsv"
-normalized_data_filename	"data/input/recount2_gene_normalized_data_test.tsv.xz"
+raw_compendium_filename	"data/input/recount2_compendium_data_test.tsv"
+normalized_compendium_filename	"data/input/recount2_gene_normalized_data_test.tsv.xz"
 raw_template_filename	"data/input/template_data_test.tsv"
 mapped_template_filename	"data/input/mapped_template_experiment_test.tsv"
 normalized_template_filename	"data/input/normalized_template_experiment_test.tsv"
@@ -22,8 +22,6 @@ epsilon_std	1.0
 validation_frac	0.1
 training_stats_dir	"logs/"
 vae_model_dir	"models/"
-num_simulated_samples	100
-num_simulated_experiments	50
 num_simulated	2
 metadata_delimiter	"\t"
 metadata_experiment_colname	"project"

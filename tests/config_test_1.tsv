@@ -1,7 +1,7 @@
 base_dir	"../"
 local_dir	"../test_results/"
-raw_data_filename	"data/input/recount2_compendium_data_test.tsv"
-normalized_data_filename	"data/input/recount2_gene_normalized_data_test.tsv.xz"
+raw_compendium_filename	"data/input/recount2_compendium_data_test.tsv"
+normalized_compendium_filename	"data/input/recount2_gene_normalized_data_test.tsv.xz"
 metadata_filename	"data/metadata/recount2_metadata.tsv"
 experiment_ids_filename	"data/metadata/experiment_ids.txt"
 scaler_transform_filename	"../test_results/scaler_transform.pickle"
@@ -15,9 +15,7 @@ intermediate_dim	2500
 latent_dim	30
 epsilon_std	1.0
 validation_frac	0.1
-num_simulated_samples	100
-num_simulated_experiments	50
-num_simulated	2
+num_simulated	100
 metadata_delimiter	"\t"
 metadata_experiment_colname	"project"
 metadata_sample_colname	"run"
