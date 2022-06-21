@@ -22,7 +22,7 @@ jobs:
 
       - name: Run simulation notebooks
         run: |
-          pytest -v --nbval-lax --current-env tests/simulation_tests.ipynb --cov=ponyo --cov-append
+          pytest -v --nbval-lax --current-env tests/train_vae_test.ipynb --cov=ponyo
 
       - name: Coveralls
         env:

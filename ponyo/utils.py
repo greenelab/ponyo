@@ -36,15 +36,29 @@ def setup_dir(config_filename):
     training_stats_dir = params["training_stats_dir"]
     vae_model_dir = params["vae_model_dir"]
     local_dir = params["local_dir"]
-    simulated_data_dir = params["simulated_data_dir"]
 
-    # Directories to create
-    output_dirs = [
-        training_stats_dir,
-        vae_model_dir,
-        local_dir,
-        simulated_data_dir
-    ]
+    # Simulated data directory is only required for 
+    # shift_template_experiment and embed_shift_template_experiment
+    # simulation types
+    # Here, check if this parameter is specified in the config 
+    # file.
+    if "simulated_data_dir" in params:
+        simulated_data_dir = params["simulated_data_dir"]
+    
+        # Directories to create
+        output_dirs = [
+            training_stats_dir,
+            vae_model_dir,
+            local_dir,
+            simulated_data_dir
+        ]
+    else:
+        # Directories to create
+        output_dirs = [
+            training_stats_dir,
+            vae_model_dir,
+            local_dir,
+        ]
 
     # Check if the following directories exist
     # and if not to create them
