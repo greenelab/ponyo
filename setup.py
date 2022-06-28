@@ -23,7 +23,7 @@ extras = {
 
 setup(
     name="ponyo",
-    version="0.7",
+    version="0.7.1",
     description="Install functions to simulate gene expression compendia",
     long_description=README,
     long_description_content_type="text/markdown",
